@@ -13,15 +13,15 @@ Chunk = function(chunkX, chunkZ, chunkSize, chunkSubdivisions, crossingSub, maxH
 
 	this.generateChunk = function(){
 		
-		finalSubdivisions = this.chunkSubdivisions+(this.crossingSub);
+	//	finalSubdivisions = this.chunkSubdivisions+(this.crossingSub);
 
-		finalChunkSize = this.chunkSize+( ((this.chunkSize/this.chunkSubdivisions)*(this.crossingSub*2)) /2);
+	//	finalChunkSize = this.chunkSize+( ((this.chunkSize/this.chunkSubdivisions)*(this.crossingSub*2)) /2);
 	
 
-		this.geometry = new THREE.PlaneGeometry( finalChunkSize, finalChunkSize, finalSubdivisions, finalSubdivisions );
+		this.geometry = new THREE.PlaneGeometry( this.chunkSize, this.chunkSize, this.chunkSubdivisions, this.chunkSubdivisions );
 		
 		this.material = new THREE.MeshPhongMaterial( {
-			color : new THREE.Color( 0xFFFFFF ).setRGB(Math.random(),Math.random(),Math.random()),
+		//	color : new THREE.Color( 0xFFFFFF ).setRGB(Math.random(),Math.random(),Math.random()),
 			shading: THREE.FlatShading,
 			vertexColors: THREE.VertexColors,
 			shininess: 0,
@@ -55,9 +55,9 @@ Chunk = function(chunkX, chunkZ, chunkSize, chunkSubdivisions, crossingSub, maxH
 
 		}
 
-	//	this.waveIt(0);
+		this.waveIt(0);
 
-	//	this.colorise();
+		this.colorise();
 
 	}
 

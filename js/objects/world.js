@@ -6,10 +6,10 @@ World = function(){
 
 	this.position = { x : 0, z : 0 };
 
-	this.chunksDistance = 5;
+	this.chunksDistance = 20;
 
-	this.chunkSize = 500;
-	this.chunkSubdivisions = 5;
+	this.chunkSize = 100;
+	this.chunkSubdivisions = 10;
 	this.crossingSub = 1;
 	this.maxHeight = 500;
 
@@ -28,7 +28,7 @@ World = function(){
 
 					LODSUB = this.chunkSubdivisions/(  Math.max( Math.abs( x ), Math.abs( z ) )*Math.max( Math.abs( x ), Math.abs( z ) )+ 1 )  ;
 
-					this.chunks[x][z] = new Chunk( x, z, this.chunkSize, LODSUB, this.crossingSub, this.maxHeight);	
+					this.chunks[x][z] = new Chunk( x, z, this.chunkSize, this.chunkSubdivisions, this.crossingSub, this.maxHeight);	
 					this.group.add( this.chunks[x][z].chunkMesh );	
 
 
