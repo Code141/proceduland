@@ -1,17 +1,17 @@
 function keyboardState(){
-		keyboard.update();
+	keyboard.update();
 
 	if ( keyboard.down("Z")){ 
-		world.loadChunks( 0, +1 );
+		world.move( 0, +1 );
 	}
 	if ( keyboard.down("S")){ 
-		world.loadChunks( 0, -1 );
+		world.move( 0, -1 );
 	}
 	if ( keyboard.down("Q")){ 
-		world.loadChunks( +1, 0 );
+		world.move( +1, 0 );
 	}
 	if ( keyboard.down("D")){ 
-		world.loadChunks( -1, 0 );
+		world.move( -1, 0 );
 	}
 	if ( keyboard.down("W")){ 
 		wireFrame();
@@ -29,17 +29,16 @@ function onMouseMove( event ) {
 	// Toggle rotation bool for meshes that we clicked
 	
 	if ( intersects.length > 0 ) {
-
 		if ( INTERSECTED != intersects[ 0 ].object ) {
 
-			if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+			if ( INTERSECTED ){
+				INTERSECTED.material.wireframe = false;
 
+			};
 			INTERSECTED = intersects[ 0 ].object;
 			INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
-			INTERSECTED.material.emissive.setHex( 0x111111 );
-
+			INTERSECTED.material.wireframe = true;
 		}
-
 	} else {
 
 		if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
@@ -48,6 +47,21 @@ function onMouseMove( event ) {
 
 	}
 
+}
+
+function onMouseClick( event ) {
+
+}
+
+findFace = function(faceIndex, btt){
+	if(btt.faceIndex == faceIndex){
+		return btt;
+	}else if(btt.leftChildren != undefined && btt.rightChildren != undefined){
+		findFace(faceIndex, btt.leftChildren);
+		findFace(faceIndex, btt.rightChildren);
+	}else{
+		return;
+	}
 }
 
 wireFrame = function(){

@@ -1,133 +1,85 @@
-Chunk = function(chunkX, chunkZ, chunkSize, chunkSubdivisions, crossingSub, maxHeight){
-	this.chunkX = chunkX;
-	this.chunkZ = chunkZ;
+Chunk = function(x, z, chunkSize){
 
-	this.chunkSize = chunkSize;
-	this.chunkSubdivisions = chunkSubdivisions;
-	this.crossingSub = crossingSub;
-	this.maxHeight = maxHeight;
-
-	this.vertices = [];
-	this.pos = 0;
-
-
-	this.generateChunk = function(){
+	this.initChunk = function(){
 		
-	//	finalSubdivisions = this.chunkSubdivisions+(this.crossingSub);
+		lod = {};
 
-	//	finalChunkSize = this.chunkSize+( ((this.chunkSize/this.chunkSubdivisions)*(this.crossingSub*2)) /2);
-	
+		this.geometry = new THREE.Geometry();
 
-		this.geometry = new THREE.PlaneGeometry( this.chunkSize, this.chunkSize, this.chunkSubdivisions, this.chunkSubdivisions );
-		
-		this.material = new THREE.MeshPhongMaterial( {
-		//	color : new THREE.Color( 0xFFFFFF ).setRGB(Math.random(),Math.random(),Math.random()),
-			shading: THREE.FlatShading,
-			vertexColors: THREE.VertexColors,
-			shininess: 0,
+		this.bttNorth = new BinaryTriangleTree( x, z, chunkSize, 0, this.geometry );
+		this.bttEast = new BinaryTriangleTree( x, z, chunkSize, 0, this.geometry );
+		this.bttSouth = new BinaryTriangleTree( x, z, chunkSize, 0, this.geometry );
+		this.bttWest = new BinaryTriangleTree( x, z, chunkSize, 0, this.geometry );
+
+		this.bttNorth.vertex.apex = new THREE.Vector3( chunkSize/2, 0, chunkSize/2 );
+		this.bttNorth.vertex.left = new THREE.Vector3( chunkSize, 0, 0 );
+		this.bttNorth.vertex.right = new THREE.Vector3( 0, 0, 0 );
+		this.bttNorth.vertex.center = new THREE.Vector3( chunkSize/2, 0, 0 );
+
+		this.bttEast.vertex.apex = new THREE.Vector3( chunkSize/2, 0, chunkSize/2 );
+		this.bttEast.vertex.left = new THREE.Vector3( chunkSize, 0, chunkSize );
+		this.bttEast.vertex.right = new THREE.Vector3( chunkSize, 0, 0 );
+		this.bttEast.vertex.center = new THREE.Vector3( chunkSize, 0, chunkSize/2 );
+
+		this.bttSouth.vertex.apex = new THREE.Vector3( chunkSize/2, 0, chunkSize/2 );
+		this.bttSouth.vertex.left = new THREE.Vector3( 0, 0, chunkSize );
+		this.bttSouth.vertex.right = new THREE.Vector3( chunkSize, 0, chunkSize );
+		this.bttSouth.vertex.center = new THREE.Vector3( chunkSize/2, 0, chunkSize );
+
+		this.bttWest.vertex.apex = new THREE.Vector3( chunkSize/2, 0, chunkSize/2 );
+		this.bttWest.vertex.left = new THREE.Vector3( 0, 0, 0 );
+		this.bttWest.vertex.right = new THREE.Vector3( 0, 0, chunkSize );
+		this.bttWest.vertex.center = new THREE.Vector3( 0, 0, chunkSize/2 );
+
+		this.bttNorth.getBttHeight();
+		this.bttEast.getBttHeight();
+		this.bttSouth.getBttHeight();
+		this.bttWest.getBttHeight();
+
+		this.bttNorth.getHeight(this.bttNorth.vertex.center);
+		this.bttEast.getHeight(this.bttEast.vertex.center);
+		this.bttSouth.getHeight(this.bttSouth.vertex.center);
+		this.bttWest.getHeight(this.bttWest.vertex.center);
+
+		this.bttNorth.createChilds();
+		this.bttEast.createChilds();
+		this.bttSouth.createChilds();
+		this.bttWest.createChilds();
+
+
+		var material = new THREE.MeshLambertMaterial( {
+			emissive : 0x000000,
+			vertexColors : THREE.VertexColors,
 			transparent : false,
 			opacity : 0.7,
 			side : THREE.DoubleSide
 		} );
 
-		this.chunkMesh = new THREE.Mesh( this.geometry, this.material );
-
-		this.chunkMesh.rotation.x = deg(-90);
-		this.chunkMesh.position.x = this.chunkX * this.chunkSize;
-		this.chunkMesh.position.z = this.chunkZ * this.chunkSize;
-
-		this.chunkMesh.userData = {chunk : {x: chunkX, z : chunkZ}};
-
-
-
-
-
-		// STORE VERTICES
-		for(var i = 0; i<this.geometry.vertices.length; i++){
-			x = ( i % (this.chunkSubdivisions+1) ) ;
-			y = Math.floor( i / (this.chunkSubdivisions+1) );
-			
-			if(this.vertices[x] === undefined){
-				this.vertices[x] = [];
+		this.mesh = new THREE.Mesh( this.geometry, material );
+		this.mesh.userData = {
+			chunk : {
+				x: x,
+				z: z
 			}
-			
-			this.vertices[x][y] = this.geometry.vertices[i];
-
-		}
-
-		this.waveIt(0);
-
-		this.colorise();
+		};
 
 	}
 
-	this.delete = function(){
+	this.getLod = function(hypo){
+		this.bttNorth.getLod(hypo);
+		this.bttEast.getLod(hypo);
+		this.bttSouth.getLod(hypo);
+		this.bttWest.getLod(hypo);
+
+		this.bttNorth.printLod();
+		this.bttEast.printLod();
+		this.bttSouth.printLod();
+		this.bttWest.printLod();
+
+		this.geometry.computeBoundingSphere();
+		this.geometry.computeFaceNormals();
 
 	}
 
-	this.writeVertices = function(callback){
-		for(var x = 0; x<this.chunkSubdivisions+1; x++){
-			for(var y = 0; y<this.chunkSubdivisions+1; y++){
-
-				xPos = ( ( this.chunkX * this.chunkSize ) + ( x * (this.chunkSize/this.chunkSubdivisions) ) ) ;
-				zPos = ( ( this.chunkZ * this.chunkSize ) + ( y * (this.chunkSize/this.chunkSubdivisions) ) ) ;
-
-				this.vertices[x][y].z = callback(this)*this.maxHeight;
-
-			}
-		}
-	}
-
-
-	this.update = function(delta){
-	//	this.waveIt(delta);
-	//	this.colorise();
+	this.initChunk();
 }
-
-this.waveIt = function(delta){
-
-	this.writeVertices( function(that){
-	
-		biomeFrequance = 10000;
-		landFrequance = 500;
-		landNoiseFrequance = 16;
-
-		biome = noise.simplex2(xPos / biomeFrequance , zPos / biomeFrequance );
-		land = noise.simplex2(xPos / landFrequance , zPos / landFrequance );
-		landNoise = noise.simplex2(xPos / landNoiseFrequance, zPos / landNoiseFrequance );
-
-		finalNoise = (biome+1/2)*((land+1)/2)*((land+1)/2)*((landNoise+1)/32)*16;
-
-		return finalNoise;
-
-	});
-	this.geometry.verticesNeedUpdate = true;
-
-}
-
-
-this.colorise = function(){
-	for ( var i = 0; i < this.geometry.faces.length; i ++ ) {
-
-		face  = this.geometry.faces[ i ];
-
-		vertexA = this.geometry.vertices[ face[ 'a' ] ];
-		vertexB = this.geometry.vertices[ face[ 'b' ] ];
-		vertexX = this.geometry.vertices[ face[ 'c' ] ];
-		faceHignessFactor = ( (vertexA.z + vertexB.z + vertexX.z) / 3 ) / this.maxHeight;
-
-	//	faceHignessFactor = (faceHignessFactor/4) + 0.2; // GREEN RADIANT
-		face.color.setHSL( faceHignessFactor, 0.5, 0.5 );
-		this.geometry.colorsNeedUpdate = true;
-
-	}
-
-
-}
-
-
-this.generateChunk();
-}
-
-
-

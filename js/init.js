@@ -3,7 +3,7 @@ function init(){
 	var seed;
 	INTERSECTED = null;
 
-	DEV = true;
+	DEV = false;
 
 
 	if ( ! Detector.webgl ){
@@ -13,6 +13,11 @@ function init(){
 		fillscene();
 		update();
 	}
+	
+//	if(window.Worker){
+//		alert('WEBWORKER');
+//	}else{}
+
 }
 	
 
@@ -24,12 +29,12 @@ function initThreeJs( containerId ){
 
 	clock = new THREE.Clock();
 	scene = new THREE.Scene();
-	scene.fog = new THREE.Fog( 0x777777, 9000, 10000 )
+	scene.fog = new THREE.Fog( 0x777777, 500, 3000 )
 
-	camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 10000 );
-	camera.position.x = 500;
-	camera.position.y = 500;
-	camera.position.z = 500;
+	camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 10000 );
+	camera.position.x = 0;
+	camera.position.y = 300;
+	camera.position.z = 300;
 	camera.lookAt( new THREE.Vector3( 0, 0, 0 ) );
 
 	renderer = new THREE.WebGLRenderer( { antialias: true, alpha: false } );
@@ -48,8 +53,12 @@ function initThreeJs( containerId ){
 
 	
 	/* -------- DEV TOOLS --------*/
-
+		//ORBIT CONTROL
+		controls = new THREE.OrbitControls( camera );
+		controls.target.set( 0, 0, 0 );
+	
 	if(DEV){
+		scene.fog = new THREE.Fog( 0x777777, 10000, 20000 )
 
 		//STATS
 		stats = new Stats();
@@ -57,9 +66,7 @@ function initThreeJs( containerId ){
 		stats.domElement.style.top = '0px';
 		container.appendChild( stats.domElement );
 
-		//ORBIT CONTROL
-		controls = new THREE.OrbitControls( camera );
-		controls.target.set( 0, 0, 0 );
+
 
 
 		//GRID HELPER
@@ -70,13 +77,32 @@ function initThreeJs( containerId ){
 		var axisHelper = new THREE.AxisHelper( 500 );
 		scene.add( axisHelper );
 
+
+container.addEventListener( 'mousemove', onMouseMove, false );
+
 	}
 
- keyboard = new KeyboardState();
+keyboard = new KeyboardState();
 raycaster = new THREE.Raycaster();
 mouse = new THREE.Vector2();
 
-container.addEventListener( 'mousemove', onMouseMove, false );
+document.onclick = onMouseClick;
+
+
+
+
+var geometry = new THREE.BoxGeometry( 1, 200, 1 );
+var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+var cube = new THREE.Mesh( geometry, material );
+cube.position.y = 100;
+cube.position.x = 100;
+scene.add( cube );
+tinnyHouse = MODELS["tinnyHouse"].clone();
+tinnyHouse.position.y = 20;
+scene.add(tinnyHouse);
+
+
+
 }
 
 /* ------ ANIMATION LOOP ------*/
@@ -90,17 +116,13 @@ update = function(){
 	var delta = clock.getDelta();
 	keyboardState();
 
-	world.update(delta);
+//	world.update(delta);
 
 
 	renderer.render(scene, camera);
 
 
-
-
 }
-
-
 
 
 /* ------ INIT OBJ HERE ------*/
@@ -109,19 +131,15 @@ fillscene = function(){
 	seed = Math.random(); 
 	
 	world = new World();
-
+//	world.loadChunks( 0, 0 );
 	
-	var light = new THREE.AmbientLight( 0x606060 ); // soft white light
+	var light = new THREE.AmbientLight( 0xaaaaaa ); // soft white light
 	scene.add( light );
 
-	var light = new THREE.PointLight( 0xffffff, 1, 3000, 0.5);
-	light.position.set( 0, 250, 0 );
-	scene.add( light );
+var light = new THREE.PointLight( 0xffffff, 1, 100 );
+light.position.set( 0, 300, 0 );
+scene.add( light );
 
 }
-
-
-
-
 
 
