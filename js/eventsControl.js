@@ -31,13 +31,15 @@ function onMouseMove( event ) {
 	if ( intersects.length > 0 ) {
 		if ( INTERSECTED != intersects[ 0 ].object ) {
 
+
 			if ( INTERSECTED ){
 				INTERSECTED.material.wireframe = false;
-
 			};
 			INTERSECTED = intersects[ 0 ].object;
 			INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
 			INTERSECTED.material.wireframe = true;
+
+
 		}
 	} else {
 
@@ -50,7 +52,17 @@ function onMouseMove( event ) {
 }
 
 function onMouseClick( event ) {
+if(INTERSECTED){
+	console.log(INTERSECTED.userData);
+	INTERSECTED.userData.btt.break();
+	
+	scene.remove(world.group);
+	world.group = new THREE.Group();
+	scene.add(world.group);
+	world.make();
 
+
+}
 }
 
 findFace = function(faceIndex, btt){

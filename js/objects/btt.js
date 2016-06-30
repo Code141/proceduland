@@ -1,137 +1,178 @@
-BinaryTriangleTree = function ( x, z, chunkSize, level, geometry, parent){
-	this.levelMax = 6;
-	this.chunk = { x : x, z : z};
-	this.level = level;
-	this.chunkSize = chunkSize;
-	this.parent = parent;
-this.geometry = geometry;
-	this.neighbor = {};
-	//this.neighbor.base = neighbor.base;
-	//this.neighbor.left = neighbor.left;
-	//this.neighbor.right = neighbor.right;
+/*
+VA - Vector Apex
+VL - Vector Left
+VR - Vector Right
+VC - Vector Center
 
-	this.vertex = {};
-	this.vertex.apex = new THREE.Vector3( 0, 0, 0 );
-	this.vertex.left = new THREE.Vector3( 0, 0, 0 );
-	this.vertex.right = new THREE.Vector3( 0, 0, 0 );
-	this.vertex.center = new THREE.Vector3( 0, 0, 0 );
+CL - Child Left
+CR - Child Right
+
+NL - Neighbor Left
+NR - Neighbor Right
+NB - Neighbor Base
+*/
+
+BinaryTriangleTree = function ( x, z, chunkSize, level, parent){
+
+	this.chunkX = x;
+	this.chunkZ = z;
+
+	this.chunkSize = chunkSize;
+
+	this.level = level;
+	this.levelMax = 7;
+
+	this.parent = parent;
+
+	this.VA = new THREE.Vector3( 0, 0, 0 );
+	this.VL = new THREE.Vector3( 0, 0, 0 );
+	this.VR = new THREE.Vector3( 0, 0, 0 );
+	this.VC = new THREE.Vector3( 0, 0, 0 );
 
 	this.deltaBaseApex = 0;
 	this.breaked = false;
-	
 
 }
 
-BinaryTriangleTree.prototype.getHeight = function(vector){
-		absoluteX = (this.chunkSize * this.chunk.x ) + ( vector.x );
-		absoluteZ = (this.chunkSize * this.chunk.z ) + ( vector.z );
-		height = procedural(absoluteX, absoluteZ);
-		vector.y = height*300;
-	}
 
 
-BinaryTriangleTree.prototype.getBttHeight = function(){
-		this.getHeight(this.vertex.apex);
-		this.getHeight(this.vertex.left);
-		this.getHeight(this.vertex.right);
-	}
 
-BinaryTriangleTree.prototype.insertFace = function(){
 
-		this.geometry.vertices.push( this.vertex.left, this.vertex.apex, this.vertex.right );
-		currentFaceVertice = this.geometry.vertices.length - 3 ;
-		this.geometry.faces.push( new THREE.Face3( currentFaceVertice, currentFaceVertice + 1, currentFaceVertice + 2 ) );
+BinaryTriangleTree.prototype = {
 
-		//COLORIZE
-		face  = this.geometry.faces[ (this.geometry.faces.length - 1) ];
+	createChilds : function(){
 
-		faceHignessFactor = 1 - ( (this.vertex.apex.y + this.vertex.left.y + this.vertex.right.y) / 3 ) / 300 ;
-		face.color.setHSL( faceHignessFactor,1, 0.5 );
-	//	face.color.setHSL( (this.level/9)/1.2,1, 0.5 );
+		level = this.level + 1;
+		
+		this.CL = new BinaryTriangleTree( this.chunkX, this.chunkZ, this.chunkSize, level, this );
+		this.CR = new BinaryTriangleTree( this.chunkX, this.chunkZ, this.chunkSize, level, this );
 
-		this.faceIndex = this.geometry.faces.length - 1;
-	}
+		this.CL.VA = this.VC;
+		this.CL.VL = this.VA;
+		this.CL.VR = this.VL;
 
-BinaryTriangleTree.prototype.printLod = function(){
-		if(this.breaked == false){
-			this.insertFace();
-		}else{
-			this.leftChildren.printLod();
-			this.rightChildren.printLod();	
-		}
-	}
+		this.CL.VC.x = 0.5 * ( this.CL.VR.x + this.CL.VL.x );
+		this.CL.VC.z = 0.5 * ( this.CL.VR.z + this.CL.VL.z );
+		this.CL.getHeight(this.CL.VC);
 
-BinaryTriangleTree.prototype.break = function(){
-		this.breaked = true;
-		if(this.parent != undefined && this.parent.breaked == false) this.parent.break();
-		if(this.neighbor.base != undefined && this.neighbor.base.breaked == false) this.neighbor.base.break();
+		this.CR.VA = this.VC;
+		this.CR.VL = this.VR;
+		this.CR.VR = this.VA;
 
-	}
-BinaryTriangleTree.prototype.getLod = function(hypo){
-		if(this.level < this.levelMax+1){
-			this.rightChildren.getLod(hypo);
-			this.leftChildren.getLod(hypo);
+		this.CR.VC.x = 0.5 * ( this.CR.VR.x + this.CR.VL.x );
+		this.CR.VC.z = 0.5 * ( this.CR.VR.z + this.CR.VL.z );
+		this.CR.getHeight(this.CR.VC);
+
+		virtualBaseHeight = ( this.VL.y + this.VR.y ) / 2;
+		this.deltaBaseApex = Math.abs( virtualBaseHeight - this.VC.y);
+
+		if(this.level < this.levelMax){
+			this.CR.createChilds();
+			this.CL.createChilds();
 		}
 
-		detailfactor = (7/this.level)*((hypo+1)/3);
-	//	detailfactor = 7/this.level;
+	},
 
-		if(this.deltaBaseApex*2 > detailfactor){
+	linkNeighbor : function(){
+
+		this.CL.NL = this.CR;
+		this.CR.NR = this.CL;
+
+		if(this.NB){
+			this.CL.NR = this.NB.CR;
+			this.CR.NL = this.NB.CL;
+		}
+
+		if(this.NL){
+			this.CL.NB = this.NL.CR;
+		}
+
+		if(this.NR){
+			this.CR.NB = this.NR.CL;
+		}
+
+		if(this.level < this.levelMax){
+			this.CR.linkNeighbor();
+			this.CL.linkNeighbor();
+		}
+
+	},
+
+	getLod : function(hypo){
+
+		if(this.level < this.levelMax){
+			this.CR.getLod(hypo);
+			this.CL.getLod(hypo);
+		}
+
+		detailfactor = (this.levelMax/this.level)*((hypo*3-3));
+		//detailfactor = 7/this.level;
+
+		if(this.deltaBaseApex > detailfactor){
+
 			this.break();
 		}
+
+	},
+
+	break : function(){
+
+		this.breaked = true;
+		if(this.NB != undefined && this.NB.breaked == false) this.NB.break();
+		if(this.parent != undefined && this.parent.breaked == false) this.parent.break();
+
+	},
+
+	printLod : function(geometry){
+
+		if(this.breaked){
+			this.CL.printLod(geometry);
+			this.CR.printLod(geometry);	
+		}else{
+			this.insertFace(geometry);
+		}
+
+	},
+
+	insertFace : function(geometry){
+
+		geometry.vertices.push( this.VL, this.VA, this.VR );
+		currentFaceVertice = geometry.vertices.length - 3 ;
+		geometry.faces.push( new THREE.Face3( currentFaceVertice, currentFaceVertice + 1, currentFaceVertice + 2 ) );
+
+		//COLORIZE
+		face  = geometry.faces[ (geometry.faces.length - 1) ];
+		faceHignessFactor = 1 - ( (this.VA.y + this.VL.y + this.VR.y) / 3 ) / 500 ;
+		face.color.setHSL( faceHignessFactor,0.8, 0.3 );
+		//face.color.setHSL( (this.level/9)/1.2,1, 0.5 );
+		this.faceIndex = geometry.faces.length - 1;
+
+	},
+
+
+
+	getHeight : function(vector){
+
+		absoluteX = (this.chunkSize * this.chunkX ) + ( vector.x );
+		absoluteZ = (this.chunkSize * this.chunkZ ) + ( vector.z );
+		height = procedural(absoluteX, absoluteZ);
+		vector.y = height*500;
+
+	},
+
+	CRADEunbreak : function(){
+
+		if(this.breaked){
+			this.CL.CRADEunbreak();
+			this.CR.CRADEunbreak();	
+		}
+		this.breaked = false;
+
 	}
-BinaryTriangleTree.prototype.linkNeighbor = function(){
-
-		// IF EXISTE, LINK BASE NEIGHBOR !!!!!
-		this.leftChildren.neighbor.left = this.rightChildren;
-		this.rightChildren.neighbor.right = this.leftChildren;
-		
-		if(this.neighbor.base != undefined ){
-			this.leftChildren.neighbor.right = this.neighbor.base.rightChildren;
-			this.rightChildren.neighbor.left = this.neighbor.base.leftChildren;
-		}
-
-		if(this.neighbor.left != undefined ){
-			this.leftChildren.neighbor.base = this.neighbor.left.rightChildren;
-		}
-
-		if(this.neighbor.right != undefined ){
-			this.rightChildren.neighbor.base = this.neighbor.right.leftChildren;
-		}
 
 
-		if(this.level < this.levelMax){
-			this.rightChildren.linkNeighbor();
-			this.leftChildren.linkNeighbor();
-		}
+}
 
-	}
 
-BinaryTriangleTree.prototype.createChilds = function(){
-		level = this.level + 1;
 
-		this.leftChildren = new BinaryTriangleTree( this.chunk.x, this.chunk.z, this.chunkSize, level, this.geometry, this );
-		this.rightChildren = new BinaryTriangleTree( this.chunk.x, this.chunk.z, this.chunkSize, level, this.geometry, this );
 
-		this.leftChildren.vertex.apex = this.vertex.center;
-		this.leftChildren.vertex.left = this.vertex.left;
-		this.leftChildren.vertex.right = this.vertex.apex;
-		this.leftChildren.vertex.center.x = 0.5 * ( this.leftChildren.vertex.right.x + this.leftChildren.vertex.left.x );
-		this.leftChildren.vertex.center.z = 0.5 * ( this.leftChildren.vertex.right.z + this.leftChildren.vertex.left.z );
-		this.leftChildren.getHeight(this.leftChildren.vertex.center);
-
-		this.rightChildren.vertex.apex = this.vertex.center;
-		this.rightChildren.vertex.left = this.vertex.right;
-		this.rightChildren.vertex.right = this.vertex.apex;
-		this.rightChildren.vertex.center.x = 0.5 * ( this.rightChildren.vertex.right.x + this.rightChildren.vertex.left.x );
-		this.rightChildren.vertex.center.z = 0.5 * ( this.rightChildren.vertex.right.z + this.rightChildren.vertex.left.z );
-		this.rightChildren.getHeight(this.rightChildren.vertex.center);
-
-		virtualBaseHeight = ( this.vertex.left.y + this.vertex.right.y ) / 2;
-		this.deltaBaseApex = Math.abs( virtualBaseHeight - this.vertex.center.y);
-
-		if(this.level < this.levelMax){
-			this.rightChildren.createChilds();
-			this.leftChildren.createChilds();
-		}
-	}

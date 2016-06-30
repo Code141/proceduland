@@ -3,7 +3,7 @@ function init(){
 	var seed;
 	INTERSECTED = null;
 
-	DEV = false;
+	DEV = true;
 
 
 	if ( ! Detector.webgl ){
@@ -29,16 +29,16 @@ function initThreeJs( containerId ){
 
 	clock = new THREE.Clock();
 	scene = new THREE.Scene();
-	scene.fog = new THREE.Fog( 0x777777, 500, 3000 )
+//	scene.fog = new THREE.Fog( 0x000000, 2000, 8000 )
 
-	camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 10000 );
+	camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 100000 );
 	camera.position.x = 0;
 	camera.position.y = 300;
 	camera.position.z = 300;
 	camera.lookAt( new THREE.Vector3( 0, 0, 0 ) );
 
 	renderer = new THREE.WebGLRenderer( { antialias: true, alpha: false } );
-	renderer.setClearColor( 0x777777 );
+	renderer.setClearColor( 0x000000 );
 	renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	container.appendChild( renderer.domElement );
@@ -58,7 +58,7 @@ function initThreeJs( containerId ){
 		controls.target.set( 0, 0, 0 );
 	
 	if(DEV){
-		scene.fog = new THREE.Fog( 0x777777, 10000, 20000 )
+	//	scene.fog = new THREE.Fog( 0x000000, 10000, 20000 )
 
 		//STATS
 		stats = new Stats();
@@ -70,15 +70,15 @@ function initThreeJs( containerId ){
 
 
 		//GRID HELPER
-		var gridHelper = new THREE.GridHelper( 1000, 10 );
-		scene.add( gridHelper );
+	//	var gridHelper = new THREE.GridHelper( 1000, 10 );
+	//	scene.add( gridHelper );
 
 		//AXIS HELPER
 		var axisHelper = new THREE.AxisHelper( 500 );
 		scene.add( axisHelper );
 
 
-container.addEventListener( 'mousemove', onMouseMove, false );
+//container.addEventListener( 'mousemove', onMouseMove, true );
 
 	}
 
@@ -98,11 +98,14 @@ cube.position.y = 100;
 cube.position.x = 100;
 scene.add( cube );
 tinnyHouse = MODELS["tinnyHouse"].clone();
-tinnyHouse.position.y = 20;
+tinnyHouse.position.y = 115;
+tinnyHouse.position.x = 300;
 scene.add(tinnyHouse);
 
-
-
+	breakBall = new THREE.Group();
+	scene.add(breakBall)
+groupLight = new THREE.Group();
+scene.add(groupLight)
 }
 
 /* ------ ANIMATION LOOP ------*/
@@ -118,9 +121,9 @@ update = function(){
 
 //	world.update(delta);
 
+	groupLight.rotation.y += 0.01;
 
 	renderer.render(scene, camera);
-
 
 }
 
@@ -132,13 +135,28 @@ fillscene = function(){
 	
 	world = new World();
 //	world.loadChunks( 0, 0 );
-	
-	var light = new THREE.AmbientLight( 0xaaaaaa ); // soft white light
-	scene.add( light );
+	initLight();
 
-var light = new THREE.PointLight( 0xffffff, 1, 100 );
-light.position.set( 0, 300, 0 );
-scene.add( light );
+
+}
+
+
+initLight = function(){
+
+//var directionalLight = new THREE.DirectionalLight( 0xffffff, 1 );
+//directionalLight.position.set( 1000, 1000, 1000 );
+//scene.add( directionalLight );
+
+
+//	var light = new THREE.AmbientLight( 0xaaaaaa ); // soft white light
+//	scene.add( light );
+
+var light = new THREE.PointLight( 0xffffff, 2, 50000 );
+light.position.set( 0, 10000, 10000 );
+
+groupLight.add(light);
+
+
 
 }
 

@@ -6,16 +6,16 @@ World = function(){
 	this.group = new THREE.Group();
 	scene.add(this.group);
 
-	this.chunkSize = 100;
-	this.chunkDistance = 10;
+	this.chunkSize = 500;
+	this.chunkDistance = 15;
 	this.chunks = [];
 
 	this.position = {};
 	this.position.x = 0;
 	this.position.z = 0;
 	
-	this.init = function(){
-		
+	this.buildChunks = function(){
+
 		BresenhamCircularArray = getBresenhamCircularArray(this.chunkDistance, this.position.x, this.position.z);
 		
 		for(var x in BresenhamCircularArray){
@@ -28,74 +28,143 @@ World = function(){
 			for(var z in BresenhamCircularArray[x]){
 				z = parseInt(z);
 				this.chunks[x][z] = new Chunk(x,z, this.chunkSize);
-				this.chunks[x][z].mesh.position.x = ( x * this.chunkSize ) - (this.chunkSize/2);
-				this.chunks[x][z].mesh.position.z = ( z * this.chunkSize ) - (this.chunkSize/2);
-				this.group.add(this.chunks[x][z].mesh);
+
 			}	
 
 		}
 
 	}
 
-	this.linkChunks = function(){
+	this.linksChunks = function(){
+
 		for(var x in this.chunks){
 			x = parseInt(x);
 			for(var z in this.chunks[x]){
 				z = parseInt(z);
 				
 				if(this.chunks[x][z+1] !== undefined){
-					this.chunks[x][z].bttSouth.neighbor.base = this.chunks[x][z+1].bttNorth;
-				}	
-				
+					this.chunks[x][z].bttSouth.NB = this.chunks[x][z+1].bttNorth;
+				}
+
+				if(this.chunks[x][z-1] !== undefined){
+					this.chunks[x][z].bttNorth.NB = this.chunks[x][z-1].bttSouth;
+				}
+
 				if(this.chunks[x-1] !== undefined){
 					if(this.chunks[x-1][z] !== undefined){
-						this.chunks[x][z].bttWest.neighbor.base = this.chunks[x-1][z].bttEast;
+						this.chunks[x][z].bttWest.NB = this.chunks[x-1][z].bttEast;
 					}
-				}
-				
-				if(this.chunks[x][z-1] !== undefined){
-					this.chunks[x][z].bttNorth.neighbor.base = this.chunks[x][z-1].bttSouth;
 				}
 				
 				if(this.chunks[x+1] !== undefined){
 					if(this.chunks[x+1][z] !== undefined){
-						this.chunks[x][z].bttEast.neighbor.base = this.chunks[x+1][z].bttWest;
+						this.chunks[x][z].bttEast.NB = this.chunks[x+1][z].bttWest;
 					}
 				}	
 
-				this.chunks[x][z].bttNorth.neighbor.left = this.chunks[x][z].bttEast;
-				this.chunks[x][z].bttNorth.neighbor.right = this.chunks[x][z].bttWest;
-				this.chunks[x][z].bttEast.neighbor.left = this.chunks[x][z].bttSouth;
-				this.chunks[x][z].bttEast.neighbor.right = this.chunks[x][z].bttNorth;
-				this.chunks[x][z].bttSouth.neighbor.left = this.chunks[x][z].bttWest;
-				this.chunks[x][z].bttSouth.neighbor.right = this.chunks[x][z].bttEast;
-				this.chunks[x][z].bttWest.neighbor.left = this.chunks[x][z].bttNorth;
-				this.chunks[x][z].bttWest.neighbor.right = this.chunks[x][z].bttSouth;
+				this.chunks[x][z].bttNorth.NL = this.chunks[x][z].bttEast;
+				this.chunks[x][z].bttNorth.NR = this.chunks[x][z].bttWest;
+
+				this.chunks[x][z].bttEast.NL = this.chunks[x][z].bttSouth;
+				this.chunks[x][z].bttEast.NR = this.chunks[x][z].bttNorth;
+
+				this.chunks[x][z].bttSouth.NL = this.chunks[x][z].bttWest;
+				this.chunks[x][z].bttSouth.NR = this.chunks[x][z].bttEast;
+
+				this.chunks[x][z].bttWest.NL = this.chunks[x][z].bttNorth;
+				this.chunks[x][z].bttWest.NR = this.chunks[x][z].bttSouth;
 
 				this.chunks[x][z].bttNorth.linkNeighbor();
 				this.chunks[x][z].bttEast.linkNeighbor();
 				this.chunks[x][z].bttSouth.linkNeighbor();
 				this.chunks[x][z].bttWest.linkNeighbor();
+
 			}
+
 		}
-		
+
 	}
 
-	this.make = function(){
+	this.getBTTLod = function(){
 		for(var x in this.chunks){
 			x = parseInt(x);
 			for(var z in this.chunks[x]){
 				z = parseInt(z);
-				hypo = Math.hypot(Math.abs(Math.abs(this.position.x) - Math.abs(x)), Math.abs(Math.abs(this.position.z) - Math.abs(z)));
-				this.chunks[x][z].getLod(hypo);
+			
+				hypo = Math.hypot(
+					
+						this.position.x - x
+						,
+					
+						this.position.z - z)
+					;
+				
+				this.chunks[x][z].getBTTLod(hypo);
 			}	
+		}
+	}
 
+	this.drawMesh = function(){
+		for(var x in this.chunks){
+			x = parseInt(x);
+			for(var z in this.chunks[x]){
+				z = parseInt(z);
+
+				this.chunks[x][z].buildMesh();
+			
+				this.chunks[x][z].mesh.position.x = ( x * this.chunkSize ) - (this.chunkSize/2);
+				this.chunks[x][z].mesh.position.z = ( z * this.chunkSize ) - (this.chunkSize/2);
+			
+				this.group.add(this.chunks[x][z].mesh);
+			}	
+		}
+	}
+
+	this.move = function( x, z){
+		this.position.x += x;
+		this.position.z += z;
+		
+		// NEED PATCH HERE !
+		
+		for(var x in this.chunks){
+			x = parseInt(x);
+			for(var z in this.chunks[x]){
+				z = parseInt(z);
+				this.chunks[x][z].bttNorth.CRADEunbreak();
+				this.chunks[x][z].bttEast.CRADEunbreak();
+				this.chunks[x][z].bttSouth.CRADEunbreak();
+				this.chunks[x][z].bttWest.CRADEunbreak();
+
+				this.group.remove(this.chunks[x][z].mesh);
+			}	
 		}
 
+	
+		this.getBTTLod();
+		this.drawMesh();
 	}
-console.log("start")
-	this.init();
-	this.linkChunks();
-	this.make();
-	console.log("end");
+
+
+
+
+
+console.log("buildChunks");
+
+	this.buildChunks();
+
+console.log("Link Chunks");
+
+	this.linksChunks();
+
+console.log("Get BTT LOD");
+
+	this.getBTTLod();
+
+console.log("Draw Mesh");
+
+	this.drawMesh();
+
+console.log("FINISH");
+
+
 }
