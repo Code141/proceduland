@@ -43,7 +43,7 @@ tracerPixel = function(x, y){
 	}
 
 	if(circularArray[x][y] === undefined){
-		circularArray[x][y] = undefined;
+		circularArray[x][y] = true;
 	}
 
 }
@@ -65,11 +65,12 @@ fillCircle = function(x_centre, y_centre){
 
 }
 
-getAndresCircularArray = function(rayon, x_centre, y_centre){
+getAndresCircularArray = function(rayon, x_centre, y_centre, fill){
 	circularArray = [];
-	
-	andresCircle(rayon, x_centre, y_centre);
-	//fillCircle(x_centre, y_centre);
 
+	andresCircle(rayon, x_centre, y_centre);
+	if(fill){
+		fillCircle(x_centre, y_centre);
+	}
 	return circularArray;
 }

@@ -52,17 +52,15 @@ function onMouseMove( event ) {
 }
 
 function onMouseClick( event ) {
-if(INTERSECTED){
-	console.log(INTERSECTED.userData);
-	INTERSECTED.userData.btt.break();
-	
-	scene.remove(world.group);
-	world.group = new THREE.Group();
-	scene.add(world.group);
-	world.make();
+	if(INTERSECTED){
+		console.log(INTERSECTED.userData);
+		INTERSECTED.userData.btt.break();
 
-
-}
+		scene.remove(world.group);
+		world.group = new THREE.Group();
+		scene.add(world.group);
+		world.make();
+	}
 }
 
 findFace = function(faceIndex, btt){

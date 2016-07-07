@@ -14,9 +14,11 @@ function init(){
 		update();
 	}
 	
-//	if(window.Worker){
-//		alert('WEBWORKER');
-//	}else{}
+	if(window.Worker){
+
+	}else{
+		alert('WEBWORKER NOT SUPPORTED');
+	}
 
 }
 	
@@ -33,8 +35,8 @@ function initThreeJs( containerId ){
 
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 100000 );
 	camera.position.x = 0;
-	camera.position.y = 300;
-	camera.position.z = 300;
+	camera.position.y = 5000;
+	camera.position.z = -5000;
 	camera.lookAt( new THREE.Vector3( 0, 0, 0 ) );
 
 	renderer = new THREE.WebGLRenderer( { antialias: true, alpha: false } );
@@ -98,7 +100,7 @@ cube.position.y = 100;
 cube.position.x = 100;
 scene.add( cube );
 tinnyHouse = MODELS["tinnyHouse"].clone();
-tinnyHouse.position.y = 115;
+//tinnyHouse.position.y = 115;
 tinnyHouse.position.x = 300;
 scene.add(tinnyHouse);
 
@@ -106,13 +108,32 @@ scene.add(tinnyHouse);
 	scene.add(breakBall)
 groupLight = new THREE.Group();
 scene.add(groupLight)
+
+
+
+
+
+var geometry = new THREE.BoxGeometry( 500, 600, 500 );
+var material = new THREE.MeshBasicMaterial( {color: 0x00ff00, transparent: true, opacity:0.5} );
+cubePosition = new THREE.Mesh( geometry, material );
+cubePosition.position.y = 300;
+
+var geometry = new THREE.BoxGeometry( 500, 600, 500 );
+var material = new THREE.MeshBasicMaterial( {color: 0xff0000, transparent: true, opacity:0.5} );
+Rchunk = new THREE.Mesh( geometry, material );
+Rchunk.position.y = 300;
+
+
+scene.add( cubePosition, Rchunk );
+
+
+
 }
 
 /* ------ ANIMATION LOOP ------*/
 
 update = function(){
-
-	requestAnimationFrame( update );
+	window.requestAnimationFrame( update );
 	
 	if ( DEV ) stats.update();
 
@@ -121,11 +142,25 @@ update = function(){
 
 //	world.update(delta);
 
-	groupLight.rotation.y += 0.01;
+	if(QUEUE.length > 0) queueUpdate();
 
 	renderer.render(scene, camera);
-
 }
+
+
+QUEUE = [];
+
+
+addToQueue = function(item){
+	QUEUE.push(item);
+}
+
+queueUpdate = function(){
+		element = QUEUE.shift();
+		element();
+}
+
+
 
 
 /* ------ INIT OBJ HERE ------*/
@@ -134,6 +169,9 @@ fillscene = function(){
 	seed = Math.random(); 
 	
 	world = new World();
+	world.buildChunks();
+
+
 //	world.loadChunks( 0, 0 );
 	initLight();
 
@@ -148,16 +186,22 @@ initLight = function(){
 //scene.add( directionalLight );
 
 
-//	var light = new THREE.AmbientLight( 0xaaaaaa ); // soft white light
-//	scene.add( light );
+	var light = new THREE.AmbientLight( 0xaaaaaa ); // soft white light
+	scene.add( light );
 
-var light = new THREE.PointLight( 0xffffff, 2, 50000 );
+var light = new THREE.PointLight( 0xffffff,2.5, 30000 );
 light.position.set( 0, 10000, 10000 );
+
 
 groupLight.add(light);
 
-
-
 }
+
+
+
+
+
+
+
 
 

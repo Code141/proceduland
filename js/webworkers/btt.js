@@ -1,17 +1,3 @@
-/*
-VA - Vector Apex
-VL - Vector Left
-VR - Vector Right
-VC - Vector Center
-
-CL - Child Left
-CR - Child Right
-
-NL - Neighbor Left
-NR - Neighbor Right
-NB - Neighbor Base
-*/
-
 BinaryTriangleTree = function ( x, z, chunkSize, level, parent){
 
 	this.chunkX = x;
@@ -20,23 +6,19 @@ BinaryTriangleTree = function ( x, z, chunkSize, level, parent){
 	this.chunkSize = chunkSize;
 
 	this.level = level;
-	this.levelMax = 7;
+	this.levelMax = 8;
 
 	this.parent = parent;
 
-	this.VA = new THREE.Vector3( 0, 0, 0 );
-	this.VL = new THREE.Vector3( 0, 0, 0 );
-	this.VR = new THREE.Vector3( 0, 0, 0 );
-	this.VC = new THREE.Vector3( 0, 0, 0 );
+	this.VA = new V3();
+	this.VL = new V3();
+	this.VR = new V3();
+	this.VC = new V3();
 
 	this.deltaBaseApex = 0;
 	this.breaked = false;
 
 }
-
-
-
-
 
 BinaryTriangleTree.prototype = {
 
@@ -92,8 +74,8 @@ BinaryTriangleTree.prototype = {
 		}
 
 		if(this.level < this.levelMax){
-			this.CR.linkNeighbor();
 			this.CL.linkNeighbor();
+			this.CR.linkNeighbor();
 		}
 
 	},
@@ -101,8 +83,8 @@ BinaryTriangleTree.prototype = {
 	getLod : function(hypo){
 
 		if(this.level < this.levelMax){
-			this.CR.getLod(hypo);
 			this.CL.getLod(hypo);
+			this.CR.getLod(hypo);
 		}
 
 		detailfactor = (this.levelMax/this.level)*((hypo*3-3));
@@ -123,33 +105,20 @@ BinaryTriangleTree.prototype = {
 
 	},
 
-	printLod : function(geometry){
+	printLod : function(LODArray){
 
 		if(this.breaked){
-			this.CL.printLod(geometry);
-			this.CR.printLod(geometry);	
+			this.CL.printLod(LODArray);
+			this.CR.printLod(LODArray);	
 		}else{
-			this.insertFace(geometry);
+			this.insertFace(LODArray);
 		}
 
 	},
 
-	insertFace : function(geometry){
-
-		geometry.vertices.push( this.VL, this.VA, this.VR );
-		currentFaceVertice = geometry.vertices.length - 3 ;
-		geometry.faces.push( new THREE.Face3( currentFaceVertice, currentFaceVertice + 1, currentFaceVertice + 2 ) );
-
-		//COLORIZE
-		face  = geometry.faces[ (geometry.faces.length - 1) ];
-		faceHignessFactor = 1 - ( (this.VA.y + this.VL.y + this.VR.y) / 3 ) / 500 ;
-		face.color.setHSL( faceHignessFactor,0.8, 0.3 );
-		//face.color.setHSL( (this.level/9)/1.2,1, 0.5 );
-		this.faceIndex = geometry.faces.length - 1;
-
+	insertFace : function(LODArray){
+		LODArray.push(this.VA, this.VL, this.VR)
 	},
-
-
 
 	getHeight : function(vector){
 
@@ -160,11 +129,10 @@ BinaryTriangleTree.prototype = {
 
 	},
 
-	CRADEunbreak : function(){
-
+	unbreakBTT : function(){
 		if(this.breaked){
-			this.CL.CRADEunbreak();
-			this.CR.CRADEunbreak();	
+			this.CL.unbreakBTT();
+			this.CR.unbreakBTT();	
 		}
 		this.breaked = false;
 
@@ -172,6 +140,7 @@ BinaryTriangleTree.prototype = {
 
 
 }
+
 
 
 
