@@ -7,7 +7,7 @@ World = function(){
 	scene.add(this.group);
 
 	this.chunkSize = 500;
-	this.chunksDistance = 10;
+	this.chunksDistance = 5;
 	this.chunks = [];
 
 	this.position = {};
@@ -51,12 +51,11 @@ World = function(){
 				});
 
 
-				addToQueue(world.drawMesh);
+				addToQueue(world.refreshQueuedChunks);
 			break;
 			
 			case "flushChunks" :
 			world.flushChunks(response.x, response.z);
-			console.log("FLUSH")
 			break;
 
 
@@ -65,11 +64,6 @@ World = function(){
 		}
 
 	};
-
-
-
-
-
 
 
 	this.buildChunks = function(){
@@ -91,15 +85,11 @@ World = function(){
 
 
 
-		function flush(element) {
+		function cancelRefresh(element) {
 		  return element == world.position.x && element == world.position.z;
 		}
-
-
-
-
-		ChunkToRefresh = ChunkToRefresh.filter(flush);
-		// filtre vaut [12, 130, 44]
+		ChunkToRefresh = ChunkToRefresh.filter(cancelRefresh);
+		console.log(ChunkToRefresh)
 
 
 
@@ -107,9 +97,8 @@ World = function(){
 
 
 
-	this.drawMesh = function(){
-		
-		chunk = ChunkToRefresh.shift();
+	this.drawMesh = function(chunk){
+
 		LODArray = chunk.LODArray;
 
 		x = chunk.chunk.x;
@@ -175,11 +164,18 @@ World = function(){
 	this.flushChunks = function( x, z ){
 		if(this.chunks[x]){
 			if(this.chunks[x][z]){
-			this.group.remove(this.chunks[x][z]);
-			this.chunks[x][z] = undefined;
+				console.log(x,z)
+				this.group.remove(this.chunks[x][z]);
+				this.chunks[x][z] = undefined;
+			}
 		}
-}
+	}
 
+	this.refreshQueuedChunks = function(){
+		if(ChunkToRefresh.length != 0){
+			chunk = ChunkToRefresh.shift();
+			world.drawMesh(chunk);
+		}
 	}
 
 

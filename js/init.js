@@ -31,7 +31,7 @@ function initThreeJs( containerId ){
 
 	clock = new THREE.Clock();
 	scene = new THREE.Scene();
-//	scene.fog = new THREE.Fog( 0x000000, 2000, 8000 )
+//	scene.fog = new THREE.Fog( 0x000000, 2000, 7500 )
 
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 100000 );
 	camera.position.x = 0;
@@ -101,7 +101,9 @@ cube.position.x = 100;
 scene.add( cube );
 tinnyHouse = MODELS["tinnyHouse"].clone();
 //tinnyHouse.position.y = 115;
-tinnyHouse.position.x = 300;
+tinnyHouse.position.x = 100;
+tinnyHouse.position.y = 196;
+
 scene.add(tinnyHouse);
 
 	breakBall = new THREE.Group();
@@ -156,8 +158,8 @@ addToQueue = function(item){
 }
 
 queueUpdate = function(){
-		element = QUEUE.shift();
-		element();
+	element = QUEUE.shift();
+	element();
 }
 
 
@@ -181,13 +183,13 @@ fillscene = function(){
 
 initLight = function(){
 
-//var directionalLight = new THREE.DirectionalLight( 0xffffff, 1 );
-//directionalLight.position.set( 1000, 1000, 1000 );
+//var directionalLight = new THREE.DirectionalLight( 0xffffff, 5 );
+//directionalLight.position.set( 0, 1000, 0 );
 //scene.add( directionalLight );
 
 
-	var light = new THREE.AmbientLight( 0xaaaaaa ); // soft white light
-	scene.add( light );
+var light = new THREE.AmbientLight( 0xaaaaaa ); // soft white light
+scene.add( light );
 
 var light = new THREE.PointLight( 0xffffff,2.5, 30000 );
 light.position.set( 0, 10000, 10000 );

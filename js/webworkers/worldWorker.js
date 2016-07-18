@@ -132,21 +132,20 @@ ChunksOverseer.prototype = {
 				if(!this.chunks[x][z]){
 					overseer.initChunk(x,z);
 					overseer.linkChunk(x,z);
+
 				}
 
 			}
 		}		
 
 
-		console.log("DIAM "+diam+" BUILDED")
+		// GET LOD
+
+		if(diam>0){
+			var newChunkList = getAndresCircularArray(diam-1, this.position.x, this.position.z, false);
 
 
 
-
-		var newChunkList = getAndresCircularArray(diam-2, this.position.x, this.position.z, false);
-		if(diam>1){
-
-			// GET LOD
 
 			for(var x in newChunkList){
 				x = parseInt(x);
@@ -154,12 +153,19 @@ ChunksOverseer.prototype = {
 					z = parseInt(z);
 
 					hypo = Math.hypot(this.position.x - x, this.position.z - z);
-					overseer.chunks[x][z].getBTTLod(hypo);
+					overseer.chunks[x][z].getBTTLod(diam);
 
 				}
 			}
 
-			// PRINT LOD
+
+		}
+
+		// PRINT LOD
+
+		if(diam>1){
+			var newChunkList = getAndresCircularArray(diam-2, this.position.x, this.position.z, false);
+			
 			for(var x in newChunkList){
 				x = parseInt(x);
 				for(var z in newChunkList[x]){
@@ -186,8 +192,8 @@ ChunksOverseer.prototype = {
 		}
 	},
 
-	funch : function(){
-		flushList = getAndresCircularArray(this.chunksDistance, this.position.x, this.position.z, true);
+	flush : function(){
+		flushList = getAndresCircularArray(this.chunksDistance+2, this.position.x, this.position.z, true);
 		chunksToFlush = [];
 
 		for(var x in this.chunks){
@@ -209,20 +215,21 @@ ChunksOverseer.prototype = {
 	},
 
 	moveOn : function( x, z){
-		overseer.position.x = x;
-		overseer.position.z = z;
-		
-		for(var i = 0; i<=this.chunksDistance; i++){
-			console.log("DIAM : "+i)
-			this.refreshDiam(i);
-		}
+		console.log("RUN MF");
 
-		this.funch();
+		i = 0;
+		do{
+			this.refreshDiam(i);
+			i++;
+		}while( i<=this.chunksDistance+2 && this.position.x == x && this.position.z == z );
+		
+		this.flush();
+		console.log("flush")
 
 		//	this.chunks = [];
-		this.unBreakAll();
+		//	this.unBreakAll();
+		}
 	}
-}
 
 
 
@@ -236,6 +243,9 @@ onmessage = function(e) {
 		break;
 
 		case "moveOn":
+		overseer.position.x = order.positionX;
+		overseer.position.z = order.positionZ;
+		
 		overseer.moveOn( order.positionX, order.positionZ );
 		break;
 

@@ -6,7 +6,7 @@ BinaryTriangleTree = function ( x, z, chunkSize, level, parent){
 	this.chunkSize = chunkSize;
 
 	this.level = level;
-	this.levelMax = 8;
+	this.levelMax = 10;
 
 	this.parent = parent;
 
@@ -87,10 +87,10 @@ BinaryTriangleTree.prototype = {
 			this.CR.getLod(hypo);
 		}
 
-		detailfactor = (this.levelMax/this.level)*((hypo*3-3));
+		detailfactor = (this.levelMax/this.level)*((hypo-3));
 		//detailfactor = 7/this.level;
 
-		if(this.deltaBaseApex > detailfactor){
+		if(this.deltaBaseApex/1.2 > detailfactor){
 
 			this.break();
 		}
