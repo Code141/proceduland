@@ -1,4 +1,5 @@
-importScripts('chunk.js', 'btt.js','../algo/perlin.js', '../algo/andresCircle.js'); 
+var LEVELMAX, DISTANCE;
+importScripts('chunk.js', 'btt.js','../algo/perlin.js', 'landGeometry.js', '../algo/andresCircle.js'); 
 
 V3 = function ( x, y, z ) {
 	this.x = x || 0;
@@ -7,42 +8,26 @@ V3 = function ( x, y, z ) {
 };
 
 
+console.log("hello");
 
-procedural = function(absoluteX, absoluteZ){
-	landNoiseFrequance = 100;
-	land = 1000;
-	riverFrequance = 5000;
-
-	land = ( noise.simplex2( absoluteX / land , absoluteZ / land ) + 1 ) / 2;
-	landNoise = ( noise.simplex2( absoluteX / landNoiseFrequance, absoluteZ / landNoiseFrequance ) + 1 ) / 2;
-
-	river = ( noise.simplex2( absoluteX / riverFrequance , absoluteZ / riverFrequance ) + 1 ) / 2;
-	river = 1 - ( Math.abs(river - 0.5) * 2 );
-	river = Math.pow(river, 4 );
-
-	finalNoise = ( land * land + ( landNoise * land * land ) ) / 2;
-	finalNoise = ((finalNoise - river) + 1 )/2 ;
-	return finalNoise;
-
-}
-
-
-
-
-ChunksOverseer = function(chunkSize, chunksDistance){
+ChunksOverseer = function(chunkSize, chunksDistance, levelMax){
 	this.chunks = [];
 	this.chunkSize = chunkSize;
-	this.chunksDistance = chunksDistance;
 	this.position = { x : 0, z : 0 };
+	DISTANCE = chunksDistance;
+	LEVELMAX = levelMax;
 }
+
 
 ChunksOverseer.prototype = {
 
 	initChunk : function( x, z ){
+
 		this.chunks[x][z] = new Chunk(x,z, this.chunkSize);
+
 	},
 
-	linkChunk : function( x , z ){
+	linkChunk : function( x, z ){
 
 		if(this.chunks[x][z+1]){
 			this.chunks[x][z].bttSouth.NB = this.chunks[x][z+1].bttNorth;
@@ -67,7 +52,7 @@ ChunksOverseer.prototype = {
 					this.chunks[x-1][z].bttEast.NB = this.chunks[x][z].bttWest;
 					this.chunks[x-1][z].bttEast.linkNeighbor();
 
-				} 
+				}
 			}
 		}
 
@@ -193,7 +178,7 @@ ChunksOverseer.prototype = {
 	},
 
 	flush : function(){
-		flushList = getAndresCircularArray(this.chunksDistance+2, this.position.x, this.position.z, true);
+		flushList = getAndresCircularArray(DISTANCE+2, this.position.x, this.position.z, true);
 		chunksToFlush = [];
 
 		for(var x in this.chunks){
@@ -221,13 +206,15 @@ ChunksOverseer.prototype = {
 		do{
 			this.refreshDiam(i);
 			i++;
-		}while( i<=this.chunksDistance+2 && this.position.x == x && this.position.z == z );
+		}while( i<=DISTANCE+2 && this.position.x == x && this.position.z == z );
 		
 		this.flush();
+	
 		console.log("flush")
 
 		//	this.chunks = [];
 		//	this.unBreakAll();
+
 		}
 	}
 
@@ -238,26 +225,26 @@ onmessage = function(e) {
 
 	switch(order.type) {
 
-		case "initOverseer":
-		overseer = new ChunksOverseer(order.chunkSize, order.chunksDistance);
+		case "initOverseerParams":
+
+		overseer = new ChunksOverseer(order.chunkSize, order.chunksDistance, order.levelMax);
+
 		break;
 
 		case "moveOn":
+
 		overseer.position.x = order.positionX;
 		overseer.position.z = order.positionZ;
-		
+
 		overseer.moveOn( order.positionX, order.positionZ );
+
 		break;
 
 		default:
+
 		console.log("ORDER ERROR");
+
 	}
 
 }
-
-
-
-
-
-
 

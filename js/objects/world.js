@@ -1,69 +1,66 @@
-World = function(){
-	//	params
-	//	distance
-	//	positionx
-	//	positiony
-	this.group = new THREE.Group();
-	scene.add(this.group);
-
+function World(){
 	this.chunkSize = 500;
+	this.maxHeight = 500;
+
 	this.chunksDistance = 5;
+	this.levelMax = 5;
+
 	this.chunks = [];
 
 	this.position = {};
 	this.position.x = 0;
 	this.position.z = 0;
-	
-		this.material = new THREE.MeshLambertMaterial( {
-			emissive : 0x000000,
-			vertexColors : THREE.VertexColors,
-			transparent : false,
-			opacity : 0.2,
-			side : THREE.BackSide,
-			wireframe : false
-		} );
+
+
+
+	ChunkToRefresh = [];
+
+
+
+//	Voronoi(500, this.chunkSize, this.chunksDistance);
+	cubePosition = new SelectorTool( 0x00ff00, this.chunkSize, this.maxHeight );
+	Rchunk = new SelectorTool( 0xff0000, this.chunkSize, this.maxHeight );
+
+
+this.init = function(){
+
+	this.group = new THREE.Group();
+	scene.add(this.group);
+
+	this.chunks = [];
+	ChunkToRefresh = [];
+
 
 	this.ChunksWorker = new Worker("js/webworkers/worldWorker.js");
 
 	this.ChunksWorker.postMessage({
-		type : "initOverseer",
+		type : "initOverseerParams",
 		chunkSize : this.chunkSize,
-		chunksDistance : this.chunksDistance
+		chunksDistance : this.chunksDistance,
+		levelMax : this.levelMax
 	});
-
-	ChunkToRefresh = [];
-
 
 	this.ChunksWorker.onmessage = function(e) {
 		response = e.data;
 		switch(response.type) {
 			case "LODArray" :
-				ChunkToRefresh.push({
-						position : {
-							x : response.position.x,
-							z : response.position.z
-						},
-						LODArray : response.LODArray,
-						chunk : {
-							x : response.chunk.x,
-							z : response.chunk.z
-						}
-				});
-
-
+				ChunkToRefresh.push(response);
 				addToQueue(world.refreshQueuedChunks);
 			break;
 			
 			case "flushChunks" :
-			world.flushChunks(response.x, response.z);
+				world.flushChunks(response.x, response.z);
 			break;
-
 
 			default:
 			console.log("RESPONSE ERROR");
 		}
 
 	};
+
+}
+
+
 
 
 	this.buildChunks = function(){
@@ -79,42 +76,46 @@ World = function(){
 		this.position.x += x;
 		this.position.z += z;
 		this.buildChunks();
-		cubePosition.position.x = (this.chunkSize * this.position.x);
-		cubePosition.position.z = (this.chunkSize * this.position.z);
-
-
-
+	
+		cubePosition.move( this.position.x, this.position.z );
 
 		function cancelRefresh(element) {
 		  return element == world.position.x && element == world.position.z;
 		}
+		
 		ChunkToRefresh = ChunkToRefresh.filter(cancelRefresh);
 		console.log(ChunkToRefresh)
 
+	}
 
+	this.refreshQueuedChunks = function(){
+
+		if(ChunkToRefresh.length != 0){
+
+			chunk = ChunkToRefresh.shift();
+
+			LODArray = chunk.LODArray;
+			x = chunk.chunk.x;
+			z = chunk.chunk.z;
+
+			world.drawMesh( x, z, LODArray);
+		}
 
 	}
 
-
-
-	this.drawMesh = function(chunk){
-
-		LODArray = chunk.LODArray;
-
-		x = chunk.chunk.x;
-		z = chunk.chunk.z;
+	this.drawMesh = function( x, z, LODArray){
 
 		geometry = new THREE.Geometry();
 	
-		for(var i = 0; i<LODArray.length; i += 3){
+		for(var i = 0; i < LODArray.length; i += 3){
 		
 				var VA = LODArray[ i ];
 				var VL = LODArray[ i + 1 ];
 				var VR = LODArray[ i + 2 ];
 
-				VA = new THREE.Vector3( VA.x, VA.y, VA.z);
-				VL = new THREE.Vector3( VL.x, VL.y, VL.z);
-				VR = new THREE.Vector3( VR.x, VR.y, VR.z);
+				VA = new THREE.Vector3( VA.x, VA.y * this.maxHeight, VA.z);
+				VL = new THREE.Vector3( VL.x, VL.y * this.maxHeight, VL.z);
+				VR = new THREE.Vector3( VR.x, VR.y * this.maxHeight, VR.z);
 
 				geometry.vertices.push( VL, VA, VR );
 
@@ -123,24 +124,20 @@ World = function(){
 				geometry.faces.push( new THREE.Face3( currentFaceVertice, currentFaceVertice + 1, currentFaceVertice + 2 ) );
 			
 				//COLORIZE
+				
 				face  = geometry.faces[ (geometry.faces.length - 1) ];
-				faceHignessFactor = 1 - ( (VA.y + VL.y + VR.y) / 3 ) / 500 ;
+				faceHignessFactor = 1 - ( (VA.y + VL.y + VR.y) / 3 ) / this.maxHeight ;
 				face.color.setHSL( faceHignessFactor,0.8, 0.3 );
+
 		}
 
-
-//		geometry.computeBoundingSphere();
+		//	geometry.computeBoundingSphere();
 		geometry.computeFaceNormals();
-		
 
-
-		mesh = new THREE.Mesh( geometry, world.material );	
+		mesh = new THREE.Mesh( geometry, groundMaterial );	
 		mesh.position.x = ( x * world.chunkSize ) - (world.chunkSize/2);
 		mesh.position.z = ( z * world.chunkSize ) - (world.chunkSize/2);
 		
-
-
-
 
 		if(!world.chunks[x]){
 			world.chunks[x] = [];
@@ -150,16 +147,26 @@ World = function(){
 			world.group.remove(world.chunks[x][z]);
 		}
 
-
 		world.chunks[x][z] = mesh;	
 		world.group.add(mesh);
 
-		Rchunk.position.x = ( x * world.chunkSize );
-		Rchunk.position.z = ( z * world.chunkSize );
-	
+
+
+
+
+
+		Rchunk.move( x, z );
+
+		var geometry = new THREE.PlaneGeometry( this.chunkSize, this.chunkSize );
+
+		var water = new THREE.Mesh( geometry, waterMaterial );
+		water.rotation.x = deg(-90);
+		mesh.add( water );
+		water.position.x = (this.chunkSize/2);
+		water.position.z = (this.chunkSize/2);
+
 
 	}
-
 
 	this.flushChunks = function( x, z ){
 		if(this.chunks[x]){
@@ -171,13 +178,25 @@ World = function(){
 		}
 	}
 
-	this.refreshQueuedChunks = function(){
-		if(ChunkToRefresh.length != 0){
-			chunk = ChunkToRefresh.shift();
-			world.drawMesh(chunk);
-		}
-	}
 
+
+	this.reload = function(){
+		
+		this.ChunksWorker.terminate();
+		scene.remove(this.group);
+
+		this.position.x = 0;
+		this.position.z = 0;
+
+		this.init();
+		world.buildChunks();
+
+		scene.remove(cubePosition.mesh);
+		scene.remove(Rchunk.mesh);
+		cubePosition = new SelectorTool( 0x00ff00, this.chunkSize, this.maxHeight );
+		Rchunk = new SelectorTool( 0xff0000, this.chunkSize, this.maxHeight );
+
+	}
 
 
 }

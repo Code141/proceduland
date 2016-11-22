@@ -1,27 +1,33 @@
 function init(){
-	var renderer, scene, camera, clock;
-	var seed;
-	INTERSECTED = null;
-
 	DEV = true;
 
+	if ( Detector.webgl ){
 
-	if ( ! Detector.webgl ){
+		if( window.Worker ){
+
+			initThreeJs( 'threeContainer' );
+			fillscene();
+			initGUI();
+			update();
+
+		}else{
+
+			alert('WEBWORKER NOT SUPPORTED');
+
+		}
+
+	}else{
+
 		Detector.addGetWebGLMessage();
-	}else{
-		initThreeJs( 'threeContainer' );
-		fillscene();
-		update();
+
 	}
 	
-	if(window.Worker){
-
-	}else{
-		alert('WEBWORKER NOT SUPPORTED');
-	}
-
 }
-	
+
+var renderer, scene, camera, clock;
+var seed;
+
+INTERSECTED = null;
 
 function initThreeJs( containerId ){
 	
@@ -31,14 +37,14 @@ function initThreeJs( containerId ){
 
 	clock = new THREE.Clock();
 	scene = new THREE.Scene();
-//	scene.fog = new THREE.Fog( 0x000000, 2000, 7500 )
+	//	scene.fog = new THREE.Fog( 0x000000, 2000, 7500 )
 
-	camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 100000 );
+	camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 2000000 );
 	camera.position.x = 0;
-	camera.position.y = 5000;
-	camera.position.z = -5000;
+	camera.position.y = 3000;
+	camera.position.z = -3000;
 	camera.lookAt( new THREE.Vector3( 0, 0, 0 ) );
-
+	
 	renderer = new THREE.WebGLRenderer( { antialias: true, alpha: false } );
 	renderer.setClearColor( 0x000000 );
 	renderer.setPixelRatio( window.devicePixelRatio );
@@ -46,21 +52,21 @@ function initThreeJs( containerId ){
 	container.appendChild( renderer.domElement );
 	
 	window.addEventListener( 'resize', onWindowResize, false );
-
+	
 	function onWindowResize() {
 		camera.aspect = window.innerWidth / window.innerHeight;
 		camera.updateProjectionMatrix();
 		renderer.setSize( window.innerWidth, window.innerHeight );
 	}
 
-	
-	/* -------- DEV TOOLS --------*/
+
+/* -------- DEV TOOLS --------*/
 		//ORBIT CONTROL
 		controls = new THREE.OrbitControls( camera );
 		controls.target.set( 0, 0, 0 );
-	
-	if(DEV){
-	//	scene.fog = new THREE.Fog( 0x000000, 10000, 20000 )
+
+		if(DEV){
+			scene.fog = new THREE.Fog( 0xadc3f3, 500, 5000 )
 
 		//STATS
 		stats = new Stats();
@@ -71,9 +77,9 @@ function initThreeJs( containerId ){
 
 
 
-		//GRID HELPER
-	//	var gridHelper = new THREE.GridHelper( 1000, 10 );
-	//	scene.add( gridHelper );
+//		//GRID HELPER
+//		var gridHelper = new THREE.GridHelper( 1000, 2 );
+//		scene.add( gridHelper );
 
 		//AXIS HELPER
 		var axisHelper = new THREE.AxisHelper( 500 );
@@ -82,59 +88,34 @@ function initThreeJs( containerId ){
 
 //container.addEventListener( 'mousemove', onMouseMove, true );
 
-	}
+}
 
 keyboard = new KeyboardState();
 raycaster = new THREE.Raycaster();
 mouse = new THREE.Vector2();
 
-document.onclick = onMouseClick;
+//document.onclick = onMouseClick;
 
-
-
-
-var geometry = new THREE.BoxGeometry( 1, 200, 1 );
-var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
-var cube = new THREE.Mesh( geometry, material );
-cube.position.y = 100;
-cube.position.x = 100;
-scene.add( cube );
-tinnyHouse = MODELS["tinnyHouse"].clone();
-//tinnyHouse.position.y = 115;
-tinnyHouse.position.x = 100;
-tinnyHouse.position.y = 196;
-
-scene.add(tinnyHouse);
-
-	breakBall = new THREE.Group();
-	scene.add(breakBall)
-groupLight = new THREE.Group();
-scene.add(groupLight)
-
-
-
-
-
-var geometry = new THREE.BoxGeometry( 500, 600, 500 );
-var material = new THREE.MeshBasicMaterial( {color: 0x00ff00, transparent: true, opacity:0.5} );
-cubePosition = new THREE.Mesh( geometry, material );
-cubePosition.position.y = 300;
-
-var geometry = new THREE.BoxGeometry( 500, 600, 500 );
-var material = new THREE.MeshBasicMaterial( {color: 0xff0000, transparent: true, opacity:0.5} );
-Rchunk = new THREE.Mesh( geometry, material );
-Rchunk.position.y = 300;
-
-
-scene.add( cubePosition, Rchunk );
-
+//	var geometry = new THREE.BoxGeometry( 1, 200, 1 );
+//	var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+//	var cube = new THREE.Mesh( geometry, material );
+//	cube.position.y = 100;
+//	cube.position.x = 100;
+//	scene.add( cube );
+//	
+//	tinnyHouse = MODELS["tinnyHouse"].clone();
+//	//tinnyHouse.position.y = 115;
+//	tinnyHouse.position.x = 100;
+//	tinnyHouse.position.y = 196;
+//	
+//	scene.add(tinnyHouse);
 
 
 }
 
 /* ------ ANIMATION LOOP ------*/
 
-update = function(){
+function update(){
 	window.requestAnimationFrame( update );
 	
 	if ( DEV ) stats.update();
@@ -142,9 +123,8 @@ update = function(){
 	var delta = clock.getDelta();
 	keyboardState();
 
-//	world.update(delta);
-
 	if(QUEUE.length > 0) queueUpdate();
+
 
 	renderer.render(scene, camera);
 }
@@ -152,12 +132,11 @@ update = function(){
 
 QUEUE = [];
 
-
-addToQueue = function(item){
+function addToQueue(item){
 	QUEUE.push(item);
 }
 
-queueUpdate = function(){
+function queueUpdate(){
 	element = QUEUE.shift();
 	element();
 }
@@ -167,40 +146,31 @@ queueUpdate = function(){
 
 /* ------ INIT OBJ HERE ------*/
 
-fillscene = function(){
-	seed = Math.random(); 
+function fillscene(){
+	//seed = Math.random(); 
 	
 	world = new World();
+	world.init();
 	world.buildChunks();
 
+	sky = new Sky();
 
-//	world.loadChunks( 0, 0 );
 	initLight();
-
 
 }
 
 
-initLight = function(){
+function initLight(){
 
 //var directionalLight = new THREE.DirectionalLight( 0xffffff, 5 );
 //directionalLight.position.set( 0, 1000, 0 );
 //scene.add( directionalLight );
 
-
-var light = new THREE.AmbientLight( 0xaaaaaa ); // soft white light
+var light = new THREE.AmbientLight( 0x333333 ); // soft white light
 scene.add( light );
 
-var light = new THREE.PointLight( 0xffffff,2.5, 30000 );
-light.position.set( 0, 10000, 10000 );
-
-
-groupLight.add(light);
 
 }
-
-
-
 
 
 

@@ -6,7 +6,6 @@ BinaryTriangleTree = function ( x, z, chunkSize, level, parent){
 	this.chunkSize = chunkSize;
 
 	this.level = level;
-	this.levelMax = 10;
 
 	this.parent = parent;
 
@@ -48,7 +47,7 @@ BinaryTriangleTree.prototype = {
 		virtualBaseHeight = ( this.VL.y + this.VR.y ) / 2;
 		this.deltaBaseApex = Math.abs( virtualBaseHeight - this.VC.y);
 
-		if(this.level < this.levelMax){
+		if(this.level < LEVELMAX){
 			this.CR.createChilds();
 			this.CL.createChilds();
 		}
@@ -73,7 +72,7 @@ BinaryTriangleTree.prototype = {
 			this.CR.NB = this.NR.CL;
 		}
 
-		if(this.level < this.levelMax){
+		if(this.level < LEVELMAX){
 			this.CL.linkNeighbor();
 			this.CR.linkNeighbor();
 		}
@@ -82,24 +81,29 @@ BinaryTriangleTree.prototype = {
 
 	getLod : function(hypo){
 
-		if(this.level < this.levelMax){
+		if(this.level < LEVELMAX){
 			this.CL.getLod(hypo);
 			this.CR.getLod(hypo);
 		}
+	
 
-		detailfactor = (this.levelMax/this.level)*((hypo-3));
-		//detailfactor = 7/this.level;
+		apexFactor = this.deltaBaseApex * 1000;
+		distanceFactor = (hypo*hypo);
+	
 
-		if(this.deltaBaseApex/1.2 > detailfactor){
-
+		if(  apexFactor > (1 * (distanceFactor-1)) ){
 			this.break();
 		}
+
+		//	this.break();
+
 
 	},
 
 	break : function(){
 
 		this.breaked = true;
+
 		if(this.NB != undefined && this.NB.breaked == false) this.NB.break();
 		if(this.parent != undefined && this.parent.breaked == false) this.parent.break();
 
@@ -108,16 +112,22 @@ BinaryTriangleTree.prototype = {
 	printLod : function(LODArray){
 
 		if(this.breaked){
+
 			this.CL.printLod(LODArray);
-			this.CR.printLod(LODArray);	
+			this.CR.printLod(LODArray);
+
 		}else{
+
 			this.insertFace(LODArray);
+
 		}
 
 	},
 
 	insertFace : function(LODArray){
+
 		LODArray.push(this.VA, this.VL, this.VR)
+
 	},
 
 	getHeight : function(vector){
@@ -125,23 +135,21 @@ BinaryTriangleTree.prototype = {
 		absoluteX = (this.chunkSize * this.chunkX ) + ( vector.x );
 		absoluteZ = (this.chunkSize * this.chunkZ ) + ( vector.z );
 		height = procedural(absoluteX, absoluteZ);
-		vector.y = height*500;
+		vector.y = height;
 
 	},
 
 	unbreakBTT : function(){
+
 		if(this.breaked){
+
 			this.CL.unbreakBTT();
 			this.CR.unbreakBTT();	
+
 		}
+
 		this.breaked = false;
 
 	}
 
-
 }
-
-
-
-
-

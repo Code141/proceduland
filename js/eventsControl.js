@@ -13,9 +13,7 @@ function keyboardState(){
 	if ( keyboard.down("D")){ 
 		world.move( -1, 0 );
 	}
-	if ( keyboard.down("W")){ 
-		wireFrame();
-	}
+
 }
 
 function onMouseMove( event ) {
@@ -72,18 +70,4 @@ findFace = function(faceIndex, btt){
 	}else{
 		return;
 	}
-}
-
-wireFrame = function(){
-
-	scene.traverse (function (object){
-		if(object.material){
-			if(object.material.wireframe == true){
-				object.material.wireframe = false;
-			}else{
-				object.material.wireframe = true;
-			}
-		}
-	}, true);
-
 }
