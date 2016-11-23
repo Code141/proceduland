@@ -1,5 +1,6 @@
 function init(){
 	DEV = true;
+	ccl = new coCoLog();
 
 	if ( Detector.webgl ){
 
@@ -9,6 +10,7 @@ function init(){
 			fillscene();
 			initGUI();
 			update();
+
 
 		}else{
 
@@ -66,7 +68,7 @@ function initThreeJs( containerId ){
 		controls.target.set( 0, 0, 0 );
 
 		if(DEV){
-			scene.fog = new THREE.Fog( 0xadc3f3, 500, 5000 )
+		//	scene.fog = new THREE.Fog( 0xadc3f3, 500, 5000 )
 
 		//STATS
 		stats = new Stats();

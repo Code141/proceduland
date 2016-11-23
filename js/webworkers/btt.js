@@ -86,9 +86,9 @@ BinaryTriangleTree.prototype = {
 			this.CR.getLod(hypo);
 		}
 	
-
-		apexFactor = this.deltaBaseApex * 1000;
 		distanceFactor = (hypo*hypo);
+
+		apexFactor = this.deltaBaseApex * (1000);
 	
 
 		if(  apexFactor > (1 * (distanceFactor-1)) ){

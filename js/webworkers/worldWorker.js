@@ -103,20 +103,26 @@ ChunksOverseer.prototype = {
 	refreshDiam : function(diam){
 		var newChunkList = getAndresCircularArray(diam, this.position.x, this.position.z, false);
 
-		// INIT AND DYNAMIQUALLY LINKED (heavy cpu)
+		// INIT AND DYNAMIQUALLY LINKED (warning heavy cpu cost)
 
 		for(var x in newChunkList){
+
 			x = parseInt(x);
 
 			if(this.chunks[x] == undefined){
+
 				this.chunks[x] = [];
+
 			}
 
 			for(var z in newChunkList[x]){
+
 				z = parseInt(z);
+
 				if(!this.chunks[x][z]){
-					overseer.initChunk(x,z);
-					overseer.linkChunk(x,z);
+
+					overseer.initChunk( x, z);
+					overseer.linkChunk( x, z);
 
 				}
 
@@ -127,20 +133,22 @@ ChunksOverseer.prototype = {
 		// GET LOD
 
 		if(diam>0){
+
 			var newChunkList = getAndresCircularArray(diam-1, this.position.x, this.position.z, false);
 
-
-
-
 			for(var x in newChunkList){
+
 				x = parseInt(x);
+
 				for(var z in newChunkList[x]){
+
 					z = parseInt(z);
 
 					hypo = Math.hypot(this.position.x - x, this.position.z - z);
 					overseer.chunks[x][z].getBTTLod(diam);
 
 				}
+
 			}
 
 
@@ -206,14 +214,14 @@ ChunksOverseer.prototype = {
 		do{
 			this.refreshDiam(i);
 			i++;
-		}while( i<=DISTANCE+2 && this.position.x == x && this.position.z == z );
+		}while( i<=DISTANCE+2);
 		
 		this.flush();
 	
-		console.log("flush")
+		console.log("flush");
 
 		//	this.chunks = [];
-		//	this.unBreakAll();
+			this.unBreakAll();
 
 		}
 	}

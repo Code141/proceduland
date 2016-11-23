@@ -4,7 +4,6 @@ function Sky(){
 
 	this.sky = new THREE.Sky();
 	scene.add( this.sky.mesh );
-
 	
 	// Add Sun Helper
 	sunSphere = new THREE.Mesh(
@@ -15,11 +14,9 @@ function Sky(){
 	sunSphere.visible = false;
 	scene.add( sunSphere );
 
-
 	this.sunlight = new THREE.PointLight( 0xffffff,2.5, 4000000 );
 	this.sunlight.position.set( 0, 100, 100 );
 	scene.add(this.sunlight);
-
 
 	this.changePos = function(newPos){
 		this.sunlight.position.x = newPos.x;

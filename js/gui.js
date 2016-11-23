@@ -2,56 +2,10 @@
 initGUI = function(){
 	var gui = new dat.GUI();
 
-	//-------------------WORLD
-	
-	var worldGui = gui.addFolder('World');
-
-	var worldData  = {
-		chunksDistance: 5,
-		levelMax: 5,
-		chunkSize: 500,
-		maxHeight: 500,
-		wireframe: false,
-		reload: function(){
-			world.chunksDistance = worldData.chunksDistance;
-			world.levelMax = worldData.levelMax;
-			world.chunkSize = worldData.chunkSize;
-			world.maxHeight = worldData.maxHeight;
-			world.reload();
-		}
-	};
-
-	worldGui.add(worldData, 'chunksDistance', 0, 15).step(1);
-	worldGui.add(worldData, 'levelMax', 0, 15).step(1);
-	worldGui.add(worldData, 'chunkSize');
-	worldGui.add(worldData, 'maxHeight');
-
-	controller = worldGui.add(worldData, 'wireframe');
-	
-	controller.onFinishChange(function(value) {
-		if(value == true){
-			scene.overrideMaterial =  new THREE.MeshLambertMaterial( {
-				emissive : 0x000000,
-				vertexColors : THREE.VertexColors,
-				transparent : false,
-				opacity : 0.2,
-				side : THREE.BackSide,
-				wireframe : true
-			} );
-		}else{
-			scene.overrideMaterial = null;
-		}
-	});
-	
-
-	worldGui.add(worldData, 'reload');
-
-
 
 	//-------------------SKY
 
 	var sunGui = gui.addFolder('Sky');
-
 
 	var effectController  = {
 		turbidity: 10,
@@ -109,5 +63,50 @@ initGUI = function(){
 	sunGui.add( effectController, "azimuth", 0, 1, 0.0001 ).onChange( skyGuiChanged );
 	sunGui.add( effectController, "sun" ).onChange( skyGuiChanged );
 	sunGui.addColor( effectController, "fog" ).onChange( skyGuiChanged );
+
+
+
+	//-------------------WORLD
+	
+	var worldGui = gui.addFolder('World');
+
+	var worldData  = {
+		chunksDistance: 5,
+		levelMax: 5,
+		chunkSize: 500,
+		maxHeight: 500,
+		wireframe: false,
+		reload: function(){
+			world.chunksDistance = worldData.chunksDistance;
+			world.levelMax = worldData.levelMax;
+			world.chunkSize = worldData.chunkSize;
+			world.maxHeight = worldData.maxHeight;
+			world.reload();
+		}
+	};
+
+	worldGui.add(worldData, 'chunksDistance', 0, 15).step(1);
+	worldGui.add(worldData, 'levelMax', 0, 15).step(1);
+	worldGui.add(worldData, 'chunkSize');
+	worldGui.add(worldData, 'maxHeight');
+
+	controller = worldGui.add(worldData, 'wireframe');
+	
+	controller.onFinishChange(function(value) {
+		if(value == true){
+			scene.overrideMaterial =  new THREE.MeshLambertMaterial( {
+				emissive : 0x000000,
+				vertexColors : THREE.VertexColors,
+				transparent : false,
+				opacity : 0.2,
+				side : THREE.BackSide,
+				wireframe : true
+			} );
+		}else{
+			scene.overrideMaterial = null;
+		}
+	});
+	
+	worldGui.add(worldData, 'reload');
 
 }

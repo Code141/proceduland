@@ -12,7 +12,7 @@ function World(){
 	this.position.z = 0;
 
 
-
+	this.chunkWaited = 0;
 	ChunkToRefresh = [];
 
 
@@ -44,8 +44,10 @@ this.init = function(){
 		response = e.data;
 		switch(response.type) {
 			case "LODArray" :
-				ChunkToRefresh.push(response);
-				addToQueue(world.refreshQueuedChunks);
+			if(world.position.x == response.position.x && world.position.z == response.position.z){
+					ChunkToRefresh.push(response);
+					addToQueue(world.refreshQueuedChunks);
+			}
 			break;
 			
 			case "flushChunks" :
@@ -69,6 +71,8 @@ this.init = function(){
 			positionX : this.position.x,
 			positionZ : this.position.z
 		});
+
+		this.chunkWaited = getAndresLenght(this.chunksDistance, 0, 0, true);
 	}
 
 
@@ -84,7 +88,6 @@ this.init = function(){
 		}
 		
 		ChunkToRefresh = ChunkToRefresh.filter(cancelRefresh);
-		console.log(ChunkToRefresh)
 
 	}
 
@@ -99,6 +102,12 @@ this.init = function(){
 			z = chunk.chunk.z;
 
 			world.drawMesh( x, z, LODArray);
+
+			world.chunkWaited--;
+
+			
+			chunkMax = getAndresLenght(world.chunksDistance, 0, 0, true);
+			ccl.load("Chunks Loaded", chunkMax-world.chunkWaited, chunkMax);
 		}
 
 	}
@@ -151,10 +160,6 @@ this.init = function(){
 		world.group.add(mesh);
 
 
-
-
-
-
 		Rchunk.move( x, z );
 
 		var geometry = new THREE.PlaneGeometry( this.chunkSize, this.chunkSize );
@@ -164,7 +169,6 @@ this.init = function(){
 		mesh.add( water );
 		water.position.x = (this.chunkSize/2);
 		water.position.z = (this.chunkSize/2);
-
 
 	}
 
