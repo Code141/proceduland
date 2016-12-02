@@ -1,88 +1,215 @@
-World = function(){
-	this.group = new THREE.Group();
-	scene.add(this.group);
-	
-	this.chunks= [];
-
-	this.position = { x : 0, z : 0 };
-
-	this.chunksDistance = 20;
-
-	this.chunkSize = 100;
-	this.chunkSubdivisions = 10;
-	this.crossingSub = 1;
+function World(){
+	this.chunkSize = 500;
 	this.maxHeight = 500;
 
+	this.chunksDistance = 5;
+	this.levelMax = 5;
 
-	this.loadChunks = function( moveX, moveZ){
-		this.position.x += moveX;
-		this.position.z += moveZ;
+	this.chunks = [];
 
-
-		for(var x = -(this.chunksDistance-1)+this.position.x; x<this.chunksDistance+this.position.x; x++){
-			if(this.chunks[x] === undefined){
-				this.chunks[x] = [];
-			} 
-			for(var z = -(this.chunksDistance-1)+this.position.z; z<this.chunksDistance+this.position.z; z++){
-				if(this.chunks[x][z] === undefined){
-
-					LODSUB = this.chunkSubdivisions/(  Math.max( Math.abs( x ), Math.abs( z ) )*Math.max( Math.abs( x ), Math.abs( z ) )+ 1 )  ;
-
-					this.chunks[x][z] = new Chunk( x, z, this.chunkSize, this.chunkSubdivisions, this.crossingSub, this.maxHeight);	
-					this.group.add( this.chunks[x][z].chunkMesh );	
+	this.position = {};
+	this.position.x = 0;
+	this.position.z = 0;
 
 
-					
+	this.chunkWaited = 0;
+	ChunkToRefresh = [];
 
-				}
+
+
+//	Voronoi(500, this.chunkSize, this.chunksDistance);
+	cubePosition = new SelectorTool( 0x00ff00, this.chunkSize, this.maxHeight );
+	Rchunk = new SelectorTool( 0xff0000, this.chunkSize, this.maxHeight );
+
+
+this.init = function(){
+
+	this.group = new THREE.Group();
+	scene.add(this.group);
+
+	this.chunks = [];
+	ChunkToRefresh = [];
+
+
+	this.ChunksWorker = new Worker("js/webworkers/worldWorker.js");
+
+	this.ChunksWorker.postMessage({
+		type : "initOverseerParams",
+		chunkSize : this.chunkSize,
+		chunksDistance : this.chunksDistance,
+		levelMax : this.levelMax
+	});
+
+	this.ChunksWorker.onmessage = function(e) {
+		response = e.data;
+		switch(response.type) {
+			case "LODArray" :
+			if(world.position.x == response.position.x && world.position.z == response.position.z){
+					ChunkToRefresh.push(response);
+					addToQueue(world.refreshQueuedChunks);
 			}
+			break;
+			
+			case "flushChunks" :
+				world.flushChunks(response.x, response.z);
+			break;
+
+			default:
+			console.log("RESPONSE ERROR");
 		}
 
-		for(var x in this.chunks){
-			for(var z in this.chunks[x]){
-				if(this.chunks[x][z] !== undefined){
-					deleteChunk = false;
+	};
 
-					if(x >= this.position.x+this.chunksDistance){
-						deleteChunk = true;
-					}
-					if(x <= this.position.x-this.chunksDistance){
-						deleteChunk = true;
-					}
-
-					if(z >= this.position.z+this.chunksDistance){
-						deleteChunk = true;
-					}
-
-					if(z <= this.position.z-this.chunksDistance){
-						deleteChunk = true;
-					}
-
-					if(deleteChunk){
-						this.group.remove( this.chunks[x][z].chunkMesh );
-						this.chunks[x][z] = undefined;
-					}
-				}
-			}
-		}
-
-
-
-	}
-
-
-
-	this.update = function(delta){
-		for(var x in this.chunks){
-			for(var z in this.chunks[x]){
-				if(this.chunks[x][z] !== undefined){
-					this.chunks[x][z].update(delta);
-				}
-			}
-		}
-	}
-	
-	this.loadChunks( 0, 0 );
 }
 
 
+
+
+	this.buildChunks = function(){
+		this.ChunksWorker.postMessage({
+			type : "moveOn",
+			position : { 
+				x : this.position.x,
+				z : this.position.z
+			}
+		});
+
+		this.chunkWaited = getAndresLenght(this.chunksDistance, 0, 0, true);
+	}
+
+
+	this.move = function( x, z ){
+		
+		if(ChunkToRefresh.length != 0){
+			ccl.endApp("Chunks Loaded");
+			ccl.print("Current chunks load cancelled");
+		}
+
+		this.position.x += x;
+		this.position.z += z;
+		this.buildChunks();
+	
+		cubePosition.move( this.position.x, this.position.z );
+
+		function cancelRefresh(element) {
+		  return element == world.position.x && element == world.position.z;
+		}
+
+
+		ChunkToRefresh = ChunkToRefresh.filter(cancelRefresh);
+
+	}
+
+	this.refreshQueuedChunks = function(){
+
+		if(ChunkToRefresh.length != 0){
+
+			chunk = ChunkToRefresh.shift();
+
+			LODArray = chunk.LODArray;
+			x = chunk.chunk.x;
+			z = chunk.chunk.z;
+
+			world.drawMesh( x, z, LODArray);
+
+			world.chunkWaited--;
+
+			
+			chunkMax = getAndresLenght(world.chunksDistance, 0, 0, true);
+			ccl.load("Chunks Loaded", chunkMax-world.chunkWaited, chunkMax);
+		}
+
+	}
+
+	this.drawMesh = function( x, z, LODArray){
+
+		geometry = new THREE.Geometry();
+	
+		for(var i = 0; i < LODArray.length; i += 3){
+		
+				var VA = LODArray[ i ];
+				var VL = LODArray[ i + 1 ];
+				var VR = LODArray[ i + 2 ];
+
+				VA = new THREE.Vector3( VA.x, VA.y * this.maxHeight, VA.z);
+				VL = new THREE.Vector3( VL.x, VL.y * this.maxHeight, VL.z);
+				VR = new THREE.Vector3( VR.x, VR.y * this.maxHeight, VR.z);
+
+				geometry.vertices.push( VL, VA, VR );
+
+				currentFaceVertice = geometry.vertices.length - 3 ;
+
+				geometry.faces.push( new THREE.Face3( currentFaceVertice, currentFaceVertice + 1, currentFaceVertice + 2 ) );
+			
+				//COLORIZE
+				
+				face  = geometry.faces[ (geometry.faces.length - 1) ];
+				faceHignessFactor = 1 - ( (VA.y + VL.y + VR.y) / 3 ) / this.maxHeight ;
+				face.color.setHSL( faceHignessFactor,0.8, 0.3 );
+
+		}
+
+		//	geometry.computeBoundingSphere();
+		geometry.computeFaceNormals();
+
+		mesh = new THREE.Mesh( geometry, groundMaterial );	
+		mesh.position.x = ( x * world.chunkSize ) - (world.chunkSize/2);
+		mesh.position.z = ( z * world.chunkSize ) - (world.chunkSize/2);
+		
+
+		if(!world.chunks[x]){
+			world.chunks[x] = [];
+		}
+
+		if(world.chunks[x][z]){
+			world.group.remove(world.chunks[x][z]);
+		}
+
+		world.chunks[x][z] = mesh;	
+		world.group.add(mesh);
+
+
+		Rchunk.move( x, z );
+
+		var geometry = new THREE.PlaneGeometry( this.chunkSize, this.chunkSize );
+
+		var water = new THREE.Mesh( geometry, waterMaterial );
+		water.rotation.x = deg(-90);
+		mesh.add( water );
+		water.position.x = (this.chunkSize/2);
+		water.position.z = (this.chunkSize/2);
+
+	}
+
+	this.flushChunks = function( x, z ){
+		if(this.chunks[x]){
+			if(this.chunks[x][z]){
+				console.log(x,z)
+				this.group.remove(this.chunks[x][z]);
+				this.chunks[x][z] = undefined;
+			}
+		}
+	}
+
+
+
+	this.reload = function(){
+		
+		this.ChunksWorker.terminate();
+		scene.remove(this.group);
+
+		this.position.x = 0;
+		this.position.z = 0;
+
+		this.init();
+		world.buildChunks();
+
+		scene.remove(cubePosition.mesh);
+		scene.remove(Rchunk.mesh);
+		cubePosition = new SelectorTool( 0x00ff00, this.chunkSize, this.maxHeight );
+		Rchunk = new SelectorTool( 0xff0000, this.chunkSize, this.maxHeight );
+
+	}
+
+
+}

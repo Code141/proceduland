@@ -1,20 +1,34 @@
 function init(){
-	var renderer, scene, camera, clock;
-	var seed;
-	INTERSECTED = null;
-
 	DEV = true;
+	ccl = new coCoLog();
 
+	if ( Detector.webgl ){
 
-	if ( ! Detector.webgl ){
-		Detector.addGetWebGLMessage();
+		if( window.Worker ){
+
+			initThreeJs( 'threeContainer' );
+			fillscene();
+			initGUI();
+			update();
+
+		}else{
+
+			alert('WEBWORKER NOT SUPPORTED');
+
+		}
+
 	}else{
-		initThreeJs( 'threeContainer' );
-		fillscene();
-		update();
+
+		Detector.addGetWebGLMessage();
+
 	}
-}
 	
+}
+
+var renderer, scene, camera, clock;
+var seed;
+
+INTERSECTED = null;
 
 function initThreeJs( containerId ){
 	
@@ -24,80 +38,105 @@ function initThreeJs( containerId ){
 
 	clock = new THREE.Clock();
 	scene = new THREE.Scene();
-	scene.fog = new THREE.Fog( 0x777777, 9000, 10000 )
+	//	scene.fog = new THREE.Fog( 0x000000, 2000, 7500 )
 
-	camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 10000 );
-	camera.position.x = 500;
-	camera.position.y = 500;
-	camera.position.z = 500;
+	camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 2000000 );
+	camera.position.x = 0;
+	camera.position.y = 3000;
+	camera.position.z = -3000;
 	camera.lookAt( new THREE.Vector3( 0, 0, 0 ) );
-
+	
 	renderer = new THREE.WebGLRenderer( { antialias: true, alpha: false } );
-	renderer.setClearColor( 0x777777 );
+	renderer.setClearColor( 0x000000 );
 	renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	container.appendChild( renderer.domElement );
 	
 	window.addEventListener( 'resize', onWindowResize, false );
-
+	
 	function onWindowResize() {
 		camera.aspect = window.innerWidth / window.innerHeight;
 		camera.updateProjectionMatrix();
 		renderer.setSize( window.innerWidth, window.innerHeight );
 	}
 
-	
-	/* -------- DEV TOOLS --------*/
 
-	if(DEV){
-
-		//STATS
-		stats = new Stats();
-		stats.domElement.style.position = 'absolute';
-		stats.domElement.style.top = '0px';
-		container.appendChild( stats.domElement );
-
+/* -------- DEV TOOLS --------*/
 		//ORBIT CONTROL
 		controls = new THREE.OrbitControls( camera );
 		controls.target.set( 0, 0, 0 );
 
+		if(DEV){
+		//	scene.fog = new THREE.Fog( 0xadc3f3, 50, 500 )
 
-		//GRID HELPER
-		var gridHelper = new THREE.GridHelper( 1000, 10 );
-		scene.add( gridHelper );
+			//STATS
+			stats = new Stats();
+			stats.domElement.style.position = 'absolute';
+			stats.domElement.style.top = '0px';
+			container.appendChild( stats.domElement );
+
+//		//GRID HELPER
+//		var gridHelper = new THREE.GridHelper( 1000, 2 );
+//		scene.add( gridHelper );
 
 		//AXIS HELPER
 		var axisHelper = new THREE.AxisHelper( 500 );
 		scene.add( axisHelper );
 
-	}
 
- keyboard = new KeyboardState();
+//		container.addEventListener( 'mousemove', onMouseMove, true );
+
+}
+
+keyboard = new KeyboardState();
 raycaster = new THREE.Raycaster();
 mouse = new THREE.Vector2();
 
-container.addEventListener( 'mousemove', onMouseMove, false );
+//document.onclick = onMouseClick;
+
+//	var geometry = new THREE.BoxGeometry( 1, 200, 1 );
+//	var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+//	var cube = new THREE.Mesh( geometry, material );
+//	cube.position.y = 100;
+//	cube.position.x = 100;
+//	scene.add( cube );
+//	
+//	tinnyHouse = MODELS["tinnyHouse"].clone();
+//	//tinnyHouse.position.y = 115;
+//	tinnyHouse.position.x = 100;
+//	tinnyHouse.position.y = 196;
+//	
+//	scene.add(tinnyHouse);
+
+
 }
 
 /* ------ ANIMATION LOOP ------*/
 
-update = function(){
-
-	requestAnimationFrame( update );
+function update(){
+	window.requestAnimationFrame( update );
 	
 	if ( DEV ) stats.update();
 
 	var delta = clock.getDelta();
 	keyboardState();
 
-	world.update(delta);
+	if(QUEUE.length > 0) queueUpdate();
 
 
 	renderer.render(scene, camera);
+}
 
 
+QUEUE = [];
 
+function addToQueue(item){
+	QUEUE.push(item);
+}
 
+function queueUpdate(){
+	element = QUEUE.shift();
+	element();
 }
 
 
@@ -105,18 +144,29 @@ update = function(){
 
 /* ------ INIT OBJ HERE ------*/
 
-fillscene = function(){
-	seed = Math.random(); 
+function fillscene(){
+	//seed = Math.random(); 
 	
 	world = new World();
+	world.init();
+	world.buildChunks();
 
-	
-	var light = new THREE.AmbientLight( 0x606060 ); // soft white light
-	scene.add( light );
+	sky = new Sky();
 
-	var light = new THREE.PointLight( 0xffffff, 1, 3000, 0.5);
-	light.position.set( 0, 250, 0 );
-	scene.add( light );
+	initLight();
+
+}
+
+
+function initLight(){
+
+//var directionalLight = new THREE.DirectionalLight( 0xffffff, 5 );
+//directionalLight.position.set( 0, 1000, 0 );
+//scene.add( directionalLight );
+
+var light = new THREE.AmbientLight( 0x333333 ); // soft white light
+scene.add( light );
+
 
 }
 
