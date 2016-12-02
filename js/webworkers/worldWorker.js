@@ -8,11 +8,7 @@ V3 = function ( x, y, z ) {
 };
 
 
-<<<<<<< HEAD
-=======
-console.log("hello");
 
->>>>>>> origin/master
 ChunksOverseer = function(chunkSize, chunksDistance, levelMax){
 	this.chunks = [];
 	this.chunkSize = chunkSize;
@@ -92,16 +88,10 @@ ChunksOverseer.prototype = {
 	unBreakAll : function(){
 
 		for(var x in this.chunks){
-<<<<<<< HEAD
-			
 			x = parseInt(x);
 			
 			for(var z in this.chunks[x]){
 				
-=======
-			x = parseInt(x);
-			for(var z in this.chunks[x]){
->>>>>>> origin/master
 				z = parseInt(z);
 
 				this.chunks[x][z].unbreakChunk();
@@ -111,11 +101,8 @@ ChunksOverseer.prototype = {
 
 	},
 
-<<<<<<< HEAD
 	refreshDiam : function( diam ){
-=======
-	refreshDiam : function(diam){
->>>>>>> origin/master
+
 		var newChunkList = getAndresCircularArray(diam, this.position.x, this.position.z, false);
 
 		// INIT AND DYNAMIQUALLY LINKED (warning heavy cpu cost)
@@ -149,11 +136,8 @@ ChunksOverseer.prototype = {
 
 		if(diam>0){
 
-<<<<<<< HEAD
 			var newChunkList = getAndresCircularArray( diam - 1, this.position.x, this.position.z, false);
-=======
-			var newChunkList = getAndresCircularArray(diam-1, this.position.x, this.position.z, false);
->>>>>>> origin/master
+
 
 			for(var x in newChunkList){
 
@@ -164,11 +148,9 @@ ChunksOverseer.prototype = {
 					z = parseInt(z);
 
 					hypo = Math.hypot(this.position.x - x, this.position.z - z);
-<<<<<<< HEAD
+
 					overseer.chunks[x][z].getBTTLod( diam );
-=======
-					overseer.chunks[x][z].getBTTLod(diam);
->>>>>>> origin/master
+
 
 				}
 
@@ -180,11 +162,9 @@ ChunksOverseer.prototype = {
 		// PRINT LOD
 
 		if(diam>1){
-<<<<<<< HEAD
+
 			var newChunkList = getAndresCircularArray( diam - 2, this.position.x, this.position.z, false);
-=======
-			var newChunkList = getAndresCircularArray(diam-2, this.position.x, this.position.z, false);
->>>>>>> origin/master
+
 			
 			for(var x in newChunkList){
 				x = parseInt(x);
@@ -213,10 +193,7 @@ ChunksOverseer.prototype = {
 	},
 
 	flush : function(){
-<<<<<<< HEAD
-	
-=======
->>>>>>> origin/master
+
 		flushList = getAndresCircularArray(DISTANCE+2, this.position.x, this.position.z, true);
 		chunksToFlush = [];
 
@@ -234,15 +211,13 @@ ChunksOverseer.prototype = {
 		}	
 
 		for(var i = 0; i<chunksToFlush.length; i++){
-<<<<<<< HEAD
+
 			postMessage({
 				type : "flushChunks",
 				x : chunksToFlush[i].x,
 				z : chunksToFlush[i].z
 			});
-=======
-			postMessage({ type : "flushChunks", x : chunksToFlush[i].x, z : chunksToFlush[i].z});
->>>>>>> origin/master
+
 		}	
 	},
 
@@ -250,29 +225,21 @@ ChunksOverseer.prototype = {
 		console.log("RUN MF");
 
 		i = 0;
-<<<<<<< HEAD
 
 		do{
 			this.refreshDiam(i);
 			i++;
 		
 		}while( i <= DISTANCE + 2 );//&& this.position.x != x && this.position.z != z);
-=======
-		do{
-			this.refreshDiam(i);
-			i++;
-		}while( i<=DISTANCE+2);
->>>>>>> origin/master
+
 		
 		this.flush();
 	
 		console.log("flush");
 
-<<<<<<< HEAD
+
 			this.chunks = [];
-=======
-		//	this.chunks = [];
->>>>>>> origin/master
+
 			this.unBreakAll();
 
 		}
@@ -287,29 +254,21 @@ onmessage = function(e) {
 
 		case "initOverseerParams":
 
-<<<<<<< HEAD
+
 			overseer = new ChunksOverseer(order.chunkSize, order.chunksDistance, order.levelMax);
-=======
-		overseer = new ChunksOverseer(order.chunkSize, order.chunksDistance, order.levelMax);
->>>>>>> origin/master
+
 
 		break;
 
 		case "moveOn":
 
-<<<<<<< HEAD
+
 			overseer.position.x = order.position.x;
 			overseer.position.z = order.position.z;
 
 			overseer.moveOn( order.position.x, order.position.z );
 
-			
-=======
-		overseer.position.x = order.positionX;
-		overseer.position.z = order.positionZ;
 
-		overseer.moveOn( order.positionX, order.positionZ );
->>>>>>> origin/master
 
 		break;
 
