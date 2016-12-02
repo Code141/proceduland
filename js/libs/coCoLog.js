@@ -107,7 +107,11 @@ coCoLog = function(){
 		this.runningApp[app].now = now;
 		this.runningApp[app].max = max;
 		
+<<<<<<< HEAD
 		percent = ( now / max * 100 ).toFixed(0);
+=======
+		percent = (now/max*100).toFixed(0);
+>>>>>>> origin/master
 
 		this.runningApp[app].div.appName.innerHTML = app;
 		this.runningApp[app].div.now.innerHTML = now+" / "+max;

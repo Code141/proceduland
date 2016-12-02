@@ -11,6 +11,10 @@ function init(){
 			initGUI();
 			update();
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
 		}else{
 
 			alert('WEBWORKER NOT SUPPORTED');
@@ -60,11 +64,29 @@ function initThreeJs( containerId ){
 		renderer.setSize( window.innerWidth, window.innerHeight );
 	}
 
+<<<<<<< HEAD
 
 /* -------- DEV TOOLS --------*/
 		//ORBIT CONTROL
 		controls = new THREE.OrbitControls( camera );
 		controls.target.set( 0, 0, 0 );
+=======
+
+/* -------- DEV TOOLS --------*/
+		//ORBIT CONTROL
+		controls = new THREE.OrbitControls( camera );
+		controls.target.set( 0, 0, 0 );
+
+		if(DEV){
+		//	scene.fog = new THREE.Fog( 0xadc3f3, 500, 5000 )
+
+		//STATS
+		stats = new Stats();
+		stats.domElement.style.position = 'absolute';
+		stats.domElement.style.top = '0px';
+		container.appendChild( stats.domElement );
+
+>>>>>>> origin/master
 
 		if(DEV){
 		//	scene.fog = new THREE.Fog( 0xadc3f3, 50, 500 )
@@ -75,6 +97,10 @@ function initThreeJs( containerId ){
 			stats.domElement.style.top = '0px';
 			container.appendChild( stats.domElement );
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
 //		//GRID HELPER
 //		var gridHelper = new THREE.GridHelper( 1000, 2 );
 //		scene.add( gridHelper );
@@ -84,7 +110,11 @@ function initThreeJs( containerId ){
 		scene.add( axisHelper );
 
 
+<<<<<<< HEAD
 //		container.addEventListener( 'mousemove', onMouseMove, true );
+=======
+//container.addEventListener( 'mousemove', onMouseMove, true );
+>>>>>>> origin/master
 
 }
 
