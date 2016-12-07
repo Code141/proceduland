@@ -92,6 +92,7 @@ function initThreeJs( containerId ){
 
 
 }
+console.log(Array.prototype)
 
 keyboard = new KeyboardState();
 raycaster = new THREE.Raycaster();
@@ -126,22 +127,20 @@ function update(){
 	var delta = clock.getDelta();
 	keyboardState();
 
-	if(QUEUE.length > 0) queueUpdate();
+//CALCULE NEXT TIMESTAMP
+	// SEND IT TO UPDATERS
 
+	startTime = window.performance.now();
+
+
+		do{ // TIMER
+			timeNow = window.performance.now();
+
+			world.update(startTime);
+
+		} while (startTime+10 > timeNow)
 
 	renderer.render(scene, camera);
-}
-
-
-QUEUE = [];
-
-function addToQueue(item){
-	QUEUE.push(item);
-}
-
-function queueUpdate(){
-	element = QUEUE.shift();
-	element();
 }
 
 

@@ -7,8 +7,6 @@ V3 = function ( x, y, z ) {
 	this.z = z || 0;
 };
 
-
-
 ChunksOverseer = function(chunkSize, chunksDistance, levelMax){
 	this.chunks = [];
 	this.chunkSize = chunkSize;
@@ -16,7 +14,6 @@ ChunksOverseer = function(chunkSize, chunksDistance, levelMax){
 	DISTANCE = chunksDistance;
 	LEVELMAX = levelMax;
 }
-
 
 ChunksOverseer.prototype = {
 

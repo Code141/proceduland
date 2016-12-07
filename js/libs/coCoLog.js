@@ -106,10 +106,8 @@ coCoLog = function(){
 
 		this.runningApp[app].now = now;
 		this.runningApp[app].max = max;
-		
 
 		percent = ( now / max * 100 ).toFixed(0);
-
 
 		this.runningApp[app].div.appName.innerHTML = app;
 		this.runningApp[app].div.now.innerHTML = now+" / "+max;
@@ -141,21 +139,26 @@ coCoLog = function(){
 	this.load = function(app, now, max){
 
 		if(this.runningApp[app] == undefined){
+
 			this.newApp(app, now, max);
-
 			this.control();
+			this.upApp(app, now, max);
+
+		}else if(this.runningApp[app] != undefined && now !== max){
 
 			this.upApp(app, now, max);
-		}else if(this.runningApp[app] != undefined && now !== max){
-			this.upApp(app, now, max);
+
 		}else{
+
 			this.upApp(app, now, max);
 			this.endApp(app);
+
 		}
 
 	}
 
 	this.print = function(msg){
+
 		mainDiv = document.createElement("div");
 		mainDiv.style.borderTop = "1px solid white";
 		mainDiv.style.height = "30px";
@@ -171,6 +174,7 @@ coCoLog = function(){
 		this.coCoLog.appendChild(mainDiv);
 
 		this.control();
+		
 	}
 
 }
