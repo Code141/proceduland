@@ -232,9 +232,6 @@ ChunksOverseer.prototype = {
 		
 		this.flush();
 	
-		console.log("flush");
-
-
 			this.chunks = [];
 
 			this.unBreakAll();
@@ -251,14 +248,11 @@ onmessage = function(e) {
 
 		case "initOverseerParams":
 
-
 			overseer = new ChunksOverseer(order.chunkSize, order.chunksDistance, order.levelMax);
-
 
 		break;
 
 		case "moveOn":
-
 
 			overseer.position.x = order.position.x;
 			overseer.position.z = order.position.z;

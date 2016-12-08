@@ -15,7 +15,6 @@ Chunk = function(x, z, chunkSize){
 }
 
 
-
 Chunk.prototype = {
 
 	initBTT : function(chunkSize){

@@ -37,8 +37,8 @@ function onMouseMove( event ) {
 			INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
 			INTERSECTED.material.wireframe = true;
 
-
 		}
+		
 	} else {
 
 		if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );

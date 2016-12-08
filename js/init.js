@@ -26,7 +26,7 @@ function init(){
 }
 
 var renderer, scene, camera, clock;
-var seed;
+
 
 INTERSECTED = null;
 
@@ -69,30 +69,29 @@ function initThreeJs( containerId ){
 
 
 		if(DEV){
-		//	scene.fog = new THREE.Fog( 0xadc3f3, 50, 500 )
+			//	scene.fog = new THREE.Fog( 0xadc3f3, 50, 500 )
 
 			//STATS
+
 			stats = new Stats();
 			stats.domElement.style.position = 'absolute';
 			stats.domElement.style.top = '0px';
 			container.appendChild( stats.domElement );
 
 
-//		//GRID HELPER
-//		var gridHelper = new THREE.GridHelper( 1000, 2 );
-//		scene.add( gridHelper );
+			//GRID HELPER
 
-		//AXIS HELPER
-		var axisHelper = new THREE.AxisHelper( 500 );
-		scene.add( axisHelper );
+			//	var gridHelper = new THREE.GridHelper( 1000, 2 );
+			//	scene.add( gridHelper );
+		
+			//AXIS HELPER
 
+			var axisHelper = new THREE.AxisHelper( 500 );
+			scene.add( axisHelper );
 
+			//	container.addEventListener( 'mousemove', onMouseMove, true );
 
-//		container.addEventListener( 'mousemove', onMouseMove, true );
-
-
-}
-console.log(Array.prototype)
+	}
 
 keyboard = new KeyboardState();
 raycaster = new THREE.Raycaster();
@@ -121,27 +120,26 @@ mouse = new THREE.Vector2();
 
 function update(){
 	window.requestAnimationFrame( update );
+	startTime = window.performance.now();
+
 	
 	if ( DEV ) stats.update();
 
-	var delta = clock.getDelta();
+
 	keyboardState();
 
-//CALCULE NEXT TIMESTAMP
-	// SEND IT TO UPDATERS
-
-	startTime = window.performance.now();
-
-
-		do{ // TIMER
-			timeNow = window.performance.now();
-
-			world.update(startTime);
-
-		} while (startTime+10 > timeNow)
 
 	renderer.render(scene, camera);
+
+	do{ // TIMER
+
+		world.update();
+		timeNow = window.performance.now();
+
+	} while (startTime+(1000/70) > timeNow)
+
 }
+	
 
 
 
@@ -149,7 +147,6 @@ function update(){
 /* ------ INIT OBJ HERE ------*/
 
 function fillscene(){
-	//seed = Math.random(); 
 	
 	world = new World();
 	world.init();

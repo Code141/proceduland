@@ -11,7 +11,6 @@ function World(){
 	this.position.x = 0;
 	this.position.z = 0;
 
-
 	this.chunkWaited = 0;
 
 	this.drawingChunk = null;
@@ -29,7 +28,6 @@ function World(){
 
 		this.chunks = [];
 		ChunkToRefresh = [];
-
 
 		this.ChunksWorker = new Worker("js/webworkers/worldWorker.js");
 
@@ -50,6 +48,8 @@ function World(){
 				break;
 
 				case "flushChunks" :
+						console.log("flush");
+
 				world.flushChunks(response.x, response.z);
 				break;
 
@@ -83,9 +83,7 @@ function World(){
 
 		this.buildChunks();
 
-
 		cubePosition.move( this.position.x, this.position.z );
-
 
 		if(ChunkToRefresh.length != 0){
 			ccl.endApp("Chunks Loaded");
@@ -95,26 +93,26 @@ function World(){
 	}
 
 
-	this.update = function(startTime){
+	this.update = function(){
 
-			this.refreshChunk(startTime);
+			this.refreshChunk();
 
 	}
 
-	this.refreshChunk = function(startTime){
+	this.refreshChunk = function(){
 
 
-		if(this.drawingChunk == null){
+		if(this.drawingChunk == null){ // If don't currently draw a chunk
 
-			if(ChunkToRefresh.length != 0){
+			if(ChunkToRefresh.length != 0){ // If there is chunk to draw
 				this.prepareChunkMesh();
 			}
 
-		}else if(LODArray.length != 0){
+		}else if(LODArray.length != 0){ // If there is more vetors to push in geometry
 
-				this.buildChunkMesh( x, z, LODArray);
+			this.buildChunkMesh( x, z, LODArray);
 		
-		}else if(this.drawingChunk != null){
+		}else if(this.drawingChunk != null){ // If there is chunk not finished
 			this.addChunkMesh();
 			this.drawingChunk = null;
 		}
@@ -155,10 +153,13 @@ function World(){
 		face  = this.geometry.faces[ (this.geometry.faces.length - 1) ];
 		faceHignessFactor = 1 - ( (VA.y + VL.y + VR.y) / 3 ) / this.maxHeight ;
 		face.color.setHSL( faceHignessFactor, 0.8, 0.3 );
+	
+
 
 	}
 
 	this.addChunkMesh = function(){
+
 		//	this.geometry.computeBoundingSphere();
 		this.geometry.computeFaceNormals();
 		mesh = new THREE.Mesh( this.geometry, groundMaterial );	
@@ -186,17 +187,13 @@ function World(){
 		//CCL
 		this.chunkWaited--;
 		chunkMax = getAndresLenght(this.chunksDistance, 0, 0, true);
-		ccl.load("Chunks Loaded", chunkMax-this.chunkWaited, chunkMax);
 
-		z
+		ccl.load("Chunks Loaded", chunkMax-this.chunkWaited, chunkMax);
 
 	}
 
-
-
-
-
 	this.flushChunks = function( x, z ){
+		console.log("flush");
 		if(this.chunks[x]){
 			if(this.chunks[x][z]){
 				console.log(x,z)
@@ -205,7 +202,6 @@ function World(){
 			}
 		}
 	}
-
 
 
 	this.reload = function(){
