@@ -2,7 +2,6 @@
 initGUI = function(){
 	var gui = new dat.GUI();
 
-
 	//-------------------SKY
 
 	var sunGui = gui.addFolder('Sky');
@@ -37,14 +36,9 @@ initGUI = function(){
 		sunSphere.position.y = distance * Math.sin( phi ) * Math.sin( theta );
 		sunSphere.position.z = distance * Math.sin( phi ) * Math.cos( theta );
 
-
 		sky.changePos(sunSphere.position);
-
-
 		sunSphere.visible = effectController.sun;
-
 		sky.sky.uniforms.sunPosition.value.copy( sunSphere.position );
-
 
 		R = effectController.fog[0].toFixed(0);
 		G = effectController.fog[1].toFixed(0);
@@ -71,10 +65,10 @@ initGUI = function(){
 	var worldGui = gui.addFolder('World');
 
 	var worldData  = {
-		chunksDistance: 5,
-		levelMax: 5,
-		chunkSize: 500,
-		maxHeight: 500,
+		chunksDistance: 3,
+		levelMax: 10,
+		chunkSize: 256,
+		maxHeight: 50,
 		wireframe: false,
 		reload: function(){
 			world.chunksDistance = worldData.chunksDistance;
@@ -85,8 +79,8 @@ initGUI = function(){
 		}
 	};
 
-	worldGui.add(worldData, 'chunksDistance', 0, 15).step(1);
-	worldGui.add(worldData, 'levelMax', 0, 15).step(1);
+	worldGui.add(worldData, 'chunksDistance', 0, 20).step(1);
+	worldGui.add(worldData, 'levelMax', 0, 20).step(1);
 	worldGui.add(worldData, 'chunkSize');
 	worldGui.add(worldData, 'maxHeight');
 

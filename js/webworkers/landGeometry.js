@@ -1,17 +1,26 @@
 procedural = function(absoluteX, absoluteZ){
-	landNoiseFrequance = 100;
-	land = 1000;
-	riverFrequance = 5000;
+
+	landNoiseFrequance = 10;
+	land = 100;
+	riverFrequance = 500;
 
 	land = ( noise.simplex2( absoluteX / land , absoluteZ / land ) + 1 ) / 2;
 	landNoise = ( noise.simplex2( absoluteX / landNoiseFrequance, absoluteZ / landNoiseFrequance ) + 1 ) / 2;
 
 	river = ( noise.simplex2( absoluteX / riverFrequance , absoluteZ / riverFrequance ) + 1 ) / 2;
 	river = 1 - ( Math.abs(river - 0.5) * 2 );
-	river = Math.pow(river, 4 );
+	river *= river;
+
+
+	if (river > 0.8)
+		river = 0.8;
 
 	finalNoise = ( land * land + ( landNoise * land * land ) ) / 2;
-	finalNoise = ((finalNoise - river) ) ;
+	finalNoise = ((finalNoise - (river ) ));
+//	finalNoise += 0.5;
+
+	if (finalNoise < -0.1)
+		finalNoise = -0.1;
 
 	return finalNoise;
 }
@@ -24,7 +33,6 @@ procedural2 = function(absoluteX, absoluteZ){
 	mountFrequance = 6000;
 
 	continent = noise.simplex2( absoluteX / continent , absoluteZ / continent );
-	
 
 	river = ( noise.simplex2( absoluteX / riverFrequance , absoluteZ / riverFrequance ) + 1 ) / 2;
 	river = 1 - ( Math.abs(river - 0.5) * 2 );

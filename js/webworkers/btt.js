@@ -21,135 +21,117 @@ BinaryTriangleTree = function ( x, z, chunkSize, level, parent){
 
 BinaryTriangleTree.prototype = {
 
-	createChilds : function(){
-
+	createChilds : function()
+	{
 		level = this.level + 1;
-		
-		this.CL = new BinaryTriangleTree( this.chunkX, this.chunkZ, this.chunkSize, level, this );
-		this.CR = new BinaryTriangleTree( this.chunkX, this.chunkZ, this.chunkSize, level, this );
+
+		this.CL = new BinaryTriangleTree(this.chunkX, this.chunkZ, this.chunkSize, level, this);
+		this.CR = new BinaryTriangleTree(this.chunkX, this.chunkZ, this.chunkSize, level, this);
 
 		this.CL.VA = this.VC;
 		this.CL.VL = this.VA;
 		this.CL.VR = this.VL;
-
-		this.CL.VC.x = 0.5 * ( this.CL.VR.x + this.CL.VL.x );
-		this.CL.VC.z = 0.5 * ( this.CL.VR.z + this.CL.VL.z );
-		this.CL.getHeight(this.CL.VC);
+		this.CL.VC.x = (this.CL.VR.x + this.CL.VL.x) / 2;
+		this.CL.VC.z = (this.CL.VR.z + this.CL.VL.z) / 2;
+		this.getHeight(this.CL.VC);
 
 		this.CR.VA = this.VC;
 		this.CR.VL = this.VR;
 		this.CR.VR = this.VA;
+		this.CR.VC.x = (this.CR.VR.x + this.CR.VL.x) / 2;
+		this.CR.VC.z = (this.CR.VR.z + this.CR.VL.z) / 2;
+		this.getHeight(this.CR.VC);
 
-		this.CR.VC.x = 0.5 * ( this.CR.VR.x + this.CR.VL.x );
-		this.CR.VC.z = 0.5 * ( this.CR.VR.z + this.CR.VL.z );
-		this.CR.getHeight(this.CR.VC);
+		virtualBaseHeight = (this.VL.y + this.VR.y) / 2;
+		this.deltaBaseApex = Math.abs(virtualBaseHeight - this.VC.y);
 
-		virtualBaseHeight = ( this.VL.y + this.VR.y ) / 2;
-		this.deltaBaseApex = Math.abs( virtualBaseHeight - this.VC.y);
-
-		if(this.level < LEVELMAX){
+		if (this.level < LEVELMAX)
+		{
 			this.CR.createChilds();
 			this.CL.createChilds();
 		}
-
 	},
 
-	linkNeighbor : function(){
+	getHeight : function(vector)
+	{
+		absoluteX = (this.chunkSize * this.chunkX) + (vector.x);
+		absoluteZ = (this.chunkSize * this.chunkZ) + (vector.z);
+		height = procedural(absoluteX, absoluteZ);
+		vector.y = height;
+	},
 
+	linkNeighbor : function()
+	{
 		this.CL.NL = this.CR;
 		this.CR.NR = this.CL;
 
-		if(this.NB){
+		if (this.NB)
+		{
 			this.CL.NR = this.NB.CR;
 			this.CR.NL = this.NB.CL;
 		}
 
-		if(this.NL){
+		if (this.NL)
 			this.CL.NB = this.NL.CR;
-		}
 
-		if(this.NR){
+		if (this.NR)
 			this.CR.NB = this.NR.CL;
-		}
 
-		if(this.level < LEVELMAX){
+		if (this.level < LEVELMAX)
+		{
 			this.CL.linkNeighbor();
 			this.CR.linkNeighbor();
 		}
-
 	},
 
-	getLod : function(hypo){
-
-		if(this.level < LEVELMAX){
+	getLod : function(hypo)
+	{
+		if (this.level < LEVELMAX)
+		{
 			this.CL.getLod(hypo);
 			this.CR.getLod(hypo);
 		}
-	
-		distanceFactor = (hypo*hypo);
+
+		distanceFactor = (hypo * hypo);
 
 		apexFactor = this.deltaBaseApex * (1000);
-	
 
-		if(  apexFactor > (1 * (distanceFactor-1)) ){
+		if (apexFactor > (1 * (distanceFactor)))
 			this.break();
-		}
-
-		//	this.break();
-
-
 	},
 
-	break : function(){
-
-		this.breaked = true;
-
-		if(this.NB != undefined && this.NB.breaked == false) this.NB.break();
-		if(this.parent != undefined && this.parent.breaked == false) this.parent.break();
-
-	},
-
-	printLod : function(LODArray){
-
-		if(this.breaked){
-
+	printLod : function(LODArray)
+	{
+		if(this.breaked)
+		{
 			this.CL.printLod(LODArray);
 			this.CR.printLod(LODArray);
-
-		}else{
-
-			this.insertFace(LODArray);
-
 		}
-
+		else
+		{
+			if (!(this.VA.y == -0.1 && this.VL.y == -0.1 && this.VR.y == -0.1))
+				LODArray.push(this.VA, this.VL, this.VR)
+		}
 	},
 
-	insertFace : function(LODArray){
+	break : function()
+	{
+		this.breaked = true;
 
-		LODArray.push(this.VA, this.VL, this.VR)
-
+		if(this.NB != undefined && this.NB.breaked == false)
+			this.NB.break();
+		if(this.parent != undefined && this.parent.breaked == false)
+			this.parent.break();
 	},
 
-	getHeight : function(vector){
-
-		absoluteX = (this.chunkSize * this.chunkX ) + ( vector.x );
-		absoluteZ = (this.chunkSize * this.chunkZ ) + ( vector.z );
-		height = procedural(absoluteX, absoluteZ);
-		vector.y = height;
-
-	},
-
-	unbreakBTT : function(){
-
-		if(this.breaked){
-
+	unbreakBTT : function()
+	{
+		if(this.breaked)
+		{
 			this.CL.unbreakBTT();
-			this.CR.unbreakBTT();	
-
+			this.CR.unbreakBTT();
 		}
-
 		this.breaked = false;
-
 	}
 
 }

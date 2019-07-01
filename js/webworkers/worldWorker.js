@@ -1,4 +1,5 @@
 var LEVELMAX, DISTANCE;
+
 importScripts('chunk.js', 'btt.js','../algo/perlin.js', 'landGeometry.js', '../algo/andresCircle.js'); 
 
 V3 = function ( x, y, z ) {
@@ -17,51 +18,57 @@ ChunksOverseer = function(chunkSize, chunksDistance, levelMax){
 
 ChunksOverseer.prototype = {
 
-	initChunk : function( x, z ){
-
+	initChunk : function( x, z )
+	{
+		if (this.chunks[x] == undefined)
+			this.chunks[x] = [];
 		this.chunks[x][z] = new Chunk(x,z, this.chunkSize);
-
 	},
 
-	linkChunk : function( x, z ){
-
-		if(this.chunks[x][z+1]){
-			this.chunks[x][z].bttSouth.NB = this.chunks[x][z+1].bttNorth;
-			if(!this.chunks[x][z+1].bttNorth.NB){
-				this.chunks[x][z+1].bttNorth.NB = this.chunks[x][z].bttSouth;
-				this.chunks[x][z+1].bttNorth.linkNeighbor();
-			} 
+	linkChunk : function( x, z )
+	{
+		if (this.chunks[x][z + 1])
+		{
+			this.chunks[x][z].bttSouth.NB = this.chunks[x][z + 1].bttNorth;
+			if (!this.chunks[x][z + 1].bttNorth.NB)
+			{
+				this.chunks[x][z + 1].bttNorth.NB = this.chunks[x][z].bttSouth;
+				this.chunks[x][z + 1].bttNorth.linkNeighbor();
+			}
 		}
-
-		if(this.chunks[x][z-1]){
-			this.chunks[x][z].bttNorth.NB = this.chunks[x][z-1].bttSouth;
-			if(!this.chunks[x][z-1].bttSouth.NB){
-				this.chunks[x][z-1].bttSouth.NB = this.chunks[x][z].bttNorth;
-				this.chunks[x][z-1].bttSouth.linkNeighbor();
-			} 
+		if (this.chunks[x][z-1])
+		{
+			this.chunks[x][z].bttNorth.NB = this.chunks[x][z - 1].bttSouth;
+			if (!this.chunks[x][z - 1].bttSouth.NB)
+			{
+				this.chunks[x][z - 1].bttSouth.NB = this.chunks[x][z].bttNorth;
+				this.chunks[x][z - 1].bttSouth.linkNeighbor();
+			}
 		}
-
-		if(this.chunks[x-1]){
-			if(this.chunks[x-1][z]){
-				this.chunks[x][z].bttWest.NB = this.chunks[x-1][z].bttEast;
-				if(!this.chunks[x-1][z].bttEast.NB){
-					this.chunks[x-1][z].bttEast.NB = this.chunks[x][z].bttWest;
-					this.chunks[x-1][z].bttEast.linkNeighbor();
-
+		if (this.chunks[x + 1])
+		{
+			if (this.chunks[x + 1][z])
+			{
+				this.chunks[x][z].bttEast.NB = this.chunks[x + 1][z].bttWest;
+				if (!this.chunks[x + 1][z].bttWest.NB)
+				{
+					this.chunks[x + 1][z].bttWest.NB = this.chunks[x][z].bttEast;
+					this.chunks[x + 1][z].bttWest.linkNeighbor();
 				}
 			}
 		}
-
-		if(this.chunks[x+1]){
-			if(this.chunks[x+1][z]){
-				this.chunks[x][z].bttEast.NB = this.chunks[x+1][z].bttWest;
-				if(!this.chunks[x+1][z].bttWest.NB){
-					this.chunks[x+1][z].bttWest.NB = this.chunks[x][z].bttEast;
-					this.chunks[x+1][z].bttWest.linkNeighbor();
-
-				} 
+		if (this.chunks[x - 1])
+		{
+			if (this.chunks[x - 1][z])
+			{
+				this.chunks[x][z].bttWest.NB = this.chunks[x - 1][z].bttEast;
+				if (!this.chunks[x - 1][z].bttEast.NB)
+				{
+					this.chunks[x - 1][z].bttEast.NB = this.chunks[x][z].bttWest;
+					this.chunks[x - 1][z].bttEast.linkNeighbor();
+				}
 			}
-		}	
+		}
 
 		this.chunks[x][z].bttNorth.NL = this.chunks[x][z].bttEast;
 		this.chunks[x][z].bttNorth.NR = this.chunks[x][z].bttWest;
@@ -79,195 +86,154 @@ ChunksOverseer.prototype = {
 		this.chunks[x][z].bttEast.linkNeighbor();
 		this.chunks[x][z].bttSouth.linkNeighbor();
 		this.chunks[x][z].bttWest.linkNeighbor();
-
 	},
 
-	unBreakAll : function(){
+	does_neighbour_resolved : function(x, z)
+	{
+		promises = [];
 
-		for(var x in this.chunks){
-			x = parseInt(x);
-			
-			for(var z in this.chunks[x]){
+		if (this.chunks[x - 1])
+		{
+			if (this.chunks[x - 1][z - 1])
+				promises.push(this.chunks[x - 1][z - 1].resolved);
+			if (this.chunks[x - 1][z])
+				promises.push(this.chunks[x - 1][z].resolved);
+			if (this.chunks[x - 1][z + 1])
+				promises.push(this.chunks[x - 1][z + 1].resolved);
+		}
+
+		if (this.chunks[x][z - 1])
+			promises.push(this.chunks[x][z - 1].resolved);
+		if (this.chunks[x][z + 1])
+			promises.push(this.chunks[x][z + 1].resolved);
+
+		if (this.chunks[x + 1])
+		{
+			if (this.chunks[x + 1][z - 1])
+				promises.push(this.chunks[x + 1][z - 1].resolved);
+			if (this.chunks[x + 1][z])
+				promises.push(this.chunks[x + 1][z].resolved);
+			if (this.chunks[x + 1][z + 1])
+				promises.push(this.chunks[x + 1][z + 1].resolved);
+		}
+
+		return (promises);
+	},
+
+	get : function(list)
+	{
+
+		for (let i = 0; i < list.length; i++)
+			overseer.initChunk(list[i].x, list[i].y);
+
+
+		for (let i = 0; i < list.length; i++)
+			overseer.linkChunk(list[i].x, list[i].y);
+
+
+		// PROMISE
+		for (let i = 0; i < list.length; i++)
+		{
+			let x = list[i].x;
+			let z = list[i].y;
+
+			this.chunks[x][z].resolved = new Promise((resolve, reject) => {
+				overseer.chunks[x][z].getBTTLod(list[i].hypo);
+				resolve();
+			})
+		}
+
+		for (let i = 0; i < list.length; i++)
+		{
+			let x = list[i].x;
+			let z = list[i].y;
+
+			this.chunks[x][z].resolved.then(() => {
+				pro = overseer.does_neighbour_resolved(x, z);
 				
-				z = parseInt(z);
+				Promise.all(pro)
+					.then(() => {
+						overseer.send_chunk(overseer.chunks[x][z]);
+					})
+				.catch(error => console.log(`Error in promises ${error}`))
 
-				this.chunks[x][z].unbreakChunk();
-
-			}
+			})
 		}
+
+		/*
+		this.flush();
+		this.chunks = []; // ??? what are you breaking after that ?
+		this.unBreakAll();
+*/
+	},
+
+	send_chunk : function(chunk)
+	{
+		postMessage({
+			type : "LODArray",
+			position : {
+				x : this.position.x,
+				z : this.position.z
+			},
+			LODArray : chunk.printLOD(),
+			chunk : {
+				x : chunk.x,
+				z : chunk.z
+			}
+		});
 
 	},
 
-	refreshDiam : function( diam ){
-
-		var newChunkList = getAndresCircularArray(diam, this.position.x, this.position.z, false);
-
-		// INIT AND DYNAMIQUALLY LINKED (warning heavy cpu cost)
-
-		for(var x in newChunkList){
-
-			x = parseInt(x);
-
-			if(this.chunks[x] == undefined){
-
-				this.chunks[x] = [];
-
-			}
-
-			for(var z in newChunkList[x]){
-
-				z = parseInt(z);
-
-				if(!this.chunks[x][z]){
-
-					overseer.initChunk( x, z);
-					overseer.linkChunk( x, z);
-
-				}
-
-			}
-		}		
-
-
-		// GET LOD
-
-		if(diam>0){
-
-			var newChunkList = getAndresCircularArray( diam - 1, this.position.x, this.position.z, false);
-
-
-			for(var x in newChunkList){
-
-				x = parseInt(x);
-
-				for(var z in newChunkList[x]){
-
-					z = parseInt(z);
-
-					hypo = Math.hypot(this.position.x - x, this.position.z - z);
-
-					overseer.chunks[x][z].getBTTLod( diam );
-
-
-				}
-
-			}
-
-
-		}
-
-		// PRINT LOD
-
-		if(diam>1){
-
-			var newChunkList = getAndresCircularArray( diam - 2, this.position.x, this.position.z, false);
-
-			
-			for(var x in newChunkList){
-				x = parseInt(x);
-				for(var z in newChunkList[x]){
-					z = parseInt(z);
-
-					LODArray = this.chunks[x][z].printLOD();
-
-					postMessage({
-						type : "LODArray",
-						position : {
-							x : this.position.x,
-							z : this.position.z
-						},
-						LODArray : LODArray,
-						chunk : {
-							x : x,
-							z : z
-						}
-
-					});
-
-				}
-			}
-		}
-	},
-
-	flush : function(){
-
-		flushList = getAndresCircularArray(DISTANCE+2, this.position.x, this.position.z, true);
+	flush : function()
+	{
+		flushList = getAndresCircularArray(DISTANCE + 2, this.position.x, this.position.z, true);
 		chunksToFlush = [];
-
-		for(var x in this.chunks){
-			x = parseInt(x);
-			for(var z in this.chunks[x]){
-				z = parseInt(z);
-
-				if(!flushList[x]){
+		for (var x in this.chunks)
+			for (var z in this.chunks[x])
+				if (!flushList[x])
 					chunksToFlush.push({ x : x, z : z})
-				}else if(!flushList[x][z]){
+				else if (!flushList[x][z])
 					chunksToFlush.push({ x : x, z : z})
-				}
-			}
-		}	
 
-		for(var i = 0; i<chunksToFlush.length; i++){
-
+		for (var i = 0; i < chunksToFlush.length; i++)
 			postMessage({
 				type : "flushChunks",
 				x : chunksToFlush[i].x,
 				z : chunksToFlush[i].z
 			});
-
-		}	
 	},
 
-	moveOn : function( x, z){
-		console.log("RUN MF");
-
-		i = 0;
-
-		do{
-			this.refreshDiam(i);
-			i++;
-		
-		}while( i <= DISTANCE + 2 );//&& this.position.x != x && this.position.z != z);
-
-		
-		this.flush();
-	
-			this.chunks = [];
-
-			this.unBreakAll();
-
-		}
+	unBreakAll : function()
+	{
+		for (var x in this.chunks)
+			for (var z in this.chunks[x])
+				this.chunks[x][z].unbreakChunk();
 	}
+}
 
 
 
 onmessage = function(e) {
 	order = e.data;
 
-	switch(order.type) {
-
+	switch(order.type)
+	{
 		case "initOverseerParams":
-
 			overseer = new ChunksOverseer(order.chunkSize, order.chunksDistance, order.levelMax);
-
 		break;
-
-		case "moveOn":
-
+		case "request_chunks_list":
 			overseer.position.x = order.position.x;
 			overseer.position.z = order.position.z;
-
-			overseer.moveOn( order.position.x, order.position.z );
-
-
-
+			overseer.get( order.list );
 		break;
-
+		case "moveOn":
+			overseer.position.x = order.position.x;
+			overseer.position.z = order.position.z;
+			overseer.moveOn( order.position.x, order.position.z );
+		break;
 		default:
-
-		console.log("ORDER ERROR");
-
+			console.log("ORDER ERROR");
+			console.log(order);
 	}
-
 }
 

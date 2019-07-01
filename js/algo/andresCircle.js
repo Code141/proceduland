@@ -1,11 +1,11 @@
-andresCircle = function( r, x_centre, y_centre ){
-
+andresCircle = function( r, x_centre, y_centre )
+{
 	x = 0;
 	y = r
 	d = r - 1;
 
-	while( y >=x ){
-
+	while ( y >=x )
+	{
 		tracerPixel( x_centre + x , y_centre - y ); // NORTH - EAST // 1H
 		tracerPixel( x_centre + y , y_centre - x );	// EAST - NORTH // 2H
 		tracerPixel( x_centre + y , y_centre + x ); // EAST - SOUTH // 4H
@@ -14,66 +14,139 @@ andresCircle = function( r, x_centre, y_centre ){
 		tracerPixel( x_centre - y , y_centre + x );	// WEST - SOUTH // 8H
 		tracerPixel( x_centre - y , y_centre - x ); // WEST - NORTH // 10H
 		tracerPixel( x_centre - x , y_centre - y ); // NORTH - WEST // 11H
-
-		if(d >= 2*x){
-
+		if (d >= 2 * x)
+		{
 			d = d - ( 2 * x ) - 1;
-			x ++;
-
-		}else if( d < 2 * ( r - y )){
-
+			x++;
+		}
+		else if ( d < 2 * ( r - y ))
+		{
 			d = d + ( 2 * y ) - 1;
-			y --;    
-
-		}else{
-
+			y--;
+		}
+		else
+		{
 			d = d + 2 * ( y - x - 1 );
-			y --;
-			x ++;
-
+			y--;
+			x++;
 		}
-
 	}
 }
 
-tracerPixel = function(x, y){
-	
-	if(circularArray[x] === undefined){
+tracerPixel = function(x, y)
+{
+	if (circularArray[x] === undefined)
 		circularArray[x] = [];
-	}
-
-	if(circularArray[x][y] === undefined){
+	if (circularArray[x][y] === undefined)
 		circularArray[x][y] = true;
-	}
-
 }
 
-fillCircle = function(x_centre, y_centre){
-
-	for(var x  in circularArray){
+fillCircle = function(x_centre, y_centre)
+{
+	for(var x in circularArray)
+	{
 		x = parseInt(x);
-		for(var y in circularArray[x]){
+		for(var y in circularArray[x])
+		{
 			y = parseInt(y);
-			for(var i = y_centre; i<=y; i++){
+			for(var i = y_centre; i <=y; i++)
+			{
 				tracerPixel( x, i );
-				tracerPixel( x, -i+(y_centre*2) );
+				tracerPixel( x, -i + (y_centre * 2) );
 			}
-
-			
 		}
 	}
-
 }
 
 getAndresCircularArray = function(rayon, x_centre, y_centre, fill){
 	circularArray = [];
 
 	andresCircle(rayon, x_centre, y_centre);
-	if(fill){
+	if (fill)
+	{
 		fillCircle(x_centre, y_centre);
 	}
 	return circularArray;
 }
+
+
+
+
+//-------------- LIST
+
+andresList = function(rayon, x_centre, y_centre) {
+	let list = [];
+	let i = 0;
+
+	andresCircle = function( r, x_centre, y_centre )
+	{
+		x = 0;
+		y = r
+		d = r - 1;
+
+		while ( y >= x )
+		{
+			tracerPixel( x_centre + x , y_centre - y ); // NORTH - EAST // 1H
+			tracerPixel( x_centre + y , y_centre - x );	// EAST - NORTH // 2H
+			tracerPixel( x_centre + y , y_centre + x ); // EAST - SOUTH // 4H
+			tracerPixel( x_centre + x , y_centre + y ); // SOUTH - EAST // 5H
+			tracerPixel( x_centre - x , y_centre + y ); // SOUTH - WEST // 7H
+			tracerPixel( x_centre - y , y_centre + x );	// WEST - SOUTH // 8H
+			tracerPixel( x_centre - y , y_centre - x ); // WEST - NORTH // 10H
+			tracerPixel( x_centre - x , y_centre - y ); // NORTH - WEST // 11H
+
+			if (d >= 2 * x)
+			{
+				d = d - ( 2 * x ) - 1;
+				x++;
+			}
+			else if ( d < 2 * ( r - y ))
+			{
+				d = d + ( 2 * y ) - 1;
+				y--;
+			}
+			else
+			{
+				d = d + 2 * ( y - x - 1 );
+				x++;
+				y--;
+			}
+		}
+	}
+
+	tracerPixel = function(x, y)
+	{
+		list.push({
+			x: x,
+			y: y,
+			hypo: i
+		});
+	}
+
+	i = 0;
+	tracerPixel(x_centre, y_centre);
+
+	i = 1;
+	if (rayon >= 1)
+	{
+		tracerPixel(x_centre - 1, y_centre - 1);
+		tracerPixel(x_centre - 1, y_centre);
+		tracerPixel(x_centre - 1, y_centre + 1);
+		tracerPixel(x_centre, y_centre - 1);
+		tracerPixel(x_centre, y_centre + 1);
+		tracerPixel(x_centre + 1, y_centre - 1);
+		tracerPixel(x_centre + 1, y_centre);
+		tracerPixel(x_centre + 1, y_centre + 1);
+	}
+
+	for (i = 2; i < rayon; i++)
+	{
+		andresCircle(i, x_centre, y_centre);
+	}
+
+	return list;
+}
+
 
 
 
@@ -101,7 +174,7 @@ getAndresLenght = function(rayon, x_centre, y_centre, fill){
 				x ++;
 			}else if( d < 2 * ( r - y )){
 				d = d + ( 2 * y ) - 1;
-				y --;    
+				y --;
 			}else{
 				d = d + 2 * ( y - x - 1 );
 				y --;
@@ -140,7 +213,6 @@ getAndresLenght = function(rayon, x_centre, y_centre, fill){
 	if(fill){
 		fillLenght(x_centre, y_centre);
 	}
-
 
 	return count;
 }

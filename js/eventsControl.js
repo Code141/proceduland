@@ -16,7 +16,8 @@ function keyboardState(){
 
 }
 
-function onMouseMove( event ) {
+function onMouseMove( event )
+{
 	mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
 	mouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
 	
@@ -26,31 +27,29 @@ function onMouseMove( event ) {
 	var intersects = raycaster.intersectObject( world.group, true );
 	// Toggle rotation bool for meshes that we clicked
 	
-	if ( intersects.length > 0 ) {
-		if ( INTERSECTED != intersects[ 0 ].object ) {
-
-
-			if ( INTERSECTED ){
+	if ( intersects.length > 0 )
+	{
+		if ( INTERSECTED != intersects[ 0 ].object )
+		{
+			if ( INTERSECTED )
 				INTERSECTED.material.wireframe = false;
-			};
 			INTERSECTED = intersects[ 0 ].object;
 			INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
 			INTERSECTED.material.wireframe = true;
-
 		}
-		
-	} else {
-
-		if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
-
-		INTERSECTED = null;
-
 	}
-
+	else
+	{
+		if ( INTERSECTED )
+			INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+		INTERSECTED = null;
+	}
 }
 
-function onMouseClick( event ) {
-	if(INTERSECTED){
+function onMouseClick( event )
+{
+	if (INTERSECTED)
+	{
 		console.log(INTERSECTED.userData);
 		INTERSECTED.userData.btt.break();
 
@@ -61,13 +60,19 @@ function onMouseClick( event ) {
 	}
 }
 
-findFace = function(faceIndex, btt){
-	if(btt.faceIndex == faceIndex){
+findFace = function(faceIndex, btt)
+{
+	if (btt.faceIndex == faceIndex)
+	{
 		return btt;
-	}else if(btt.leftChildren != undefined && btt.rightChildren != undefined){
+	}
+	else if (btt.leftChildren != undefined && btt.rightChildren != undefined)
+	{
 		findFace(faceIndex, btt.leftChildren);
 		findFace(faceIndex, btt.rightChildren);
-	}else{
+	}
+	else
+	{
 		return;
 	}
 }
