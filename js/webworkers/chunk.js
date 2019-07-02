@@ -1,64 +1,50 @@
-Chunk = function(x, z, chunkSize)
+Chunk = function(x, z)
 {
 	this.x = x;
 	this.z = z;
 
 	this.LODArray = [];
 
-	this.bttNorth = new BinaryTriangleTree(x, z, chunkSize, 0, undefined);
-	this.bttEast = new BinaryTriangleTree(x, z, chunkSize, 0, undefined);
-	this.bttSouth = new BinaryTriangleTree(x, z, chunkSize, 0, undefined);
-	this.bttWest = new BinaryTriangleTree(x, z, chunkSize, 0, undefined);
+	this.bttNorth = new BinaryTriangleTree(x, z, 0, undefined);
+	this.bttEast = new BinaryTriangleTree(x, z, 0, undefined);
+	this.bttSouth = new BinaryTriangleTree(x, z, 0, undefined);
+	this.bttWest = new BinaryTriangleTree(x, z, 0, undefined);
 
-	this.initBTT(chunkSize);
+	this.initBTT();
 }
 
 
 Chunk.prototype = {
 
-	initBTT : function(chunkSize)
+	initBTT : function()
 	{
-		halfChunkSize = chunkSize / 2;
+		let a = this.bttNorth.getHeight(new V3(0, 0, 0));
+		let b = this.bttNorth.getHeight(new V3(0.5, 0, -0.5));
+		let c = this.bttNorth.getHeight(new V3(-0.5, 0, -0.5));
+		let d = this.bttEast.getHeight(new V3(0.5, 0, 0.5));
+		let e = this.bttSouth.getHeight(new V3(-0.5, 0, 0.5));
 
-		this.bttNorth.VA = new V3(halfChunkSize, 0, halfChunkSize);
-		this.bttNorth.VL = new V3(chunkSize, 0, 0);
-		this.bttNorth.VR = new V3(0, 0, 0);
-		this.bttNorth.VC = new V3(halfChunkSize, 0, 0);
+		this.bttNorth.VA = a;
+		this.bttEast.VA = a;
+		this.bttSouth.VA = a;
+		this.bttWest.VA = a;
 
-		this.bttEast.VA = new V3(halfChunkSize, 0, halfChunkSize);
-		this.bttEast.VL = new V3(chunkSize, 0, chunkSize);
-		this.bttEast.VR = new V3(chunkSize, 0, 0);
-		this.bttEast.VC = new V3(chunkSize, 0, halfChunkSize);
+		this.bttNorth.VL = b;
+		this.bttEast.VR = b;
 
-		this.bttSouth.VA = new V3(halfChunkSize, 0, halfChunkSize);
-		this.bttSouth.VL = new V3(0, 0, chunkSize);
-		this.bttSouth.VR = new V3(chunkSize, 0, chunkSize);
-		this.bttSouth.VC = new V3(halfChunkSize, 0, chunkSize);
+		this.bttNorth.VR = c;
+		this.bttWest.VL = c;
 
-		this.bttWest.VA = new V3(halfChunkSize, 0, halfChunkSize);
-		this.bttWest.VL = new V3(0, 0, 0);
-		this.bttWest.VR = new V3(0, 0, chunkSize);
-		this.bttWest.VC = new V3(0, 0, halfChunkSize);
+		this.bttEast.VL = d;
+		this.bttSouth.VR = d;
 
-		this.bttNorth.getHeight(this.bttNorth.VC);
-		this.bttNorth.getHeight(this.bttNorth.VA);
-		this.bttNorth.getHeight(this.bttNorth.VL);
-		this.bttNorth.getHeight(this.bttNorth.VR);
+		this.bttSouth.VL = e;
+		this.bttWest.VR = e;
 
-		this.bttEast.getHeight(this.bttEast.VC);
-		this.bttEast.getHeight(this.bttEast.VA);
-		this.bttEast.getHeight(this.bttEast.VL);
-		this.bttEast.getHeight(this.bttEast.VR);
-
-		this.bttSouth.getHeight(this.bttSouth.VC);
-		this.bttSouth.getHeight(this.bttSouth.VA);
-		this.bttSouth.getHeight(this.bttSouth.VL);
-		this.bttSouth.getHeight(this.bttSouth.VR);
-
-		this.bttWest.getHeight(this.bttWest.VC);
-		this.bttWest.getHeight(this.bttWest.VA);
-		this.bttWest.getHeight(this.bttWest.VL);
-		this.bttWest.getHeight(this.bttWest.VR);
+		this.bttNorth.VC = this.bttNorth.getHeight(new V3(0, 0, -0.5));
+		this.bttEast.VC = this.bttEast.getHeight(new V3(0.5, 0, 0));
+		this.bttSouth.VC = this.bttSouth.getHeight(new V3(0, 0, 0.5));
+		this.bttWest.VC = this.bttWest.getHeight(new V3(-0.5, 0, 0));
 
 		this.bttNorth.createChilds();
 		this.bttEast.createChilds();

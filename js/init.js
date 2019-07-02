@@ -31,7 +31,6 @@ function initThreeJs( containerId )
 
 	clock = new THREE.Clock();
 	scene = new THREE.Scene();
-	//	scene.fog = new THREE.Fog( 0x000000, 2000, 7500 )
 
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 2000000 );
 	camera.position.x = 0;
@@ -57,7 +56,7 @@ function initThreeJs( containerId )
 	controls = new THREE.OrbitControls( camera );
 	controls.target.set( 0, 0, 0 );
 
-//		scene.fog = new THREE.Fog( 0xadc3f3, 500, 5000 )
+//		scene.fog = new THREE.Fog( 0xadc3f3, 100, 1500 )
 
 	if(DEV){
 
@@ -97,23 +96,15 @@ mouse = new THREE.Vector2();
 //	tinnyHouse.position.x = 100;
 //	tinnyHouse.position.y = 196;
 
+var dir = new THREE.Vector3( 1, 0, 0 );
+
+//normalize the direction vector (convert to vector of length 1)
+dir.normalize();
+
 
 }
 
 /* ------ ANIMATION LOOP ------*/
-/*
-function update(timestamp)
-{
-	requestAnimationFrame( update );
-	if ( DEV ) stats.update();
-
-	keyboardState();
-
-	renderer.render(scene, camera);
-
-	world.update();
-}
-*/
 
 function update(){
 	window.requestAnimationFrame( update );
@@ -122,24 +113,90 @@ function update(){
 	keyboardState();
 
 
+	world.update();
 
-
-	startTime = window.performance.now();
 
 	renderer.render(scene, camera);
 
-	endTime = window.performance.now();
 
 
-	do { // TIMER
-		if (world.ChunkToRefresh.length == 0)
-			break;
-		world.update();
-		timeNow = window.performance.now();
-	} while (startTime+(1000/200) > timeNow)
 }
 
 /* ------ INIT OBJ HERE ------*/
+
+function voronoi(){
+	chunksDistance = 7;
+	w = chunkSize * (chunksDistance * 2 - 1);
+	h = chunkSize * (chunksDistance * 2 - 1);
+
+	group = new THREE.Group();
+	group.position.x = - w / 2;
+	group.position.z = - h / 2;
+	points = [];
+
+	v = new Voronoi();
+
+
+	for (let x = 0; x < chunksDistance * 2 - 1; x++)
+		for (let y = 0; y < chunksDistance * 2 - 1; y++)
+			points.push(
+				new Point(
+					(Math.random() * chunkSize) + x * chunkSize,
+					(Math.random() * chunkSize) + y * chunkSize
+				)
+			)
+
+
+	var material = new THREE.LineBasicMaterial( { color: 0xffff00 } );
+	var geometry = new THREE.Geometry();
+	geometry.vertices.push(new THREE.Vector3( 0, 0, 0));
+	geometry.vertices.push(new THREE.Vector3( 0, 0, h));
+	geometry.vertices.push(new THREE.Vector3( w, 0, h));
+	geometry.vertices.push(new THREE.Vector3( w, 0, 0));
+	geometry.vertices.push(new THREE.Vector3( 0, 0, 0));
+
+	var cadre_line = new THREE.Line( geometry, material );
+	group.add( cadre_line );
+
+	v.Compute(points, w, h);
+
+	edges = v.GetEdges();
+	cells = v.GetCells();
+
+	var material = new THREE.LineBasicMaterial( { color: 0x00ff00 } );
+
+	for (let i = 0; i < edges.length; i++)
+	{
+		let e = edges[i];
+		var geometry = new THREE.Geometry();
+		geometry.vertices.push(new THREE.Vector3( e.start.x, 0, e.start.y) );
+		geometry.vertices.push(new THREE.Vector3( e.end.x, 0, e.end.y) );
+		var voronoi_line = new THREE.Line( geometry, material );
+		group.add( voronoi_line );
+	}
+
+	var material = new THREE.LineBasicMaterial( { color: 0x995599 } );
+	for (let i = 0; i < edges.length; i++)
+	{
+		let e = edges[i];
+		var geometry = new THREE.Geometry();
+		geometry.vertices.push(new THREE.Vector3( e.left.x, 0, e.left.y) );
+		geometry.vertices.push(new THREE.Vector3( e.right.x, 0, e.right.y) );
+		var delaunay_line = new THREE.Line( geometry, material );
+		group.add( delaunay_line );
+	}
+
+	var geometry1 = new THREE.IcosahedronBufferGeometry( 2, 1 );
+	var material = new THREE.LineBasicMaterial( { color: 0xff0000 } );
+	for (let i = 0; i < points.length; i++)
+	{
+		var mesh = new THREE.Mesh( geometry1, material );
+		mesh.position.x = points[i].x;
+		mesh.position.z = points[i].y;
+		group.add( mesh );
+	}
+	scene.add(group);
+}
 
 function fillscene(){
 
@@ -148,18 +205,18 @@ function fillscene(){
 	world.requestChunks();
 
 	sky = new Sky();
-
+	//	voronoi();
 	initLight();
 }
 
 
 function initLight()
 {
-	
+
 	var directionalLight = new THREE.DirectionalLight( 0xffffff, 1 );
 	directionalLight.position.set( 0, 1000, 0 );
 	scene.add( directionalLight );
-	
+
 
 	var light = new THREE.AmbientLight( 0x333333 ); // soft white light
 	scene.add( light );

@@ -67,7 +67,7 @@ initGUI = function(){
 	var worldData  = {
 		chunksDistance: 3,
 		levelMax: 10,
-		chunkSize: 256,
+		chunkSize: 128,
 		maxHeight: 50,
 		wireframe: false,
 		reload: function(){

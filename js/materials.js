@@ -8,22 +8,48 @@ groundMaterial = new THREE.MeshLambertMaterial( {
 		wireframe : false
 	} );
  */
+
 waterMaterial = new THREE.MeshBasicMaterial( {
 	color: 0x0000ff,
 	transparent : true,
 	opacity : 0.7
 } );
 
-function setGradient(geometry, colors, axis, reverse) {
+var mat = new THREE.MeshLambertMaterial({
+	vertexColors: THREE.VertexColors
+});
 
-	geometry.computeBoundingBox();
+var colors = [ {
+		stop: 0,
+		color: new THREE.Color(0xCCCCCC)	// WHITE
+	}, {
+		stop: 0.15,
+		color: new THREE.Color(0x555555)	// GreyE
+	}, {
+		stop: .20,
+		color: new THREE.Color(0x555041)	// brown
+	}, {
+		stop: .35,
+		color: new THREE.Color(0x001500)	// dark green
+	}, {
+		stop: .45,
+		color: new THREE.Color(0x114411)	// plain green
+	}, {
+		stop: .51,
+		color: new THREE.Color(0x664c32)	// Sand
+	}, {
+		stop: .55,
+		color: new THREE.Color(0x221100)	// Oceanic floor
+	}, {
+		stop: 1,
+		color: new THREE.Color(0x000000)	// Black
+	}
+];
 
-	var bbox = geometry.boundingBox;
-
-	bbox.min.y = -1;
-	bbox.max.y = 1;
-
-	var size = new THREE.Vector3().subVectors(bbox.max, bbox.min);
+function setGradient(geometry, axis, reverse) {
+	min = { y: -1 };
+	max = { y: 1 };
+	var size = new THREE.Vector3().subVectors(max, min);
 	var vertexIndices = ['a', 'b', 'c'];
 	var face, vertex, normalized = new THREE.Vector3(),
 		normalizedAxis = 0;
@@ -37,7 +63,7 @@ function setGradient(geometry, colors, axis, reverse) {
 			for (var v = 0; v < 3; v++)
 			{
 				vertex = geometry.vertices[face[vertexIndices[v]]];
-				normalizedAxis = normalized.subVectors(vertex, bbox.min).divide(size)[axis];
+				normalizedAxis = normalized.subVectors(vertex, min).divide(size)[axis];
 				if (reverse)
 				{
 					normalizedAxis = 1 - normalizedAxis;
@@ -51,10 +77,4 @@ function setGradient(geometry, colors, axis, reverse) {
 		}
 	}
 }
-
-var mat = new THREE.MeshLambertMaterial({
-	vertexColors: THREE.VertexColors,
-	side : THREE.BackSide,
-});
-
 

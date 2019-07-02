@@ -8,11 +8,9 @@ V3 = function ( x, y, z ) {
 	this.z = z || 0;
 };
 
-ChunksOverseer = function(chunkSize, chunksDistance, levelMax){
+ChunksOverseer = function(levelMax){
 	this.chunks = [];
-	this.chunkSize = chunkSize;
 	this.position = { x : 0, z : 0 };
-	DISTANCE = chunksDistance;
 	LEVELMAX = levelMax;
 }
 
@@ -130,7 +128,6 @@ ChunksOverseer.prototype = {
 		for (let i = 0; i < list.length; i++)
 			overseer.linkChunk(list[i].x, list[i].y);
 
-
 		// PROMISE
 		for (let i = 0; i < list.length; i++)
 		{
@@ -154,6 +151,8 @@ ChunksOverseer.prototype = {
 				Promise.all(pro)
 					.then(() => {
 						overseer.send_chunk(overseer.chunks[x][z]);
+//						this.chunks[x][z] = undefined;
+
 					})
 				.catch(error => console.log(`Error in promises ${error}`))
 
@@ -161,7 +160,6 @@ ChunksOverseer.prototype = {
 		}
 
 		/*
-		this.flush();
 		this.chunks = []; // ??? what are you breaking after that ?
 		this.unBreakAll();
 */
@@ -184,25 +182,6 @@ ChunksOverseer.prototype = {
 
 	},
 
-	flush : function()
-	{
-		flushList = getAndresCircularArray(DISTANCE + 2, this.position.x, this.position.z, true);
-		chunksToFlush = [];
-		for (var x in this.chunks)
-			for (var z in this.chunks[x])
-				if (!flushList[x])
-					chunksToFlush.push({ x : x, z : z})
-				else if (!flushList[x][z])
-					chunksToFlush.push({ x : x, z : z})
-
-		for (var i = 0; i < chunksToFlush.length; i++)
-			postMessage({
-				type : "flushChunks",
-				x : chunksToFlush[i].x,
-				z : chunksToFlush[i].z
-			});
-	},
-
 	unBreakAll : function()
 	{
 		for (var x in this.chunks)
@@ -219,7 +198,7 @@ onmessage = function(e) {
 	switch(order.type)
 	{
 		case "initOverseerParams":
-			overseer = new ChunksOverseer(order.chunkSize, order.chunksDistance, order.levelMax);
+			overseer = new ChunksOverseer(order.levelMax);
 		break;
 		case "request_chunks_list":
 			overseer.position.x = order.position.x;

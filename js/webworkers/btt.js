@@ -1,9 +1,7 @@
-BinaryTriangleTree = function ( x, z, chunkSize, level, parent){
+BinaryTriangleTree = function ( x, z, level, parent){
 
 	this.chunkX = x;
 	this.chunkZ = z;
-
-	this.chunkSize = chunkSize;
 
 	this.level = level;
 
@@ -25,8 +23,8 @@ BinaryTriangleTree.prototype = {
 	{
 		level = this.level + 1;
 
-		this.CL = new BinaryTriangleTree(this.chunkX, this.chunkZ, this.chunkSize, level, this);
-		this.CR = new BinaryTriangleTree(this.chunkX, this.chunkZ, this.chunkSize, level, this);
+		this.CL = new BinaryTriangleTree(this.chunkX, this.chunkZ, level, this);
+		this.CR = new BinaryTriangleTree(this.chunkX, this.chunkZ, level, this);
 
 		this.CL.VA = this.VC;
 		this.CL.VL = this.VA;
@@ -54,10 +52,12 @@ BinaryTriangleTree.prototype = {
 
 	getHeight : function(vector)
 	{
-		absoluteX = (this.chunkSize * this.chunkX) + (vector.x);
-		absoluteZ = (this.chunkSize * this.chunkZ) + (vector.z);
+
+		absoluteX = this.chunkX + vector.x;
+		absoluteZ = this.chunkZ + vector.z;
 		height = procedural(absoluteX, absoluteZ);
 		vector.y = height;
+		return vector;
 	},
 
 	linkNeighbor : function()
@@ -109,7 +109,7 @@ BinaryTriangleTree.prototype = {
 		}
 		else
 		{
-			if (!(this.VA.y == -0.1 && this.VL.y == -0.1 && this.VR.y == -0.1))
+	//		if (!(this.VA.y W= -0.1 && this.VL.y == -0.1 && this.VR.y == -0.1))
 				LODArray.push(this.VA, this.VL, this.VR)
 		}
 	},
