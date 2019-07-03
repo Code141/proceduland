@@ -84,6 +84,7 @@ ChunksOverseer.prototype = {
 		this.chunks[x][z].bttEast.linkNeighbor();
 		this.chunks[x][z].bttSouth.linkNeighbor();
 		this.chunks[x][z].bttWest.linkNeighbor();
+
 	},
 
 	does_neighbour_resolved : function(x, z)
@@ -123,7 +124,6 @@ ChunksOverseer.prototype = {
 
 		for (let i = 0; i < list.length; i++)
 			overseer.initChunk(list[i].x, list[i].y);
-
 
 		for (let i = 0; i < list.length; i++)
 			overseer.linkChunk(list[i].x, list[i].y);
@@ -173,7 +173,7 @@ ChunksOverseer.prototype = {
 				x : this.position.x,
 				z : this.position.z
 			},
-			LODArray : chunk.printLOD(),
+			data : chunk.printLOD(),
 			chunk : {
 				x : chunk.x,
 				z : chunk.z

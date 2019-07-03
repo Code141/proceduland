@@ -31,6 +31,7 @@ function initThreeJs( containerId )
 
 	clock = new THREE.Clock();
 	scene = new THREE.Scene();
+	scene.background = new THREE.Color(0xcc8888);
 
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 2000000 );
 	camera.position.x = 0;
@@ -49,6 +50,14 @@ function initThreeJs( containerId )
 		camera.updateProjectionMatrix();
 		renderer.setSize( window.innerWidth, window.innerHeight );
 	}, false );
+
+	window.addEventListener( 'mousemove', (event) => {
+		mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+		mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+	}
+
+
+		, true )
 
 /* -------- DEV TOOLS --------*/
 
@@ -76,7 +85,6 @@ function initThreeJs( containerId )
 		scene.add( axisHelper );
 
 		circleGridHelper(chunkSize * (chunksDistance + 1/2), 4, chunksDistance + 1);
-		//	container.addEventListener( 'mousemove', onMouseMove, true );
 	}
 
 keyboard = new KeyboardState();
@@ -101,7 +109,6 @@ var dir = new THREE.Vector3( 1, 0, 0 );
 //normalize the direction vector (convert to vector of length 1)
 dir.normalize();
 
-
 }
 
 /* ------ ANIMATION LOOP ------*/
@@ -114,7 +121,15 @@ function update(){
 
 
 	world.update();
+	raycaster.setFromCamera( mouse, camera );
 
+	// calculate objects intersecting the picking ray
+	var intersects = raycaster.intersectObjects( world.group.children );
+	if (intersects.length > 0)
+		console.log(intersects[0]);
+	for ( var i = 0; i < intersects.length; i++ ) {
+//		intersects[ i ].object.material.color.set( 0xff0000 );
+	}
 
 	renderer.render(scene, camera);
 
@@ -145,7 +160,6 @@ function voronoi(){
 					(Math.random() * chunkSize) + y * chunkSize
 				)
 			)
-
 
 	var material = new THREE.LineBasicMaterial( { color: 0xffff00 } );
 	var geometry = new THREE.Geometry();
@@ -207,8 +221,111 @@ function fillscene(){
 	sky = new Sky();
 	//	voronoi();
 	initLight();
+//	bufferGeom();
 }
 
+function bufferGeom()
+{
+	var triangles = 10000;
+
+	var geometry = new THREE.BufferGeometry();
+
+	var positions = [];
+	var normals = [];
+	var colors = [];
+
+	var color = new THREE.Color();
+
+	var n = 800, n2 = n / 2;	// triangles spread in the cube
+	var d = 12, d2 = d / 2;	// individual triangle size
+
+	var pA = new THREE.Vector3();
+	var pB = new THREE.Vector3();
+	var pC = new THREE.Vector3();
+
+	var cb = new THREE.Vector3();
+	var ab = new THREE.Vector3();
+
+	for ( var i = 0; i < triangles; i ++ ) {
+
+		// positions
+
+		var x = Math.random() * n - n2;
+		var y = Math.random() * n - n2;
+		var z = Math.random() * n - n2;
+
+		var ax = x + Math.random() * d - d2;
+		var ay = y + Math.random() * d - d2;
+		var az = z + Math.random() * d - d2;
+
+		var bx = x + Math.random() * d - d2;
+		var by = y + Math.random() * d - d2;
+		var bz = z + Math.random() * d - d2;
+
+		var cx = x + Math.random() * d - d2;
+		var cy = y + Math.random() * d - d2;
+		var cz = z + Math.random() * d - d2;
+
+		positions.push( ax, ay, az );
+		positions.push( bx, by, bz );
+		positions.push( cx, cy, cz );
+
+		// flat face normals
+
+		pA.set( ax, ay, az );
+		pB.set( bx, by, bz );
+		pC.set( cx, cy, cz );
+
+		cb.subVectors( pC, pB );
+		ab.subVectors( pA, pB );
+		cb.cross( ab );
+
+		cb.normalize();
+
+		var nx = cb.x;
+		var ny = cb.y;
+		var nz = cb.z;
+
+		normals.push( nx, ny, nz );
+		normals.push( nx, ny, nz );
+		normals.push( nx, ny, nz );
+
+		// colors
+
+		var vx = ( x / n ) + 0.5;
+		var vy = ( y / n ) + 0.5;
+		var vz = ( z / n ) + 0.5;
+
+		color.setRGB(Math.random(), Math.random(), Math.random());
+		colors.push( color.r, color.g, color.b );
+		color.setRGB(Math.random(), Math.random(), Math.random());
+		colors.push( color.r, color.g, color.b );
+		color.setRGB(Math.random(), Math.random(), Math.random());
+		colors.push( color.r, color.g, color.b );
+
+	}
+
+	function disposeArray() {
+
+		this.array = null;
+
+	}
+
+	geometry.addAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ).onUpload( disposeArray ) );
+	geometry.addAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ).onUpload( disposeArray ) );
+	geometry.addAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ).onUpload( disposeArray ) );
+
+	//				geometry.computeBoundingSphere();
+
+	var material = new THREE.MeshPhongMaterial( {
+		color: 0xaaaaaa, specular: 0xffffff, shininess: 250,
+		side: THREE.DoubleSide, vertexColors: THREE.VertexColors
+	} );
+
+	mesh = new THREE.Mesh( geometry, material );
+	scene.add( mesh );
+
+}
 
 function initLight()
 {

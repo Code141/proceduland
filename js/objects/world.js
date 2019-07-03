@@ -61,7 +61,7 @@ function World(chunkSize, maxHeight, chunksDistance, levelMax)
 
 		c = new chunk(x, z);
 
-		c.insertVertices(r.LODArray);
+		c.insertVertices(r.data.vertices, r.data.colors);
 		c.buildChunkMesh();
 
 		c.group.position.x = ( x * this.chunkSize );

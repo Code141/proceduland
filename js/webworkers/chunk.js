@@ -54,6 +54,8 @@ Chunk.prototype = {
 
 	getBTTLod : function(hypo)
 	{
+		this.nb_faces = 0;
+
 		this.bttNorth.getLod(hypo);
 		this.bttEast.getLod(hypo);
 		this.bttSouth.getLod(hypo);
@@ -62,14 +64,30 @@ Chunk.prototype = {
 
 	printLOD : function()
 	{
-		this.LODArray = [];
 
-		this.bttNorth.printLod(this.LODArray);
-		this.bttEast.printLod(this.LODArray);
-		this.bttSouth.printLod(this.LODArray);
-		this.bttWest.printLod(this.LODArray);
+		let length = Math.pow(2, (LEVELMAX)) * (3 * 3 * 4);
 
-		return this.LODArray;
+
+		vertices = new Float32Array(length);
+		colors = new Uint8Array(length);
+
+		data = {
+			vertices: vertices,
+			colors: colors
+		}
+
+		let index = 0;
+		index += this.bttNorth.printLod(data, index);
+		index += this.bttEast.printLod(data, index);
+		index += this.bttSouth.printLod(data, index);
+		index += this.bttWest.printLod(data, index);
+
+console.log("alloc vertices: " + length / 3);
+console.log("used vertices:  " + index * 3);
+console.log("ratio:          " + (index * 3) / (length / 3) );
+console.log("----------------------");
+
+		return data;
 	},
 
 	unbreakChunk : function()

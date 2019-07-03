@@ -1,13 +1,13 @@
 andresList = function(rayon, x_centre, y_centre) {
 	let list = [];
-	let i = 0;
+	let r = 0;
 
 	tracerPixel = function(x, y)
 	{
 		list.push({
 			x: x_centre + x,
 			y: y_centre + y,
-			hypo: i
+			hypo: r
 		});
 	}
 

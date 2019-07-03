@@ -16,7 +16,8 @@ waterMaterial = new THREE.MeshBasicMaterial( {
 } );
 
 var mat = new THREE.MeshLambertMaterial({
-	vertexColors: THREE.VertexColors
+	vertexColors: THREE.VertexColors,
+	color: 0x222222
 });
 
 var colors = [ {
@@ -49,16 +50,27 @@ var colors = [ {
 function setGradient(geometry, axis, reverse) {
 	min = { y: -1 };
 	max = { y: 1 };
+
 	var size = new THREE.Vector3().subVectors(max, min);
 	var vertexIndices = ['a', 'b', 'c'];
 	var face, vertex, normalized = new THREE.Vector3(),
+
 		normalizedAxis = 0;
 
+
+	vertices = geometry.attributes.position.array;
+for (let v = 0; v < vertices.length; v++)
+	{
+
+	}
+
+	/*
 	for (var c = 0; c < colors.length - 1; c++)
 	{
 		var colorDiff = colors[c + 1].stop - colors[c].stop;
 		for (var i = 0; i < geometry.faces.length; i++)
 		{
+
 			face = geometry.faces[i];
 			for (var v = 0; v < 3; v++)
 			{
@@ -76,5 +88,6 @@ function setGradient(geometry, axis, reverse) {
 			}
 		}
 	}
+	*/
 }
 
