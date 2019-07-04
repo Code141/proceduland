@@ -26,47 +26,17 @@ ChunksOverseer.prototype = {
 	linkChunk : function( x, z )
 	{
 		if (this.chunks[x][z + 1])
-		{
 			this.chunks[x][z].bttSouth.NB = this.chunks[x][z + 1].bttNorth;
-			if (!this.chunks[x][z + 1].bttNorth.NB)
-			{
-				this.chunks[x][z + 1].bttNorth.NB = this.chunks[x][z].bttSouth;
-				this.chunks[x][z + 1].bttNorth.linkNeighbor();
-			}
-		}
 		if (this.chunks[x][z-1])
-		{
 			this.chunks[x][z].bttNorth.NB = this.chunks[x][z - 1].bttSouth;
-			if (!this.chunks[x][z - 1].bttSouth.NB)
-			{
-				this.chunks[x][z - 1].bttSouth.NB = this.chunks[x][z].bttNorth;
-				this.chunks[x][z - 1].bttSouth.linkNeighbor();
-			}
-		}
 		if (this.chunks[x + 1])
-		{
 			if (this.chunks[x + 1][z])
-			{
 				this.chunks[x][z].bttEast.NB = this.chunks[x + 1][z].bttWest;
-				if (!this.chunks[x + 1][z].bttWest.NB)
-				{
-					this.chunks[x + 1][z].bttWest.NB = this.chunks[x][z].bttEast;
-					this.chunks[x + 1][z].bttWest.linkNeighbor();
-				}
-			}
-		}
 		if (this.chunks[x - 1])
-		{
 			if (this.chunks[x - 1][z])
-			{
 				this.chunks[x][z].bttWest.NB = this.chunks[x - 1][z].bttEast;
-				if (!this.chunks[x - 1][z].bttEast.NB)
-				{
-					this.chunks[x - 1][z].bttEast.NB = this.chunks[x][z].bttWest;
-					this.chunks[x - 1][z].bttEast.linkNeighbor();
-				}
-			}
-		}
+
+
 
 		this.chunks[x][z].bttNorth.NL = this.chunks[x][z].bttEast;
 		this.chunks[x][z].bttNorth.NR = this.chunks[x][z].bttWest;

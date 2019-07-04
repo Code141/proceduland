@@ -13,7 +13,6 @@ function World(chunkSize, maxHeight, chunksDistance, levelMax)
 	this.position.z = 0;
 
 	this.chunkWaited = 0;
-
 	this.drawingChunk = null;
 
 	cubePosition = new SelectorTool( 0x00ff00, this.chunkSize, this.maxHeight );
@@ -62,6 +61,8 @@ function World(chunkSize, maxHeight, chunksDistance, levelMax)
 		c = new chunk(x, z);
 
 		c.insertVertices(r.data.vertices, r.data.colors);
+		this.COUNT += r.data.vertices.length / 3 / 3;
+		console.log(this.COUNT);
 		c.buildChunkMesh();
 
 		c.group.position.x = ( x * this.chunkSize );
@@ -74,6 +75,7 @@ function World(chunkSize, maxHeight, chunksDistance, levelMax)
 
 	this.reload = function()
 	{
+this.COUNT = 0;
 		this.ChunksWorker.terminate();
 		scene.remove(this.group);
 

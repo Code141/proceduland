@@ -17,7 +17,7 @@ waterMaterial = new THREE.MeshBasicMaterial( {
 
 var mat = new THREE.MeshLambertMaterial({
 	vertexColors: THREE.VertexColors,
-	color: 0x222222
+//	color: 0x222222
 });
 
 var colors = [ {

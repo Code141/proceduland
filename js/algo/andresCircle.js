@@ -12,7 +12,6 @@ andresList = function(rayon, x_centre, y_centre) {
 	}
 
 	tracerPixel(0, 0);
-
 	for (r = 1; r < rayon; r++)
 	{
 		x = 1;
@@ -52,7 +51,6 @@ andresList = function(rayon, x_centre, y_centre) {
 		}
 
 	}
-
 	return list;
 }
 

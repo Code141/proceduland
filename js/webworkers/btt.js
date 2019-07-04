@@ -1,20 +1,18 @@
-BinaryTriangleTree = function ( x, z, level, parent){
+BinaryTriangleTree = function ( x, z, VA, VL, VR, parent){
 
 	this.chunkX = x;
 	this.chunkZ = z;
 
-	this.level = level;
-
 	this.parent = parent;
+	this.level = (parent) ? parent.level + 1 : 0;
 
-	this.VA = new V3();
-	this.VL = new V3();
-	this.VR = new V3();
-	this.VC = new V3();
+	this.VA = VA;
+	this.VL = VL;
+	this.VR = VR;
 
-	this.deltaBaseApex = 0;
+	this.VC = getHeight(new V3( (this.VR.x + this.VL.x) / 2, 0, (this.VR.z + this.VL.z) / 2));
+	this.deltaBaseApex = Math.abs((this.VL.y + this.VR.y) / 2 - this.VC.y);
 	this.breaked = false;
-
 }
 
 BinaryTriangleTree.prototype = {
@@ -23,40 +21,12 @@ BinaryTriangleTree.prototype = {
 	{
 		if (this.level == LEVELMAX)
 			return;
-		level = this.level + 1;
 
-		this.CL = new BinaryTriangleTree(this.chunkX, this.chunkZ, this.level + 1, this);
-		this.CR = new BinaryTriangleTree(this.chunkX, this.chunkZ, this.level + 1, this);
-
-		this.CL.VA = this.VC;
-		this.CL.VL = this.VA;
-		this.CL.VR = this.VL;
-		this.CL.VC.x = (this.CL.VR.x + this.CL.VL.x) / 2;
-		this.CL.VC.z = (this.CL.VR.z + this.CL.VL.z) / 2;
-		this.getHeight(this.CL.VC);
-
-		this.CR.VA = this.VC;
-		this.CR.VL = this.VR;
-		this.CR.VR = this.VA;
-		this.CR.VC.x = (this.CR.VR.x + this.CR.VL.x) / 2;
-		this.CR.VC.z = (this.CR.VR.z + this.CR.VL.z) / 2;
-		this.getHeight(this.CR.VC);
-
-		virtualBaseHeight = (this.VL.y + this.VR.y) / 2;
-		this.deltaBaseApex = Math.abs(virtualBaseHeight - this.VC.y);
+		this.CL = new BinaryTriangleTree( this.chunkX, this.chunkZ, this.VC, this.VA, this.VL, this);
+		this.CR = new BinaryTriangleTree( this.chunkX, this.chunkZ, this.VC, this.VR, this.VA, this);
 
 		this.CR.createChilds();
 		this.CL.createChilds();
-	},
-
-	getHeight : function(vector)
-	{
-
-		absoluteX = this.chunkX + vector.x;
-		absoluteZ = this.chunkZ + vector.z;
-		height = procedural(absoluteX, absoluteZ);
-		vector.y = height;
-		return vector;
 	},
 
 	linkNeighbor : function()
@@ -104,19 +74,26 @@ BinaryTriangleTree.prototype = {
 			this.parent.break();
 	},
 
+	count : function(index)
+	{
+		if (!this.breaked)
+			return 1;
+		return this.CL.count() + this.CR.count();
+	},
+
 	printLod : function(data, index)
 	{
 		let i;
 
 		if (this.breaked)
 		{
-
 			i = this.CL.printLod(data, index);
 			i += this.CR.printLod(data, index + i);
 			return (i);
 		}
 
 		i = index * 9;
+
 		data.vertices[i] = this.VA.x;
 		data.vertices[i + 1] = this.VA.y;
 		data.vertices[i + 2] = this.VA.z;
@@ -127,27 +104,25 @@ BinaryTriangleTree.prototype = {
 		data.vertices[i + 7] = this.VR.y;
 		data.vertices[i + 8] = this.VR.z;
 
-		data.colors[i + 0] = Math.random() * 255;
-		data.colors[i + 1] = Math.random() * 255;
-		data.colors[i + 2] = Math.random() * 255;
-		data.colors[i + 3] = Math.random() * 255;
-		data.colors[i + 4] = Math.random() * 255;
-		data.colors[i + 5] = Math.random() * 255;
-		data.colors[i + 6] = Math.random() * 255;
-		data.colors[i + 7] = Math.random() * 255;
-		data.colors[i + 8] = Math.random() * 255;
 
-		data.colors[i + 0] =255;
-		data.colors[i + 1] =255;
-		data.colors[i + 2] =255;
 
-		data.colors[i + 3] =255;
-		data.colors[i + 4] =255;
-		data.colors[i + 5] =255;
+		v1 = ((this.VA.y + 1) / 2) * 255;
+		v2 = ((this.VL.y + 1) / 2) * 255;
+		v3 = ((this.VR.y + 1) / 2) * 255;
 
-		data.colors[i + 6] =255;
-		data.colors[i + 7] =255;
-		data.colors[i + 8] =255;
+		data.colors[i + 0] = v1;
+		data.colors[i + 1] = v1;
+		data.colors[i + 2] = v1;
+
+		data.colors[i + 3] = v2;
+		data.colors[i + 4] = v2;
+		data.colors[i + 5] = v2;
+
+		data.colors[i + 6] = v3;
+		data.colors[i + 7] = v3;
+		data.colors[i + 8] = v3;
+
+
 
 		return 1;
 	},

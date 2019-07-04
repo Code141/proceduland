@@ -2,16 +2,16 @@ function keyboardState(){
 	keyboard.update();
 
 	if ( keyboard.down("Z")){ 
-		world.move( 0, +1 );
-	}
-	if ( keyboard.down("S")){ 
 		world.move( 0, -1 );
 	}
+	if ( keyboard.down("S")){ 
+		world.move( 0, +1 );
+	}
 	if ( keyboard.down("Q")){ 
-		world.move( +1, 0 );
+		world.move( -1, 0 );
 	}
 	if ( keyboard.down("D")){ 
-		world.move( -1, 0 );
+		world.move( +1, 0 );
 	}
 
 }
