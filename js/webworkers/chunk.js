@@ -5,56 +5,62 @@ Chunk = function(x, z)
 
 	this.LODArray = [];
 
-	getHeight = function(vector)
+	V3.prototype.setHeight = function()
 	{
-		absoluteX = x + vector.x;
-		absoluteZ = z + vector.z;
-		height = procedural(absoluteX, absoluteZ);
-		vector.y = height;
-		return vector;
+		let pro = procedural(x + this.x, z + this.z);
+		this.y = pro.height;
+		this.color = pro.color;
 	}
 
-	let a = getHeight(new V3(0.5, 0.5, 0.5));
-	let b = getHeight(new V3(1, 0.5, 0));
-	let c = getHeight(new V3(0, 0.5, 0));
-	let d = getHeight(new V3(1, 0.5, 1));
-	let e = getHeight(new V3(0, 0.5, 1));
+	let a = new V3(0, 0, 0);
 
+	let b = new V3(0.5, 0, -0.5);
+	let c = new V3(-0.5, 0, -0.5);
+	let d = new V3(0.5, 0, 0.5);
+	let e = new V3(-0.5, 0, 0.5);
 
-	this.bttNorth = new BinaryTriangleTree(x, z, a, b, c);
-	this.bttEast = new BinaryTriangleTree(x, z, a, d, b);
-	this.bttSouth = new BinaryTriangleTree(x, z, a, e, d);
-	this.bttWest = new BinaryTriangleTree(x, z, a, c, e);
+	a.setHeight();
+	b.setHeight();
+	c.setHeight();
+	d.setHeight();
+	e.setHeight();
 
-	this.bttNorth.createChilds();
-	this.bttEast.createChilds();
-	this.bttSouth.createChilds();
-	this.bttWest.createChilds();
+	this.north = new BinaryTriangleTree(a, b, c);
+	this.east = new BinaryTriangleTree(a, d, b);
+	this.south = new BinaryTriangleTree(a, e, d);
+	this.west = new BinaryTriangleTree(a, c, e);
+
+	this.north.NL = this.east;
+	this.north.NR = this.west;
+	this.east.NL = this.south;
+	this.east.NR = this.north;
+	this.south.NL = this.west;
+	this.south.NR = this.east;
+	this.west.NL = this.north;
+	this.west.NR = this.south;
+
+	this.north.createChilds();
+	this.east.createChilds();
+	this.south.createChilds();
+	this.west.createChilds();
 }
 
-
 Chunk.prototype = {
-
 
 	getBTTLod : function(hypo)
 	{
 		this.nb_faces = 0;
 
-		this.bttNorth.getLod(hypo);
-		this.bttEast.getLod(hypo);
-		this.bttSouth.getLod(hypo);
-		this.bttWest.getLod(hypo);
+		this.north.getLod(hypo);
+		this.east.getLod(hypo);
+		this.south.getLod(hypo);
+		this.west.getLod(hypo);
 	},
 
 	printLOD : function()
 	{
 
-		let nb_face = 0;
-		nb_face += this.bttNorth.count();
-		nb_face += this.bttEast.count();
-		nb_face += this.bttSouth.count();
-		nb_face += this.bttWest.count();
-
+		let nb_face = this.north.count() + this.east.count() + this.south.count() + this.west.count();
 
 		let length = nb_face * (3 * 3);
 
@@ -67,22 +73,12 @@ Chunk.prototype = {
 		}
 
 		let index = 0;
-		index += this.bttNorth.printLod(data, index);
-		index += this.bttEast.printLod(data, index);
-		index += this.bttSouth.printLod(data, index);
-		index += this.bttWest.printLod(data, index);
-
-
+		index += this.north.printLod(data, index);
+		index += this.east.printLod(data, index);
+		index += this.south.printLod(data, index);
+		index += this.west.printLod(data, index);
 
 		return data;
 	},
-
-	unbreakChunk : function()
-	{
-		this.bttNorth.unbreakBTT();
-		this.bttEast.unbreakBTT();
-		this.bttSouth.unbreakBTT();
-		this.bttWest.unbreakBTT();
-	}
 
 };

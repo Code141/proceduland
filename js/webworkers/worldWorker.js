@@ -2,11 +2,13 @@ var LEVELMAX, DISTANCE;
 
 importScripts('chunk.js', 'btt.js','../algo/perlin.js', 'landGeometry.js', '../algo/andresCircle.js'); 
 
-V3 = function ( x, y, z ) {
-	this.x = x || 0;
-	this.y = y || 0;
-	this.z = z || 0;
-};
+V3 = function ( x, y, z )
+{
+	this.x = x;
+	this.y = y;
+	this.z = z;
+}
+
 
 ChunksOverseer = function(levelMax){
 	this.chunks = [];
@@ -26,35 +28,18 @@ ChunksOverseer.prototype = {
 	linkChunk : function( x, z )
 	{
 		if (this.chunks[x][z + 1])
-			this.chunks[x][z].bttSouth.NB = this.chunks[x][z + 1].bttNorth;
+			this.chunks[x][z].south.NB = this.chunks[x][z + 1].north;
 		if (this.chunks[x][z-1])
-			this.chunks[x][z].bttNorth.NB = this.chunks[x][z - 1].bttSouth;
-		if (this.chunks[x + 1])
-			if (this.chunks[x + 1][z])
-				this.chunks[x][z].bttEast.NB = this.chunks[x + 1][z].bttWest;
-		if (this.chunks[x - 1])
-			if (this.chunks[x - 1][z])
-				this.chunks[x][z].bttWest.NB = this.chunks[x - 1][z].bttEast;
+			this.chunks[x][z].north.NB = this.chunks[x][z - 1].south;
+		if (this.chunks[x + 1] && this.chunks[x + 1][z])
+			this.chunks[x][z].east.NB = this.chunks[x + 1][z].west;
+		if (this.chunks[x - 1] && this.chunks[x - 1][z])
+			this.chunks[x][z].west.NB = this.chunks[x - 1][z].east;
 
-
-
-		this.chunks[x][z].bttNorth.NL = this.chunks[x][z].bttEast;
-		this.chunks[x][z].bttNorth.NR = this.chunks[x][z].bttWest;
-
-		this.chunks[x][z].bttEast.NL = this.chunks[x][z].bttSouth;
-		this.chunks[x][z].bttEast.NR = this.chunks[x][z].bttNorth;
-
-		this.chunks[x][z].bttSouth.NL = this.chunks[x][z].bttWest;
-		this.chunks[x][z].bttSouth.NR = this.chunks[x][z].bttEast;
-
-		this.chunks[x][z].bttWest.NL = this.chunks[x][z].bttNorth;
-		this.chunks[x][z].bttWest.NR = this.chunks[x][z].bttSouth;
-
-		this.chunks[x][z].bttNorth.linkNeighbor();
-		this.chunks[x][z].bttEast.linkNeighbor();
-		this.chunks[x][z].bttSouth.linkNeighbor();
-		this.chunks[x][z].bttWest.linkNeighbor();
-
+		this.chunks[x][z].north.linkNeighbor();
+		this.chunks[x][z].east.linkNeighbor();
+		this.chunks[x][z].south.linkNeighbor();
+		this.chunks[x][z].west.linkNeighbor();
 	},
 
 	does_neighbour_resolved : function(x, z)
@@ -93,16 +78,16 @@ ChunksOverseer.prototype = {
 	{
 
 		for (let i = 0; i < list.length; i++)
-			overseer.initChunk(list[i].x, list[i].y);
+			overseer.initChunk(list[i].x, list[i].z);
 
 		for (let i = 0; i < list.length; i++)
-			overseer.linkChunk(list[i].x, list[i].y);
+			overseer.linkChunk(list[i].x, list[i].z);
 
 		// PROMISE
 		for (let i = 0; i < list.length; i++)
 		{
 			let x = list[i].x;
-			let z = list[i].y;
+			let z = list[i].z;
 
 			this.chunks[x][z].resolved = new Promise((resolve, reject) => {
 				overseer.chunks[x][z].getBTTLod(list[i].hypo);
@@ -113,7 +98,7 @@ ChunksOverseer.prototype = {
 		for (let i = 0; i < list.length; i++)
 		{
 			let x = list[i].x;
-			let z = list[i].y;
+			let z = list[i].z;
 
 			this.chunks[x][z].resolved.then(() => {
 				pro = overseer.does_neighbour_resolved(x, z);
@@ -150,6 +135,8 @@ ChunksOverseer.prototype = {
 			}
 		});
 
+	this.chunks = [];
+
 	},
 
 	unBreakAll : function()
@@ -173,7 +160,7 @@ onmessage = function(e) {
 		case "request_chunks_list":
 			overseer.position.x = order.position.x;
 			overseer.position.z = order.position.z;
-			overseer.get( order.list );
+			overseer.get(order.list);
 		break;
 		case "moveOn":
 			overseer.position.x = order.position.x;

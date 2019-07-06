@@ -1,11 +1,8 @@
 procedural = function(absoluteX, absoluteZ){
 
-absoluteX *= 128;
-absoluteZ *= 128;
-
-	landNoiseFrequance = 20;
-	land = 200;
-	riverFrequance = 1000;
+	landNoiseFrequance = 0.1;
+	land = 1;
+	riverFrequance = 7;
 
 	land = ( noise.simplex2( absoluteX / land , absoluteZ / land ) + 1 ) / 2;
 	landNoise = ( noise.simplex2( absoluteX / landNoiseFrequance, absoluteZ / landNoiseFrequance ) + 1 ) / 2;
@@ -17,14 +14,10 @@ absoluteZ *= 128;
 
 	finalNoise = ( land * land + ( landNoise * land * land * land * land ) ) / 2;
 
-
-
-
 	finalNoise -= river;
 
 
-
-
+	
 	if (finalNoise < -0.7)
 		finalNoise = -0.2;
 
@@ -34,6 +27,104 @@ absoluteZ *= 128;
 	if (finalNoise < -0.2)
 		finalNoise /= 2;
 
-	return finalNoise;
+
+	return (
+	{
+		height: finalNoise,
+		color: colorise(
+			gradient, (finalNoise + 1 ) / 2,
+			gradient2, landNoise ,
+			((finalNoise + 1) / 2) * land * land
+
+		)
+	
+	}
+	);
 }
 
+
+let gradient = [
+	{
+		stop: 0,
+		r: 0x00, g: 0x00, b: 0x00 // Black
+	}, {
+		stop: .2,
+		r: 0x22, g: 0x11, b: 0x00 // Oceanic floor
+	}, {
+		stop: .5,
+		r: 0x66, g: 0x4c, b: 0x32 // Sand
+	}, {
+		stop: .52,
+		r: 0x11, g: 0x44, b: 0x11 // plain green
+	}, {
+		stop: .65,
+		r: 0x00, g: 0x15, b: 0x00 // dark green
+	}, {
+		stop: .8,
+		r: 0x55, g: 0x50, b: 0x41 // brown
+	}, {
+		stop: .9,
+		r: 0x55, g: 0x55, b: 0x55 // GreyE
+	}, {
+		stop: 1,
+		r: 0xCC, g: 0xCC, b: 0xCC // WHITE
+	}
+];
+
+let gradient2 = [
+	{
+		stop: 0,
+		r: 0x00, g: 0x00, b: 0x00 
+	}, {
+		stop: 1,
+		r: 0xff, g: 0xff, b: 0xff 
+	}
+];
+
+
+
+let lerp = function (v0, v1, t) {
+	return (1 - t) * v0 + t * v1;
+}
+
+let rgb_color_lerp = function (c1, c2, t)
+{
+	return {
+		r: lerp(c1.r, c2.r, t),
+		g: lerp(c1.g, c2.g, t),
+		b: lerp(c1.b, c2.b, t)
+	}
+}
+
+let rgb_color_blerp = function (c1, c2, c3, c4, t1, t2, t3)
+{
+	return {
+		r: lerp(lerp(c1.r, c2.r, t1), lerp(c3.r, c4.r, t2), t3),
+		g: lerp(lerp(c1.g, c2.g, t1), lerp(c3.g, c4.g, t2), t3),
+		b: lerp(lerp(c1.b, c2.b, t1), lerp(c3.b, c4.b, t2), t3)
+	}
+}
+
+
+function colorise(g1, t1, g2, t2, t3)
+{
+	let i = 0;
+	let j = 0;
+
+	while (g1[i + 1].stop < t1 && i + 1 < g1.length)
+		i++;
+	while (g2[j + 1].stop < t2 && j + 1 < g2.length)
+		j++;
+
+	c1 = g1[i];
+	c2 = g1[i + 1];
+
+	t1 = (t1 - c1.stop) / (c2.stop - c1.stop);
+
+	c3 = g2[j];
+	c4 = g2[j + 1];
+
+	t2 = (t2 - c3.stop) / (c4.stop - c3.stop);
+
+	return (rgb_color_blerp(c1, c2, c3, c4, t1, t2, t3));
+}

@@ -65,17 +65,22 @@ initGUI = function(){
 	var worldGui = gui.addFolder('World');
 
 	var worldData  = {
-		chunksDistance: 3,
-		levelMax: 10,
+		chunksDistance: 5,
+		levelMax: 12,
 		chunkSize: 128,
 		maxHeight: 50,
 		wireframe: false,
 		reload: function(){
-			world.chunksDistance = worldData.chunksDistance;
-			world.levelMax = worldData.levelMax;
-			world.chunkSize = worldData.chunkSize;
-			world.maxHeight = worldData.maxHeight;
-			world.reload();
+			scene.remove(world.group);
+			world = new World(
+				worldData.chunkSize,
+				worldData.maxHeight,
+				worldData.chunksDistance,
+				worldData.levelMax
+			);
+			scene.add(world.group);
+			world.requestChunks();
+
 		}
 	};
 

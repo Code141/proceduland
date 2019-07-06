@@ -1,8 +1,5 @@
-BinaryTriangleTree = function ( x, z, VA, VL, VR, parent){
-
-	this.chunkX = x;
-	this.chunkZ = z;
-
+BinaryTriangleTree = function (VA, VL, VR, parent)
+{
 	this.parent = parent;
 	this.level = (parent) ? parent.level + 1 : 0;
 
@@ -10,7 +7,9 @@ BinaryTriangleTree = function ( x, z, VA, VL, VR, parent){
 	this.VL = VL;
 	this.VR = VR;
 
-	this.VC = getHeight(new V3( (this.VR.x + this.VL.x) / 2, 0, (this.VR.z + this.VL.z) / 2));
+	this.VC = new V3((this.VR.x + this.VL.x) / 2, 0, (this.VR.z + this.VL.z) / 2);
+	this.VC.setHeight();
+
 	this.deltaBaseApex = Math.abs((this.VL.y + this.VR.y) / 2 - this.VC.y);
 	this.breaked = false;
 }
@@ -22,8 +21,8 @@ BinaryTriangleTree.prototype = {
 		if (this.level == LEVELMAX)
 			return;
 
-		this.CL = new BinaryTriangleTree( this.chunkX, this.chunkZ, this.VC, this.VA, this.VL, this);
-		this.CR = new BinaryTriangleTree( this.chunkX, this.chunkZ, this.VC, this.VR, this.VA, this);
+		this.CL = new BinaryTriangleTree(this.VC, this.VA, this.VL, this);
+		this.CR = new BinaryTriangleTree(this.VC, this.VR, this.VA, this);
 
 		this.CR.createChilds();
 		this.CL.createChilds();
@@ -33,6 +32,7 @@ BinaryTriangleTree.prototype = {
 	{
 		if (this.level == LEVELMAX)
 			return;
+
 		this.CL.NL = this.CR;
 		this.CR.NR = this.CL;
 
@@ -97,79 +97,32 @@ BinaryTriangleTree.prototype = {
 		data.vertices[i] = this.VA.x;
 		data.vertices[i + 1] = this.VA.y;
 		data.vertices[i + 2] = this.VA.z;
+
 		data.vertices[i + 3] = this.VL.x;
 		data.vertices[i + 4] = this.VL.y;
 		data.vertices[i + 5] = this.VL.z;
+
 		data.vertices[i + 6] = this.VR.x;
 		data.vertices[i + 7] = this.VR.y;
 		data.vertices[i + 8] = this.VR.z;
 
+		v1 = this.VA.color;
+		v2 = this.VL.color;
+		v3 = this.VR.color;
 
+		data.colors[i + 0] = v1.r;
+		data.colors[i + 1] = v1.g;
+		data.colors[i + 2] = v1.b;
 
-		v1 = ((this.VA.y + 1) / 2) * 255;
-		v2 = ((this.VL.y + 1) / 2) * 255;
-		v3 = ((this.VR.y + 1) / 2) * 255;
+		data.colors[i + 3] = v2.r;
+		data.colors[i + 4] = v2.g;
+		data.colors[i + 5] = v2.b;
 
-		data.colors[i + 0] = v1;
-		data.colors[i + 1] = v1;
-		data.colors[i + 2] = v1;
-
-		data.colors[i + 3] = v2;
-		data.colors[i + 4] = v2;
-		data.colors[i + 5] = v2;
-
-		data.colors[i + 6] = v3;
-		data.colors[i + 7] = v3;
-		data.colors[i + 8] = v3;
-
-
+		data.colors[i + 6] = v3.r;
+		data.colors[i + 7] = v3.g;
+		data.colors[i + 8] = v3.b;
 
 		return 1;
 	},
-
-	unbreakBTT : function()
-	{
-		if(this.breaked)
-		{
-			this.CL.unbreakBTT();
-			this.CR.unbreakBTT();
-		}
-		this.breaked = false;
-	}
-
 }
 
-/*
-
-	vertices = geometry.attributes.position.array;
-	for (let v = 0; v < vertices.length; v++)
-	{
-
-	}
-
-	/*
-	for (var c = 0; c < colors.length - 1; c++)
-	{
-		var colorDiff = colors[c + 1].stop - colors[c].stop;
-		for (var i = 0; i < geometry.faces.length; i++)
-		{
-
-			face = geometry.faces[i];
-			for (var v = 0; v < 3; v++)
-			{
-				vertex = geometry.vertices[face[vertexIndices[v]]];
-				normalizedAxis = normalized.subVectors(vertex, min).divide(size)[axis];
-				if (reverse)
-				{
-					normalizedAxis = 1 - normalizedAxis;
-				}
-				if (normalizedAxis >= colors[c].stop && normalizedAxis <= colors[c + 1].stop)
-				{
-					var localNormalizedAxis = (normalizedAxis - colors[c].stop) / colorDiff;
-					face.vertexColors[v] = colors[c].color.clone().lerp(colors[c + 1].color, localNormalizedAxis);
-				}
-			}
-		}
-	}
-
-*/

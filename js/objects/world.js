@@ -2,29 +2,29 @@ function World(chunkSize, maxHeight, chunksDistance, levelMax)
 {
 	this.chunkSize = chunkSize;
 	this.maxHeight = maxHeight;
-
 	this.chunksDistance = chunksDistance;
 	this.levelMax = levelMax;
 
 	this.chunks = [];
 
-	this.position = {};
-	this.position.x = 0;
-	this.position.z = 0;
+	this.position = { x: 0, z: 0 };
 
 	this.chunkWaited = 0;
 	this.drawingChunk = null;
 
-	cubePosition = new SelectorTool( 0x00ff00, this.chunkSize, this.maxHeight );
-	Rchunk = new SelectorTool( 0xff0000, this.chunkSize, this.maxHeight );
 
-	this.init = function()
+	this.group = new THREE.Group();
+	this.group.scale.set(this.chunkSize, this.maxHeight, this.chunkSize);
+
+	this.worker_init();
+}
+
+World.prototype = {
+
+	worker_init : function()
 	{
-		this.group = new THREE.Group();
-
-		scene.add(this.group);
-
-		this.chunks = [];
+		if (this.ChunksWorker)
+			this.ChunksWorker.terminate();
 
 		this.ChunksWorker = new Worker("js/webworkers/worldWorker.js");
 
@@ -36,100 +36,73 @@ function World(chunkSize, maxHeight, chunksDistance, levelMax)
 		});
 
 		this.ChunksWorker.onmessage = (e) => {
-			response = e.data;
-			switch(response.type) {
+			r = e.data;
+			switch(r.type) {
 				case "LODArray" :
-					this.newChunk(response);
-				break;
+					this.chunks[r.chunk.x][r.chunk.z].update(r.data.vertices, r.data.colors);
+					break;
 				case "flushChunks" :
 					console.log("flush");
 					world.flushChunks(response.x, response.z);
-				break;
+					break;
 				default:
 					console.log("WORLD WORKER RESPONSE ERROR");
 			}
 		};
-	}
+	},
 
-	this.newChunk = function(r)
+	move : function( x, z )
 	{
-		let x = r.chunk.x;
-		let z = r.chunk.z;
-
-		Rchunk.move(x, z);
-
-		c = new chunk(x, z);
-
-		c.insertVertices(r.data.vertices, r.data.colors);
-		this.COUNT += r.data.vertices.length / 3 / 3;
-		console.log(this.COUNT);
-		c.buildChunkMesh();
-
-		c.group.position.x = ( x * this.chunkSize );
-		c.group.position.z = ( z * this.chunkSize );
-
-		c.group.scale.set(this.chunkSize, this.maxHeight, this.chunkSize);
-
-		this.group.add(c.group);
-	}
-
-	this.reload = function()
-	{
-this.COUNT = 0;
-		this.ChunksWorker.terminate();
-		scene.remove(this.group);
-
-		this.position.x = 0;
-		this.position.z = 0;
-
-		this.init();
-		world.requestChunks();
-
-		scene.remove(cubePosition.mesh);
-		scene.remove(Rchunk.mesh);
-		cubePosition = new SelectorTool( 0x00ff00, this.chunkSize, this.maxHeight );
-		Rchunk = new SelectorTool( 0xff0000, this.chunkSize, this.maxHeight );
-	}
-
-
-
-	this.move = function( x, z )
-	{
-		scene.remove(this.group);
-		this.group = new THREE.Group();
-		scene.add(this.group);
 		this.position.x += x;
 		this.position.z += z;
 
+		this.worker_init();
+
 		this.requestChunks();
 
-		cubePosition.move( this.position.x, this.position.z );
-/*
-	ccl.endApp("Chunks Loaded");
-	ccl.print("Current chunks load cancelled");
-*/
-	}
+	},
 
-	this.requestChunks = function()
+	requestChunks : function()
 	{
-		var newChunkList = andresList(this.chunksDistance, this.position.x, this.position.z);
-		this.chunkWaited = newChunkList.length;
+		let list = andresList(this.chunksDistance, this.position.x, this.position.z);
 
-		this.ChunksWorker.postMessage(
-			{
-				type : "request_chunks_list",
-				list : newChunkList,
-				position :
+		this.chunkWaited = list.length;
+
+		for (var i = 0; i < this.chunkWaited; i++)
+		{
+			this.newChunk(list[i].x, list[i].z);
+			this.ChunksWorker.postMessage(
 				{
-					x : this.position.x,
-					z : this.position.z
-				}
-			});
-	}
+					type : "request_chunks_list",
+					list : [ list[i] ],
+					position :
+					{
+						x : this.position.x,
+						z : this.position.z
+					}
+				});
+		}
+	},
 
-	this.update = function()
+	newChunk : function (x, z)
+	{
+		if (!this.chunks[x])
+			this.chunks[x] = [];
+
+		if (!this.chunks[x][z])
+		{
+			this.chunks[x][z] = new chunk(x, z);
+			this.chunks[x][z].group.position.x = x;
+			this.chunks[x][z].group.position.z = z;
+			this.group.add(this.chunks[x][z].group);
+		}
+		else
+			this.chunks[x][z].state_cube("loading");
+	},
+
+	update : function()
 	{
 	}
-
 }
+
 

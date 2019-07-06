@@ -368,3 +368,181 @@ function GetLineIntersection(a1, a2, b1, b2)
 
 	return I;
 }
+
+/*
+*	EDGE
+*/
+
+function VEdge(s, a, b)		// start, left, right
+{
+	this.left = a;		// point on left
+	this.right = b;		// point on right
+
+	this.start = s;		// start point
+	this.end = null;	// end point
+
+	this.f = (b.x - a.x) / (a.y - b.y);
+	this.g = s.y - this.f * s.x;
+	this.direction = new Point(b.y - a.y, -(b.x - a.x));
+
+	// second point of line
+	this.B = new Point(s.x + this.direction.x, s.y + this.direction.y);
+
+	this.intersected = false;
+	this.iCounted = false;
+
+	this.neighbour = null;
+}
+
+/*
+*	POINT
+*/
+
+function Point(x, y)
+{
+	this.x = x;
+	this.y = y;
+}
+
+Point.prototype.distance = function(a, b)
+{
+	return (Math.sqrt( (b.x - a.x) * (b.x - a.x) + (b.y - a.y) * (b.y - a.y)));
+}
+
+/*
+*	POLYGON
+*/
+
+// counter clock wise
+// (-1,1), (1,1), (1,-1), (-1,-1)
+
+function VPolygon()
+{
+	this.size = 0;
+	this.vertices = [];
+	this.first = null;
+	this.last = null;
+}
+
+VPolygon.prototype.addRight = function(p)
+{
+	this.vertices.push(p);
+	++this.size;
+	this.last = p;
+	if(this.size==1) this.first = p;
+}
+
+VPolygon.prototype.addLeft  = function(p)
+{
+	var vs = this.vertices;
+	this.vertices = [p];
+	for(var i=0; i<vs.length; i++) 
+		this.vertices.push(vs[i]);
+		
+	++this.size;
+	this.first = p;
+	if(this.size==1) this.last = p;
+}
+
+/*
+*	PARABOLA
+*/
+
+function VParabola(s)
+{
+	this.cEvent = null;
+	this.parent = null;
+	this._left = null;
+	this._right = null;
+
+	this.site = s;
+	this.isLeaf = (this.site != null);
+}
+
+VParabola.prototype = {
+	get left(){
+		return this._left;
+	},
+
+	get right(){
+		return this._right;
+	},
+
+	set left(p){
+		this._left = p;
+		p.parent = this;
+	},
+
+	set right(p){
+		this._right = p;
+		p.parent = this;
+	}
+};
+
+/*
+*	QUEUE
+*/
+
+function VQueue()
+{
+	this.q = new Array();
+	this.i = 0;
+}
+
+function sortOnY(a, b)
+{
+	return (a.y > b.y) ? 1 : -1;
+}
+
+VQueue.prototype.enqueue = function(p)
+{
+	this.q.push(p);
+}
+
+VQueue.prototype.dequeue = function()
+{
+	this.q.sort(sortOnY);
+	return this.q.pop();
+}
+
+VQueue.prototype.remove = function(e)
+{
+	var index = -1;
+	for (this.i=0; this.i < this.q.length; this.i++)
+	{
+		if (this.q[this.i] == e)
+		{
+			index = this.i;
+			break;
+		}
+	}
+	this.q.splice(index, 1);
+}
+
+VQueue.prototype.isEmpty = function()
+{
+	return (this.q.length==0);
+}
+
+VQueue.prototype.clear = function(b)
+{
+	this.q = [];
+}
+
+/* EVENT */
+
+function VEvent(p, pe)
+{
+	this.point = p;
+	this.pe = pe;
+	this.y = p.y;
+	this.key = Math.random() * 100000000;
+	this.arch = null;
+	this.value = 0;
+}
+
+VEvent.prototype.compare = function(other)
+{
+	return (this.y > other.y) ? 1 : -1;
+}
+
