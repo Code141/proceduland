@@ -94,35 +94,35 @@ BinaryTriangleTree.prototype = {
 
 		i = index * 9;
 
-		data.vertices[i] = this.VA.x;
-		data.vertices[i + 1] = this.VA.y;
-		data.vertices[i + 2] = this.VA.z;
+		v1 = this.VA;
+		v2 = this.VL;
+		v3 = this.VR;
 
-		data.vertices[i + 3] = this.VL.x;
-		data.vertices[i + 4] = this.VL.y;
-		data.vertices[i + 5] = this.VL.z;
+		data.vertices[i + 0] = v1.x;
+		data.vertices[i + 1] = v1.y;
+		data.vertices[i + 2] = v1.z;
 
-		data.vertices[i + 6] = this.VR.x;
-		data.vertices[i + 7] = this.VR.y;
-		data.vertices[i + 8] = this.VR.z;
+		data.vertices[i + 3] = v2.x;
+		data.vertices[i + 4] = v2.y;
+		data.vertices[i + 5] = v2.z;
 
-		v1 = this.VA.color;
-		v2 = this.VL.color;
-		v3 = this.VR.color;
+		data.vertices[i + 6] = v3.x;
+		data.vertices[i + 7] = v3.y;
+		data.vertices[i + 8] = v3.z;
 
-		data.colors[i + 0] = v1.r;
-		data.colors[i + 1] = v1.g;
-		data.colors[i + 2] = v1.b;
+		data.colors[i + 0] = v1.color.r;
+		data.colors[i + 1] = v1.color.g;
+		data.colors[i + 2] = v1.color.b;
 
-		data.colors[i + 3] = v2.r;
-		data.colors[i + 4] = v2.g;
-		data.colors[i + 5] = v2.b;
+		data.colors[i + 3] = v2.color.r;
+		data.colors[i + 4] = v2.color.g;
+		data.colors[i + 5] = v2.color.b;
 
-		data.colors[i + 6] = v3.r;
-		data.colors[i + 7] = v3.g;
-		data.colors[i + 8] = v3.b;
-
+		data.colors[i + 6] = v3.color.r;
+		data.colors[i + 7] = v3.color.g;
+		data.colors[i + 8] = v3.color.b;
+//		this.breaked == false;
 		return 1;
-	},
+	}
 }
 

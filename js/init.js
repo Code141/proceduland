@@ -7,9 +7,10 @@ var renderer, scene, camera;
 
 INTERSECTED = null;
 
+deg = function(deg){ return ((deg/180)*Math.PI); }
+
 function init(){
 	DEV = true;
-	ccl = new coCoLog();
 
 	if (!Detector.webgl)
 		alert(Detector.addGetWebGLMessage());
@@ -36,6 +37,7 @@ function initThreeJs( container )
 	renderer.setClearColor( 0x000000 );
 	renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setSize( window.innerWidth, window.innerHeight );
+
 	container.appendChild( renderer.domElement );
 
 	//ORBIT CONTROL
@@ -79,8 +81,6 @@ function initThreeJs( container )
 
 }
 
-/* ------ ANIMATION LOOP ------*/
-
 function loop(){
 	window.requestAnimationFrame( loop );
 
@@ -94,7 +94,6 @@ function loop(){
 	renderer.render(scene, camera);
 }
 
-/* ------ INIT OBJ HERE ------*/
 function fillscene()
 {
 	world = new World(chunkSize, maxHeight, chunksDistance, levelMax);
@@ -104,9 +103,7 @@ function fillscene()
 	sky = new Sky();
 	initLight();
 
-	tinnyHouse = MODELS["tinnyHouse"].clone();
-	scene.add(tinnyHouse);
-
+	load("tinnyHouse", 'models/tinnyHouse.dae', 1);
 //	voronoi();
 }
 
@@ -114,12 +111,16 @@ function initLight()
 {
 
 /*
-	var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.3 );
-	directionalLight.position.set( 0, 1000, 0 );
+	var directionalLight = new THREE.DirectionalLight( 0xffffff, 1 );
+	directionalLight.position.set( 0, 100, 0 );
 	scene.add( directionalLight );
 */
+
 	var light = new THREE.AmbientLight( 0x333333 ); // soft white light
 	scene.add( light );
+
+
+
 
 }
 
@@ -135,18 +136,16 @@ function voronoi(){
 
 	v = new Voronoi();
 
-
 	for (let x = 0; x < chunksDistance * 2 - 1; x++)
 		for (let y = 0; y < chunksDistance * 2 - 1; y++)
-			points.push(
-				new Point(
+			points.push( new Point(
 					(Math.random() * chunkSize) + x * chunkSize,
 					(Math.random() * chunkSize) + y * chunkSize
-				)
-			)
+				))
 
 	var material = new THREE.LineBasicMaterial( { color: 0xffff00 } );
 	var geometry = new THREE.Geometry();
+
 	geometry.vertices.push(new THREE.Vector3( 0, 0, 0));
 	geometry.vertices.push(new THREE.Vector3( 0, 0, h));
 	geometry.vertices.push(new THREE.Vector3( w, 0, h));

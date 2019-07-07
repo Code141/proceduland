@@ -18,11 +18,11 @@ ChunksOverseer = function(levelMax){
 
 ChunksOverseer.prototype = {
 
-	initChunk : function( x, z )
+	initChunk : function( x, z, hypo)
 	{
 		if (this.chunks[x] == undefined)
 			this.chunks[x] = [];
-		this.chunks[x][z] = new Chunk(x,z, this.chunkSize);
+		this.chunks[x][z] = new Chunk(x,z, this.chunkSize, hypo);
 	},
 
 	linkChunk : function( x, z )
@@ -78,7 +78,7 @@ ChunksOverseer.prototype = {
 	{
 
 		for (let i = 0; i < list.length; i++)
-			overseer.initChunk(list[i].x, list[i].z);
+			overseer.initChunk(list[i].x, list[i].z, list[i].hypo);
 
 		for (let i = 0; i < list.length; i++)
 			overseer.linkChunk(list[i].x, list[i].z);
@@ -106,24 +106,19 @@ ChunksOverseer.prototype = {
 				Promise.all(pro)
 					.then(() => {
 						overseer.send_chunk(overseer.chunks[x][z]);
-//						this.chunks[x][z] = undefined;
+						this.chunks[x][z] = undefined;
 
 					})
 				.catch(error => console.log(`Error in promises ${error}`))
 
 			})
 		}
-
-		/*
-		this.chunks = []; // ??? what are you breaking after that ?
-		this.unBreakAll();
-*/
 	},
 
 	send_chunk : function(chunk)
 	{
 		postMessage({
-			type : "LODArray",
+			type : "chunk_refresh",
 			position : {
 				x : this.position.x,
 				z : this.position.z
@@ -134,9 +129,6 @@ ChunksOverseer.prototype = {
 				z : chunk.z
 			}
 		});
-
-	this.chunks = [];
-
 	},
 
 	unBreakAll : function()
@@ -154,18 +146,13 @@ onmessage = function(e) {
 
 	switch(order.type)
 	{
-		case "initOverseerParams":
+		case "init":
 			overseer = new ChunksOverseer(order.levelMax);
 		break;
 		case "request_chunks_list":
 			overseer.position.x = order.position.x;
 			overseer.position.z = order.position.z;
 			overseer.get(order.list);
-		break;
-		case "moveOn":
-			overseer.position.x = order.position.x;
-			overseer.position.z = order.position.z;
-			overseer.moveOn( order.position.x, order.position.z );
 		break;
 		default:
 			console.log("ORDER ERROR");

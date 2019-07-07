@@ -1,11 +1,13 @@
 procedural = function(absoluteX, absoluteZ){
 
-	landNoiseFrequance = 0.1;
+	landNoise = 0.1;
+	plumb = 5;
 	land = 1;
 	riverFrequance = 7;
 
 	land = ( noise.simplex2( absoluteX / land , absoluteZ / land ) + 1 ) / 2;
-	landNoise = ( noise.simplex2( absoluteX / landNoiseFrequance, absoluteZ / landNoiseFrequance ) + 1 ) / 2;
+	landNoise = ( noise.simplex2( absoluteX / landNoise, absoluteZ / landNoise ) + 1 ) / 2;
+	plumb = ( noise.simplex2( absoluteX / plumb -5, absoluteZ / plumb ) + 1 ) / 2;
 
 	river = ( noise.simplex2( absoluteX / riverFrequance , absoluteZ / riverFrequance ) + 1 ) / 2;
 	river = 1 - ( Math.abs(river )  );
@@ -16,8 +18,6 @@ procedural = function(absoluteX, absoluteZ){
 
 	finalNoise -= river;
 
-
-	
 	if (finalNoise < -0.7)
 		finalNoise = -0.2;
 
@@ -26,22 +26,15 @@ procedural = function(absoluteX, absoluteZ){
 
 	if (finalNoise < -0.2)
 		finalNoise /= 2;
-
-
-	return (
-	{
-		height: finalNoise,
+	return ( {
+		height: finalNoise  ,
 		color: colorise(
 			gradient, (finalNoise + 1 ) / 2,
-			gradient2, landNoise ,
+			gradient2, landNoise / 3  ,
 			((finalNoise + 1) / 2) * land * land
-
 		)
-	
-	}
-	);
+	});
 }
-
 
 let gradient = [
 	{
@@ -84,27 +77,28 @@ let gradient2 = [
 
 
 let lerp = function (v0, v1, t) {
-	return (1 - t) * v0 + t * v1;
+	return ( (1 - t) * v0 + t * v1);
 }
 
-let rgb_color_lerp = function (c1, c2, t)
+let rgb_lerp = function (c1, c2, t)
 {
-	return {
+	return ( {
 		r: lerp(c1.r, c2.r, t),
 		g: lerp(c1.g, c2.g, t),
 		b: lerp(c1.b, c2.b, t)
-	}
+	});
 }
 
-let rgb_color_blerp = function (c1, c2, c3, c4, t1, t2, t3)
+let rgb_color_bilerp = function (c1, c2, c3, c4, t1, t2, t3)
 {
-	return {
-		r: lerp(lerp(c1.r, c2.r, t1), lerp(c3.r, c4.r, t2), t3),
-		g: lerp(lerp(c1.g, c2.g, t1), lerp(c3.g, c4.g, t2), t3),
-		b: lerp(lerp(c1.b, c2.b, t1), lerp(c3.b, c4.b, t2), t3)
-	}
+	return (
+		rgb_lerp(
+			rgb_lerp(c1, c2, t1),
+			rgb_lerp(c3, c4, t2),
+			t3
+		)
+	);
 }
-
 
 function colorise(g1, t1, g2, t2, t3)
 {
@@ -126,5 +120,5 @@ function colorise(g1, t1, g2, t2, t3)
 
 	t2 = (t2 - c3.stop) / (c4.stop - c3.stop);
 
-	return (rgb_color_blerp(c1, c2, c3, c4, t1, t2, t3));
+	return (rgb_color_bilerp(c1, c2, c3, c4, t1, t2, t3));
 }

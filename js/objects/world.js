@@ -6,12 +6,9 @@ function World(chunkSize, maxHeight, chunksDistance, levelMax)
 	this.levelMax = levelMax;
 
 	this.chunks = [];
-
 	this.position = { x: 0, z: 0 };
 
 	this.chunkWaited = 0;
-	this.drawingChunk = null;
-
 
 	this.group = new THREE.Group();
 	this.group.scale.set(this.chunkSize, this.maxHeight, this.chunkSize);
@@ -23,13 +20,15 @@ World.prototype = {
 
 	worker_init : function()
 	{
+		this.nb_vertices = 0;
+
 		if (this.ChunksWorker)
 			this.ChunksWorker.terminate();
 
 		this.ChunksWorker = new Worker("js/webworkers/worldWorker.js");
 
 		this.ChunksWorker.postMessage({
-			type : "initOverseerParams",
+			type : "init",
 			chunkSize : this.chunkSize,
 			chunksDistance : this.chunksDistance,
 			levelMax : this.levelMax
@@ -38,13 +37,15 @@ World.prototype = {
 		this.ChunksWorker.onmessage = (e) => {
 			r = e.data;
 			switch(r.type) {
-				case "LODArray" :
-					this.chunks[r.chunk.x][r.chunk.z].update(r.data.vertices, r.data.colors);
-					break;
-				case "flushChunks" :
-					console.log("flush");
-					world.flushChunks(response.x, response.z);
-					break;
+				case "chunk_refresh" :
+					this.chunks[r.chunk.x][r.chunk.z].update(
+						r.data.vertices,
+						r.data.faces,
+						r.data.colors
+					);
+					this.nb_vertices += r.data.vertices.length;
+					console.log(this.nb_vertices);
+				break;
 				default:
 					console.log("WORLD WORKER RESPONSE ERROR");
 			}
@@ -59,15 +60,12 @@ World.prototype = {
 		this.worker_init();
 
 		this.requestChunks();
-
 	},
 
 	requestChunks : function()
 	{
 		let list = andresList(this.chunksDistance, this.position.x, this.position.z);
-
 		this.chunkWaited = list.length;
-
 		for (var i = 0; i < this.chunkWaited; i++)
 		{
 			this.newChunk(list[i].x, list[i].z);

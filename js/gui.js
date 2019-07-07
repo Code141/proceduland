@@ -84,7 +84,7 @@ initGUI = function(){
 		}
 	};
 
-	worldGui.add(worldData, 'chunksDistance', 0, 20).step(1);
+	worldGui.add(worldData, 'chunksDistance', 1, 20).step(1);
 	worldGui.add(worldData, 'levelMax', 0, 20).step(1);
 	worldGui.add(worldData, 'chunkSize');
 	worldGui.add(worldData, 'maxHeight');
