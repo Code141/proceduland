@@ -1,12 +1,20 @@
 function chunk(x, y)
 {
+
 	this.x = x;
 	this.y = y;
 
 	this.group = new THREE.Group();
 
-	this.add_water();
+//	this.add_water();
 	this.state_cube("init");
+var geometry = new THREE.BoxBufferGeometry( 128, 0.1, 128 );
+var material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+
+	var mesh = new THREE.Mesh( geometry, material );
+	mesh.position.x = 64;
+	mesh.position.z = 64;
+//scene.add( mesh );
 }
 
 chunk.prototype = {
@@ -19,30 +27,45 @@ chunk.prototype = {
 		this.group.add( water );
 	},
 
-	update : function(vertices, faces, colors)
+	update : function(vertices, faces, vertex_normals, colors)
 	{
+/*
+THREE.TriangleStripDrawMode
+This will result in a series of triangles connected in a strip, given by
+(v0, v1, v2),
+(v2, v1, v3),
+(v2, v3, v4),
+... so that every subsequent triangle shares two vertices with the previous triangle. 
+*/
+//console.log(vertices, faces, colors);
 		geometry = new THREE.BufferGeometry();
-		geometry.addAttribute( 'position', new THREE.BufferAttribute(vertices, 3 ));
-		geometry.addAttribute( 'color', new THREE.BufferAttribute(colors, 3, true ));
-		geometry.addAttribute( 'index', new THREE.BufferAttribute(faces, 3 ));
 
-		geometry.computeVertexNormals();
-		geometry.computeFaceNormals();
+		geometry.addAttribute( 'position', new THREE.BufferAttribute(vertices, 3 ));
+//		geometry.addAttribute( 'index', new THREE.BufferAttribute(faces, 1 ));
+		geometry.addAttribute( 'normal', new THREE.BufferAttribute(vertex_normals, 3, true ));
+	//	geometry.addAttribute( 'color', new THREE.BufferAttribute(colors, 3, true ));
+
+//	geometry.computeVertexNormals();
+//	geometry.computeFaceNormals();
 
 
 
 		if (this.mesh)
 		{
 			this.mesh.geometry.dispose();
+			this.mesh.geometry = null;
 			this.mesh.geometry = geometry;
 		}
 		else
 		{
 			this.mesh = new THREE.Mesh( geometry, ground_material );
+			var helper = new THREE.VertexNormalsHelper( this.mesh, 0.005, 0x00ff00, 1 );
+			this.group.add(helper);
 			this.group.add( this.mesh );
 		}
 
 		this.state_cube("loaded");
+
 	},
 
 	state_cube : function(state)

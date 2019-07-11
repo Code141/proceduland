@@ -1,6 +1,6 @@
 chunkSize = 128;
 maxHeight = 50;
-chunksDistance = 5;
+chunksDistance = 1;
 levelMax = 10;
 
 var renderer, scene, camera;
@@ -30,8 +30,8 @@ function initThreeJs( container )
 	/* --------- BASICS ----------*/
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 2000000 );
 	camera.position.x = 0;
-	camera.position.y = 300;
-	camera.position.z = 300;
+	camera.position.y = 150;
+	camera.position.z = 000;
 
 	renderer = new THREE.WebGLRenderer( { antialias: true, alpha: false } );
 	renderer.setClearColor( 0x000000 );
@@ -42,9 +42,8 @@ function initThreeJs( container )
 
 	//ORBIT CONTROL
 	scene = new THREE.Scene();
-	scene.background = new THREE.Color(0xcc8888);
-//	scene.fog = new THREE.Fog( 0xadc3f3, 100, 1000 )
-	scene.background = new THREE.Color(0xadc3f3);
+	scene.background = new THREE.Color(0x111111);
+	scene.fog = new THREE.Fog( 0xadc3f3, 100, 1000 )
 
 	keyboard = new KeyboardState();
 	mouse = new THREE.Vector2();
@@ -74,14 +73,16 @@ function initThreeJs( container )
 		controls.target.set( 0, 0, 0 );
 
 		//AXIS HELPER
-		var axisHelper = new THREE.AxesHelper( 500 );
-		scene.add( axisHelper );
+/*		var axisHelper = new THREE.AxesHelper( 500 );
+		scene.add( axisHelper );i
+			*/
 	}
 
 
 }
 
-function loop(){
+function loop()
+{
 	window.requestAnimationFrame( loop );
 
 	if ( DEV )
@@ -100,7 +101,7 @@ function fillscene()
 	scene.add(world.group);
 	world.requestChunks();
 
-	sky = new Sky();
+//	sky = new Sky();
 	initLight();
 
 	load("tinnyHouse", 'models/tinnyHouse.dae', 1);
@@ -116,7 +117,7 @@ function initLight()
 	scene.add( directionalLight );
 */
 
-	var light = new THREE.AmbientLight( 0x333333 ); // soft white light
+	var light = new THREE.AmbientLight( 0xffffff ); // soft white light
 	scene.add( light );
 
 

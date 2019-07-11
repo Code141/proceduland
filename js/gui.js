@@ -65,7 +65,7 @@ initGUI = function(){
 	var worldGui = gui.addFolder('World');
 
 	var worldData  = {
-		chunksDistance: 5,
+		chunksDistance: 1,
 		levelMax: 12,
 		chunkSize: 128,
 		maxHeight: 50,
@@ -85,7 +85,7 @@ initGUI = function(){
 	};
 
 	worldGui.add(worldData, 'chunksDistance', 1, 20).step(1);
-	worldGui.add(worldData, 'levelMax', 0, 20).step(1);
+	worldGui.add(worldData, 'levelMax', 1, 25).step(1);
 	worldGui.add(worldData, 'chunkSize');
 	worldGui.add(worldData, 'maxHeight');
 

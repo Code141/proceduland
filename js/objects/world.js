@@ -38,13 +38,15 @@ World.prototype = {
 			r = e.data;
 			switch(r.type) {
 				case "chunk_refresh" :
-					this.chunks[r.chunk.x][r.chunk.z].update(
+				this.chunks[r.chunk.x][r.chunk.z].update(
 						r.data.vertices,
 						r.data.faces,
+						r.data.vertex_normals,
 						r.data.colors
 					);
+					this.chunkWaited--;
 					this.nb_vertices += r.data.vertices.length;
-					console.log(this.nb_vertices);
+			//		console.log(this.nb_vertices);
 				break;
 				default:
 					console.log("WORLD WORKER RESPONSE ERROR");
@@ -57,7 +59,7 @@ World.prototype = {
 		this.position.x += x;
 		this.position.z += z;
 
-		this.worker_init();
+//		this.worker_init();
 
 		this.requestChunks();
 	},
@@ -67,19 +69,18 @@ World.prototype = {
 		let list = andresList(this.chunksDistance, this.position.x, this.position.z);
 		this.chunkWaited = list.length;
 		for (var i = 0; i < this.chunkWaited; i++)
-		{
 			this.newChunk(list[i].x, list[i].z);
-			this.ChunksWorker.postMessage(
+
+		this.ChunksWorker.postMessage(
+			{
+				type : "request_chunks_list",
+				list : list,
+				position :
 				{
-					type : "request_chunks_list",
-					list : [ list[i] ],
-					position :
-					{
-						x : this.position.x,
-						z : this.position.z
-					}
-				});
-		}
+					x : this.position.x,
+					z : this.position.z
+				}
+			});
 	},
 
 	newChunk : function (x, z)

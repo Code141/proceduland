@@ -14,7 +14,11 @@ ground_material = new THREE.MeshLambertMaterial({
 	specular: 0x222222,
 	shininess: 25,
 	bumpMap: mapHeight,
-	bumpScale: 102
+	bumpScale: 102,
+
+	wireframe: true,
+	transparent : true,
+	opacity : 0.1
 });
 
 state_cube_material = new THREE.MeshBasicMaterial( {

@@ -25,10 +25,7 @@ vsplit
 3wincmd h
 wincmd _ | wincmd |
 split
-wincmd _ | wincmd |
-split
-2wincmd k
-wincmd w
+1wincmd k
 wincmd w
 wincmd w
 wincmd w
@@ -45,20 +42,18 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe '1resize ' . ((&lines * 16 + 48) / 96)
-exe 'vert 1resize ' . ((&columns * 98 + 182) / 365)
-exe '2resize ' . ((&lines * 69 + 48) / 96)
-exe 'vert 2resize ' . ((&columns * 98 + 182) / 365)
-exe '3resize ' . ((&lines * 5 + 48) / 96)
-exe 'vert 3resize ' . ((&columns * 98 + 182) / 365)
-exe 'vert 4resize ' . ((&columns * 89 + 182) / 365)
-exe 'vert 5resize ' . ((&columns * 88 + 182) / 365)
-exe '6resize ' . ((&lines * 45 + 48) / 96)
-exe 'vert 6resize ' . ((&columns * 87 + 182) / 365)
-exe '7resize ' . ((&lines * 42 + 48) / 96)
-exe 'vert 7resize ' . ((&columns * 87 + 182) / 365)
-exe '8resize ' . ((&lines * 3 + 48) / 96)
-exe 'vert 8resize ' . ((&columns * 87 + 182) / 365)
+exe '1resize ' . ((&lines * 10 + 48) / 96)
+exe 'vert 1resize ' . ((&columns * 84 + 182) / 365)
+exe '2resize ' . ((&lines * 81 + 48) / 96)
+exe 'vert 2resize ' . ((&columns * 84 + 182) / 365)
+exe 'vert 3resize ' . ((&columns * 93 + 182) / 365)
+exe 'vert 4resize ' . ((&columns * 93 + 182) / 365)
+exe '5resize ' . ((&lines * 30 + 48) / 96)
+exe 'vert 5resize ' . ((&columns * 92 + 182) / 365)
+exe '6resize ' . ((&lines * 30 + 48) / 96)
+exe 'vert 6resize ' . ((&columns * 92 + 182) / 365)
+exe '7resize ' . ((&lines * 30 + 48) / 96)
+exe 'vert 7resize ' . ((&columns * 92 + 182) / 365)
 argglobal
 setlocal fdm=indent
 setlocal fde=0
@@ -68,7 +63,7 @@ setlocal fdl=1
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
-let s:l = 7 - ((6 * winheight(0) + 8) / 16)
+let s:l = 7 - ((4 * winheight(0) + 5) / 10)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -86,36 +81,12 @@ setlocal fdl=5
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
-47
-normal! zo
-128
-normal! zo
-128
-normal! zc
-let s:l = 198 - ((124 * winheight(0) + 34) / 69)
+let s:l = 1 - ((0 * winheight(0) + 40) / 81)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-198
+1
 normal! 0
-lcd ~/cursus/proceduland
-wincmd w
-argglobal
-terminal ++curwin ++cols=98 ++rows=5 
-setlocal fdm=indent
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-let s:l = 3 - ((2 * winheight(0) + 2) / 5)
-if s:l < 1 | let s:l = 1 | endif
-exe s:l
-normal! zt
-3
-normal! 048|
 lcd ~/cursus/proceduland
 wincmd w
 argglobal
@@ -138,22 +109,18 @@ normal! zo
 normal! zo
 41
 normal! zo
-67
+64
 normal! zo
-71
+69
 normal! zo
-73
+75
 normal! zo
-74
-normal! zo
-87
-normal! zo
-let s:l = 37 - ((36 * winheight(0) + 46) / 92)
+let s:l = 11 - ((7 * winheight(0) + 46) / 92)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-37
-normal! 046|
+11
+normal! 0
 lcd ~/cursus/proceduland
 wincmd w
 argglobal
@@ -166,12 +133,18 @@ setlocal fdl=3
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
-let s:l = 27 - ((26 * winheight(0) + 46) / 92)
+22
+normal! zo
+53
+normal! zo
+53
+normal! zo
+let s:l = 49 - ((47 * winheight(0) + 46) / 92)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-27
-normal! 0
+49
+normal! 014|
 lcd ~/cursus/proceduland
 wincmd w
 argglobal
@@ -184,12 +157,12 @@ setlocal fdl=3
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
-let s:l = 8 - ((7 * winheight(0) + 22) / 45)
+let s:l = 18 - ((11 * winheight(0) + 15) / 30)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-8
-normal! 014|
+18
+normal! 0
 lcd ~/cursus/proceduland
 wincmd w
 argglobal
@@ -202,12 +175,12 @@ setlocal fdl=4
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
-let s:l = 38 - ((23 * winheight(0) + 21) / 42)
+let s:l = 29 - ((17 * winheight(0) + 15) / 30)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-38
-normal! 018|
+29
+normal! 029|
 lcd ~/cursus/proceduland
 wincmd w
 argglobal
@@ -226,28 +199,26 @@ normal! zo
 normal! zo
 74
 normal! zo
-let s:l = 53 - ((1 * winheight(0) + 1) / 3)
+let s:l = 74 - ((7 * winheight(0) + 15) / 30)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-53
-normal! 022|
+74
+normal! 038|
 lcd ~/cursus/proceduland
 wincmd w
-exe '1resize ' . ((&lines * 16 + 48) / 96)
-exe 'vert 1resize ' . ((&columns * 98 + 182) / 365)
-exe '2resize ' . ((&lines * 69 + 48) / 96)
-exe 'vert 2resize ' . ((&columns * 98 + 182) / 365)
-exe '3resize ' . ((&lines * 5 + 48) / 96)
-exe 'vert 3resize ' . ((&columns * 98 + 182) / 365)
-exe 'vert 4resize ' . ((&columns * 89 + 182) / 365)
-exe 'vert 5resize ' . ((&columns * 88 + 182) / 365)
-exe '6resize ' . ((&lines * 45 + 48) / 96)
-exe 'vert 6resize ' . ((&columns * 87 + 182) / 365)
-exe '7resize ' . ((&lines * 42 + 48) / 96)
-exe 'vert 7resize ' . ((&columns * 87 + 182) / 365)
-exe '8resize ' . ((&lines * 3 + 48) / 96)
-exe 'vert 8resize ' . ((&columns * 87 + 182) / 365)
+exe '1resize ' . ((&lines * 10 + 48) / 96)
+exe 'vert 1resize ' . ((&columns * 84 + 182) / 365)
+exe '2resize ' . ((&lines * 81 + 48) / 96)
+exe 'vert 2resize ' . ((&columns * 84 + 182) / 365)
+exe 'vert 3resize ' . ((&columns * 93 + 182) / 365)
+exe 'vert 4resize ' . ((&columns * 93 + 182) / 365)
+exe '5resize ' . ((&lines * 30 + 48) / 96)
+exe 'vert 5resize ' . ((&columns * 92 + 182) / 365)
+exe '6resize ' . ((&lines * 30 + 48) / 96)
+exe 'vert 6resize ' . ((&columns * 92 + 182) / 365)
+exe '7resize ' . ((&lines * 30 + 48) / 96)
+exe 'vert 7resize ' . ((&columns * 92 + 182) / 365)
 tabnext
 edit ~/cursus/proceduland/js/webworkers/worldWorker.js
 set splitbelow splitright
@@ -259,6 +230,14 @@ wincmd _ | wincmd |
 vsplit
 3wincmd h
 wincmd w
+wincmd _ | wincmd |
+split
+1wincmd k
+wincmd w
+wincmd w
+wincmd _ | wincmd |
+split
+1wincmd k
 wincmd w
 wincmd w
 wincmd t
@@ -266,10 +245,16 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 93 + 182) / 365)
+exe 'vert 1resize ' . ((&columns * 84 + 182) / 365)
+exe '2resize ' . ((&lines * 79 + 48) / 96)
 exe 'vert 2resize ' . ((&columns * 84 + 182) / 365)
-exe 'vert 3resize ' . ((&columns * 93 + 182) / 365)
-exe 'vert 4resize ' . ((&columns * 92 + 182) / 365)
+exe '3resize ' . ((&lines * 12 + 48) / 96)
+exe 'vert 3resize ' . ((&columns * 84 + 182) / 365)
+exe '4resize ' . ((&lines * 27 + 48) / 96)
+exe 'vert 4resize ' . ((&columns * 84 + 182) / 365)
+exe '5resize ' . ((&lines * 64 + 48) / 96)
+exe 'vert 5resize ' . ((&columns * 84 + 182) / 365)
+exe 'vert 6resize ' . ((&columns * 110 + 182) / 365)
 argglobal
 setlocal fdm=indent
 setlocal fde=0
@@ -285,32 +270,42 @@ normal! zo
 normal! zo
 30
 normal! zo
-79
+82
 normal! zo
-98
+90
 normal! zo
-98
+90
 normal! zo
-98
+96
 normal! zo
-106
+96
+normal! zo
+99
 normal! zo
 110
 normal! zo
-113
+114
 normal! zo
-117
+121
 normal! zo
-128
+121
 normal! zo
-153
+121
 normal! zo
-let s:l = 102 - ((74 * winheight(0) + 46) / 92)
+132
+normal! zo
+133
+normal! zo
+157
+normal! zo
+161
+normal! zo
+let s:l = 44 - ((25 * winheight(0) + 46) / 92)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-102
-normal! 09|
+44
+normal! 047|
 lcd ~/cursus/proceduland
 wincmd w
 argglobal
@@ -323,34 +318,97 @@ setlocal fdl=7
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
-4
+8
 normal! zo
-50
+24
 normal! zo
-69
+26
 normal! zo
-84
+41
 normal! zo
-85
+55
 normal! zo
-88
+99
+normal! zo
+104
+normal! zo
+111
 normal! zo
 114
 normal! zo
-125
+155
 normal! zo
-171
+162
 normal! zo
-178
+180
 normal! zo
-178
+180
 normal! zo
-let s:l = 207 - ((84 * winheight(0) + 46) / 92)
+182
+normal! zo
+198
+normal! zo
+198
+normal! zo
+216
+normal! zo
+216
+normal! zo
+227
+normal! zo
+242
+normal! zo
+242
+normal! zo
+245
+normal! zo
+245
+normal! zo
+255
+normal! zo
+255
+normal! zo
+274
+normal! zc
+309
+normal! zc
+319
+normal! zo
+319
+normal! zc
+430
+normal! zo
+430
+normal! zc
+let s:l = 306 - ((71 * winheight(0) + 39) / 79)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-207
+306
 normal! 0
+lcd ~/cursus/proceduland
+wincmd w
+argglobal
+terminal ++curwin ++cols=84 ++rows=12 
+setlocal fdm=indent
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+let s:l = 3 - ((2 * winheight(0) + 6) / 12)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+3
+let s:c = 7 - ((5 * winwidth(0) + 42) / 84)
+if s:c > 0
+  exe 'normal! ' . s:c . '|zs' . 7 . '|'
+else
+  normal! 07|
+endif
 lcd ~/cursus/proceduland
 wincmd w
 argglobal
@@ -367,18 +425,56 @@ setlocal fen
 normal! zo
 21
 normal! zo
+33
+normal! zo
+33
+normal! zc
 57
 normal! zo
-86
+57
+normal! zc
+70
 normal! zo
-125
+70
+normal! zc
+80
 normal! zo
-let s:l = 47 - ((33 * winheight(0) + 46) / 92)
+80
+normal! zc
+88
+normal! zo
+127
+normal! zo
+let s:l = 23 - ((19 * winheight(0) + 13) / 27)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-47
+23
 normal! 0
+lcd ~/cursus/proceduland
+wincmd w
+argglobal
+if bufexists("~/cursus/proceduland/js/objects/chunk.js") | buffer ~/cursus/proceduland/js/objects/chunk.js | else | edit ~/cursus/proceduland/js/objects/chunk.js | endif
+setlocal fdm=indent
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=3
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+41
+normal! zo
+53
+normal! zo
+53
+normal! zo
+let s:l = 64 - ((35 * winheight(0) + 32) / 64)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+64
+normal! 013|
 lcd ~/cursus/proceduland
 wincmd w
 argglobal
@@ -395,19 +491,25 @@ setlocal fen
 normal! zo
 30
 normal! zo
-let s:l = 42 - ((41 * winheight(0) + 46) / 92)
+let s:l = 54 - ((53 * winheight(0) + 46) / 92)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-42
-normal! 024|
+54
+normal! 047|
 lcd ~/cursus/proceduland
 wincmd w
 2wincmd w
-exe 'vert 1resize ' . ((&columns * 93 + 182) / 365)
+exe 'vert 1resize ' . ((&columns * 84 + 182) / 365)
+exe '2resize ' . ((&lines * 79 + 48) / 96)
 exe 'vert 2resize ' . ((&columns * 84 + 182) / 365)
-exe 'vert 3resize ' . ((&columns * 93 + 182) / 365)
-exe 'vert 4resize ' . ((&columns * 92 + 182) / 365)
+exe '3resize ' . ((&lines * 12 + 48) / 96)
+exe 'vert 3resize ' . ((&columns * 84 + 182) / 365)
+exe '4resize ' . ((&lines * 27 + 48) / 96)
+exe 'vert 4resize ' . ((&columns * 84 + 182) / 365)
+exe '5resize ' . ((&lines * 64 + 48) / 96)
+exe 'vert 5resize ' . ((&columns * 84 + 182) / 365)
+exe 'vert 6resize ' . ((&columns * 110 + 182) / 365)
 tabnext 2
 badd +1 ~/cursus/proceduland/index.html
 badd +1 ~/cursus/proceduland/js

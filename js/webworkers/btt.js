@@ -62,6 +62,7 @@ BinaryTriangleTree.prototype = {
 
 		if ((this.deltaBaseApex * 1000) > (hypo * hypo))
 			this.break();
+
 	},
 
 	break : function()
@@ -83,6 +84,7 @@ BinaryTriangleTree.prototype = {
 
 	printLod : function(data, index)
 	{
+
 		let i;
 
 		if (this.breaked)

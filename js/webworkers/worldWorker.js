@@ -22,17 +22,20 @@ ChunksOverseer.prototype = {
 	{
 		if (this.chunks[x] == undefined)
 			this.chunks[x] = [];
-		this.chunks[x][z] = new Chunk(x,z, this.chunkSize, hypo);
+		this.chunks[x][z] = new Chunk(x,z, hypo);
 	},
 
 	linkChunk : function( x, z )
 	{
 		if (this.chunks[x][z + 1])
 			this.chunks[x][z].south.NB = this.chunks[x][z + 1].north;
+
 		if (this.chunks[x][z-1])
 			this.chunks[x][z].north.NB = this.chunks[x][z - 1].south;
+
 		if (this.chunks[x + 1] && this.chunks[x + 1][z])
 			this.chunks[x][z].east.NB = this.chunks[x + 1][z].west;
+
 		if (this.chunks[x - 1] && this.chunks[x - 1][z])
 			this.chunks[x][z].west.NB = this.chunks[x - 1][z].east;
 
@@ -76,13 +79,20 @@ ChunksOverseer.prototype = {
 
 	get : function(list)
 	{
-
-		for (let i = 0; i < list.length; i++)
+		let i;
+		var t0 = performance.now();
+		for (i = 0; i < list.length; i++)
 			overseer.initChunk(list[i].x, list[i].z, list[i].hypo);
+		var t1 = performance.now();
+		console.log("INIT " + i + " chunks in " + (t1 - t0) + " ms")
 
-		for (let i = 0; i < list.length; i++)
+/*
+		var t0 = performance.now();
+		for (i = 0; i < list.length; i++)
 			overseer.linkChunk(list[i].x, list[i].z);
-
+		var t1 = performance.now();
+		console.log("LINKED in " + (t1 - t0) + " ms")
+*/
 		// PROMISE
 		for (let i = 0; i < list.length; i++)
 		{
@@ -106,13 +116,15 @@ ChunksOverseer.prototype = {
 				Promise.all(pro)
 					.then(() => {
 						overseer.send_chunk(overseer.chunks[x][z]);
-						this.chunks[x][z] = undefined;
+//						this.chunks[x][z] = undefined;
 
 					})
 				.catch(error => console.log(`Error in promises ${error}`))
 
 			})
 		}
+
+
 	},
 
 	send_chunk : function(chunk)
