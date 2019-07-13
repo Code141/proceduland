@@ -8,13 +8,7 @@ function chunk(x, y)
 
 //	this.add_water();
 	this.state_cube("init");
-var geometry = new THREE.BoxBufferGeometry( 128, 0.1, 128 );
-var material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
 
-	var mesh = new THREE.Mesh( geometry, material );
-	mesh.position.x = 64;
-	mesh.position.z = 64;
-//scene.add( mesh );
 }
 
 chunk.prototype = {
@@ -23,32 +17,24 @@ chunk.prototype = {
 	{
 		var geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
 		var water = new THREE.Mesh( geometry, water_material );
+		water.position.x += 0.5;
+		water.position.z += 0.5;
 		water.rotation.x = deg(-90);
 		this.group.add( water );
 	},
 
-	update : function(vertices, faces, vertex_normals, colors)
+	update : function(data)
 	{
-/*
-THREE.TriangleStripDrawMode
-This will result in a series of triangles connected in a strip, given by
-(v0, v1, v2),
-(v2, v1, v3),
-(v2, v3, v4),
-... so that every subsequent triangle shares two vertices with the previous triangle. 
-*/
-//console.log(vertices, faces, colors);
+
 		geometry = new THREE.BufferGeometry();
 
-		geometry.addAttribute( 'position', new THREE.BufferAttribute(vertices, 3 ));
-//		geometry.addAttribute( 'index', new THREE.BufferAttribute(faces, 1 ));
-		geometry.addAttribute( 'normal', new THREE.BufferAttribute(vertex_normals, 3, true ));
-	//	geometry.addAttribute( 'color', new THREE.BufferAttribute(colors, 3, true ));
+		geometry.addAttribute( 'position', new THREE.BufferAttribute(data.vertices, 3 ));
+		geometry.addAttribute( 'index', new THREE.BufferAttribute(data.faces, 1 ));
+		geometry.addAttribute( 'normal', new THREE.BufferAttribute(data.vertex_normals, 3, true ));
+//		geometry.addAttribute( 'color', new THREE.BufferAttribute(data.colors, 3, true ));
 
-//	geometry.computeVertexNormals();
-//	geometry.computeFaceNormals();
-
-
+//		geometry.computeVertexNormals();
+//		geometry.computeFaceNormals();
 
 		if (this.mesh)
 		{

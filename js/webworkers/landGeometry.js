@@ -26,13 +26,13 @@ procedural = function(absoluteX, absoluteZ){
 	if (finalNoise < -0.2)
 		finalNoise /= 1.5;
 
-return (finalNoise);
 
-	color= colorise(
+	color = colorise(
 			gradient, (finalNoise + 1 ) / 2,
 			gradient2, landNoise / 3  ,
 			((finalNoise + 1) / 2) * land * land
-		)
+		);
+
 	return ( {
 		height: finalNoise,
 		color: color

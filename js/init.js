@@ -30,11 +30,11 @@ function initThreeJs( container )
 	/* --------- BASICS ----------*/
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 2000000 );
 	camera.position.x = 0;
-	camera.position.y = 150;
-	camera.position.z = 000;
+	camera.position.y = 300;
+	camera.position.z = 300;
 
 	renderer = new THREE.WebGLRenderer( { antialias: true, alpha: false } );
-	renderer.setClearColor( 0x000000 );
+	renderer.setClearColor( 0x333333 );
 	renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setSize( window.innerWidth, window.innerHeight );
 
@@ -42,8 +42,8 @@ function initThreeJs( container )
 
 	//ORBIT CONTROL
 	scene = new THREE.Scene();
-	scene.background = new THREE.Color(0x111111);
-	scene.fog = new THREE.Fog( 0xadc3f3, 100, 1000 )
+	scene.background = new THREE.Color(0x333333);
+	scene.fog = new THREE.Fog( 0xadc3f3, 500, 5000 )
 
 	keyboard = new KeyboardState();
 	mouse = new THREE.Vector2();
@@ -111,13 +111,8 @@ function fillscene()
 function initLight()
 {
 
-/*
-	var directionalLight = new THREE.DirectionalLight( 0xffffff, 1 );
-	directionalLight.position.set( 0, 100, 0 );
-	scene.add( directionalLight );
-*/
 
-	var light = new THREE.AmbientLight( 0xffffff ); // soft white light
+	var light = new THREE.AmbientLight( 0x333333 ); // soft white light
 	scene.add( light );
 
 

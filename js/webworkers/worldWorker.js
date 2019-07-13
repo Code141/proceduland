@@ -23,6 +23,7 @@ ChunksOverseer.prototype = {
 		if (this.chunks[x] == undefined)
 			this.chunks[x] = [];
 		this.chunks[x][z] = new Chunk(x,z, hypo);
+
 	},
 
 	linkChunk : function( x, z )
@@ -86,8 +87,8 @@ ChunksOverseer.prototype = {
 		var t1 = performance.now();
 		console.log("INIT " + i + " chunks in " + (t1 - t0) + " ms")
 
-/*
-		var t0 = performance.now();
+
+/*		var t0 = performance.now();
 		for (i = 0; i < list.length; i++)
 			overseer.linkChunk(list[i].x, list[i].z);
 		var t1 = performance.now();
@@ -150,7 +151,6 @@ ChunksOverseer.prototype = {
 				this.chunks[x][z].unbreakChunk();
 	}
 }
-
 
 
 onmessage = function(e) {

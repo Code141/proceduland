@@ -4,21 +4,13 @@ water_material = new THREE.MeshPhongMaterial( {
 	opacity : 0.6
 } );
 
-var mapHeight = new THREE.TextureLoader().load(
-"BUMP2.jpg" );
-
 ground_material = new THREE.MeshLambertMaterial({
 	vertexColors: THREE.VertexColors,
 	shading: THREE.FlatShading,
 	color: 0xffffff,
-	specular: 0x222222,
-	shininess: 25,
-	bumpMap: mapHeight,
-	bumpScale: 102,
-
 	wireframe: true,
 	transparent : true,
-	opacity : 0.1
+	opacity : 0.5
 });
 
 state_cube_material = new THREE.MeshBasicMaterial( {
@@ -28,5 +20,4 @@ state_cube_material = new THREE.MeshBasicMaterial( {
 	wireframeLinejoin: 'round',
 	wireframeLineCap: 'round'
 } );
-
 
