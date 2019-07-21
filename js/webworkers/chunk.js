@@ -1,8 +1,3 @@
-Math.fact = function (nb)
-{
-	return (nb === 0) ? 1 : (nb * this.fact(nb - 1));
-}
-
 let Chunk = function(x, z, hypo)
 {
 	this.x = x;
@@ -15,221 +10,19 @@ let Chunk = function(x, z, hypo)
 		this.y = pro.height;
 		this.color = pro.color;
 	}
-//	this.init(LEVELMAX - hypo / 2);
-	this.init2(LEVELMAX - hypo / 2);
+	this.init();
 }
 
 Chunk.prototype = {
 
-	get_info: function (level)
-	{
-		if (level > 24)
-			throw "error level max is 24"
-		level = (level < 1) ? 1: level;
-
-		let info = [];
-		let i = 1;
-		let v2 = 1;
-
-		info.push({
-			v : { nb: 5, offset: 0, },
-			f : { nb: 4, offset: 0, }
-		});
-
-		for (let l = 0; l < level; l++)
-		{
-			let v = 0;
-			if (l % 2 == 0)
-			{
-				v1 = i * (i + 1) * 2;
-				v = v1;
-				i *= 2;
-			}
-			else
-			{
-				v2 *= 4;
-				v = v2;
-			}
-
-			last = info[l];
-			info.push({
-				v : {
-					indice: i / 2,
-					nb: v,
-					offset: last.v.offset + (last.v.nb * 3)
-				},
-				f : {
-					nb: last.f.nb * 2,
-					offset: last.f.offset + (last.f.nb * 3),
-				}
-			}
-			);
-		}
-		return info;
-	},
-
-	generate_vertices: function(info, vue_vertices)
-	{
-		vue_vertices.set([
-			0, 0, 0,
-			size, 0, 0,
-			size, 0, size,
-			0, 0, size,
-			size / 2, 0, size / 2
-		]);
-
-		for (let l = 1; l < info.length; l++)
-		{
-			let v = info[l].v;
-			decal = size / v.indice;
-			if (l % 2 != 0)
-			{
-				vue_vertices.copyWithin( v.offset, 0, 3);
-				vue_vertices[v.offset + 0] += decal / 2;
-				for (let x = 1; x < v.indice; x++)
-				{
-					vue_vertices.copyWithin(
-						v.offset + (3 * x),
-						v.offset + 3 * (x - 1),
-						v.offset + (3 * x)
-					);
-					vue_vertices[v.offset + (x * 3)] += decal;
-				}
-				vue_vertices.copyWithin( v.offset + v.indice * 3, 0, 3);
-				vue_vertices[v.offset + v.indice * 3 + 2] += decal / 2;
-				for (let x = 1; x <= v.indice; x++)
-				{
-					vue_vertices.copyWithin(
-						v.offset + (3 * x) + v.indice * 3,
-						v.offset + 3 * (x - 1) + v.indice * 3,
-						v.offset + (3 * x) + v.indice * 3
-					);
-					vue_vertices[v.offset  + v.indice * 3 + (x * 3)] += decal;
-				}
-				for (let y = 1; y < v.indice; y++)
-				{
-					vue_vertices.copyWithin(
-						v.offset + (v.indice * 2 + 1) * 3 * y,
-						v.offset + (v.indice * 2 + 1) * 3 * (y - 1),
-						v.offset + (v.indice * 2 + 1) * 3 * y
-					);
-
-					for (let x = 0; x < v.indice * 2 + 1; x++)
-						vue_vertices[v.offset +  (v.indice * 2 + 1) * 3 * y + x * 3 + 2] += decal;
-				}
-				y = v.indice;
-				vue_vertices.copyWithin(
-					v.offset + (v.indice * 2 + 1) * (3 * y),
-					v.offset ,
-					v.offset + v.indice * 3
-				);
-				for (let x = 0; x < v.indice ; x++)
-				{
-					vue_vertices[v.offset +  (v.indice * 2 + 1) * (3 * y) + x * 3 + 2] += decal * v.indice;
-				}
-			}
-			else
-			{
-				v.indice *= 2;
-				decal = size / v.indice;
-				vue_vertices.copyWithin(v.offset, 0, 3 );
-				vue_vertices[v.offset + 0] += decal / 2;
-				vue_vertices[v.offset + 2] += decal / 2;
-				for (let x = 1; x < v.indice; x++)
-				{
-					vue_vertices.copyWithin(
-						v.offset + (3 * x),
-						v.offset + 3 * (x - 1),
-						v.offset + (3 * x)
-					);
-					vue_vertices[v.offset + (x * 3)] += decal;
-				}
-				for (let y = 1; y < v.indice; y++)
-				{
-					vue_vertices.copyWithin(
-						v.offset +  v.indice * (3 * y),
-						v.offset +  v.indice * 3 * (y - 1),
-						v.offset +  v.indice * (3 * y)
-					);
-					for (let x = 0; x < v.indice; x++)
-						vue_vertices[v.offset +  v.indice * (3 * y) + x * 3 + 2] += decal;
-				}
-			}
-		}
-	},
-
-	generate_faces: function(info, vue_faces)
-	{
-
-	},
-
-	init2 : function(level)
-	{
-		size = 1;
-
-		info = this.get_info(level);
-
-		last = info[info.length - 1];
-		nb_v = last.v.offset + (last.v.nb * 3);
-		nb_f = last.f.offset + (last.f.nb * 3);
-
-		let vertices = new ArrayBuffer(nb_v * 4);
-		let faces = new ArrayBuffer(nb_f * 4);
-		let normals = new ArrayBuffer(nb_v * 4);
-		let colors = new ArrayBuffer(nb_v);
-
-		vue_vertices = new Float32Array(vertices);
-		vue_faces = new Uint32Array(faces);
-		vue_normals = new Float32Array(normals);
-		vue_colors = new Uint8Array(colors);
-
-		this.generate_vertices(info, vue_vertices);
-
-		vue_faces.set([
-			4, 1, 0,
-			4, 2, 1,
-			4, 3, 2,
-			4, 0, 3
-		]);
-
-		for (let i = 0; i < vue_normals.length; i+=3)
-		{
-			pro = procedural(
-				vue_vertices[i] + this.x,
-				vue_vertices[i+2] + this.z
-			);
-			vue_vertices[i + 1] = pro.height;
-
-			vue_colors[i + 0] = pro.color.r;
-			vue_colors[i + 1] = pro.color.g;
-			vue_colors[i + 2] = pro.color.b;
-		}
-
-
-		for (let i = 0; i < vue_normals.length; i+=3)
-			vue_normals[i+1] =  1;
-
-		data = {
-			vertices: vue_vertices,
-			faces: vue_faces,
-			vertex_normals: vue_normals,
-			colors: vue_colors
-		};
-		postMessage({ type : "chunk_refresh", position : { x : 0, z : 0 },
-			data : data,
-			chunk : { x : this.x, z : this.z }
-		});
-
-	},
-
 	init : function(level)
 	{
-		let a = new V3(0, 0, 0);
+		let a = new V3(0.5, 0.5, 0.5);
 
-		let b = new V3(0.5, 0, -0.5);
-		let c = new V3(-0.5, 0, -0.5);
-		let d = new V3(0.5, 0, 0.5);
-		let e = new V3(-0.5, 0, 0.5);
+		let b = new V3(1, 0, 0);
+		let c = new V3(0, 0, 0);
+		let d = new V3(1, 0, 1);
+		let e = new V3(0, 0, 1);
 
 		a.setHeight();
 		b.setHeight();

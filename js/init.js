@@ -28,10 +28,10 @@ function init(){
 function initThreeJs( container )
 {
 	/* --------- BASICS ----------*/
-	camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 2000000 );
-	camera.position.x = 0;
-	camera.position.y = 300;
-	camera.position.z = 300;
+	camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 1000000 );
+	camera.position.x = 400;
+	camera.position.y = 400;
+	camera.position.z = 400;
 
 	renderer = new THREE.WebGLRenderer( { antialias: true, alpha: false } );
 	renderer.setClearColor( 0x333333 );
@@ -43,7 +43,7 @@ function initThreeJs( container )
 	//ORBIT CONTROL
 	scene = new THREE.Scene();
 	scene.background = new THREE.Color(0x333333);
-	scene.fog = new THREE.Fog( 0xadc3f3, 500, 5000 )
+//	scene.fog = new THREE.Fog( 0xadc3f3, 300, 1000 )
 
 	keyboard = new KeyboardState();
 	mouse = new THREE.Vector2();

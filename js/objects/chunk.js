@@ -20,6 +20,7 @@ chunk.prototype = {
 		water.position.x += 0.5;
 		water.position.z += 0.5;
 		water.rotation.x = deg(-90);
+
 		this.group.add( water );
 	},
 
@@ -29,9 +30,10 @@ chunk.prototype = {
 		geometry = new THREE.BufferGeometry();
 
 		geometry.addAttribute( 'position', new THREE.BufferAttribute(data.vertices, 3 ));
-		geometry.addAttribute( 'index', new THREE.BufferAttribute(data.faces, 1 ));
 		geometry.addAttribute( 'normal', new THREE.BufferAttribute(data.vertex_normals, 3, true ));
-//		geometry.addAttribute( 'color', new THREE.BufferAttribute(data.colors, 3, true ));
+		geometry.addAttribute( 'color', new THREE.BufferAttribute(data.colors, 3, true ));
+		geometry.setIndex(new THREE.BufferAttribute(data.faces, 1 ));
+
 
 //		geometry.computeVertexNormals();
 //		geometry.computeFaceNormals();
@@ -45,9 +47,15 @@ chunk.prototype = {
 		else
 		{
 			this.mesh = new THREE.Mesh( geometry, ground_material );
-			var helper = new THREE.VertexNormalsHelper( this.mesh, 0.005, 0x00ff00, 1 );
-			this.group.add(helper);
+
+			this.mesh.position.x -= 0.5;
+			this.mesh.position.z -= 0.5;
+
 			this.group.add( this.mesh );
+
+			this.helper = new THREE.VertexNormalsHelper( this.mesh, 5, 0x00ff00, 1 );
+			scene.add(this.helper);
+
 		}
 
 		this.state_cube("loaded");
@@ -58,8 +66,9 @@ chunk.prototype = {
 	{
 		if (state == "init")
 		{
-			var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+			var geometry = new THREE.BoxGeometry( 2, 2, 2 );
 			this.state_cube_mesh = new THREE.Mesh( geometry, state_cube_material );
+
 			this.group.add( this.state_cube_mesh );
 		}
 

@@ -8,6 +8,7 @@ function World(chunkSize, maxHeight, chunksDistance, levelMax)
 	this.chunks = [];
 	this.position = { x: 0, z: 0 };
 	this.group = new THREE.Group();
+
 	this.group.scale.set(this.chunkSize, this.maxHeight, this.chunkSize);
 
 	this.worker_init();
@@ -35,7 +36,7 @@ World.prototype = {
 			r = e.data;
 			switch(r.type) {
 				case "chunk_refresh" :
-				this.chunks[r.chunk.x][r.chunk.z].update(r.data);
+					this.chunks[r.chunk.x][r.chunk.z].update(r.data);
 				break;
 				default:
 					console.log("WORLD WORKER RESPONSE ERROR");
@@ -44,8 +45,7 @@ World.prototype = {
 
 		this.ChunksWorker.onerror = function(error) {
 			console.error(error);
-    	};
-
+		};
 
 	},
 
@@ -54,7 +54,7 @@ World.prototype = {
 		this.position.x += x;
 		this.position.z += z;
 
-	this.worker_init();
+//		this.worker_init();
 		this.requestChunks();
 	},
 
@@ -62,6 +62,7 @@ World.prototype = {
 	{
 		let list = andresList(this.chunksDistance, this.position.x, this.position.z);
 
+		list = [{x: 0, z: 0, hypo: 0}];
 
 		for (var i = 0; i < list.length; i++)
 			this.newChunk(list[i].x, list[i].z);
@@ -88,8 +89,8 @@ World.prototype = {
 			this.chunks[x][z] = new chunk(x, z);
 
 			group = this.chunks[x][z].group;
-			group.position.x = x;
-			group.position.z = z;
+			group.position.x = x ;
+			group.position.z = z ;
 
 			this.group.add(group);
 		}

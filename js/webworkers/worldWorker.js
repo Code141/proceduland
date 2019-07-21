@@ -1,6 +1,6 @@
 var LEVELMAX, DISTANCE;
 
-importScripts('chunk.js', 'btt.js','../algo/perlin.js', 'landGeometry.js', '../algo/andresCircle.js'); 
+importScripts('chunk_2.js', 'chunk.js', 'btt.js','../algo/perlin.js', 'landGeometry.js', '../algo/andresCircle.js'); 
 
 V3 = function ( x, y, z )
 {
@@ -22,7 +22,7 @@ ChunksOverseer.prototype = {
 	{
 		if (this.chunks[x] == undefined)
 			this.chunks[x] = [];
-		this.chunks[x][z] = new Chunk(x,z, hypo);
+		this.chunks[x][z] = new Chunk_2(x, z, hypo);
 
 	},
 
@@ -83,17 +83,23 @@ ChunksOverseer.prototype = {
 		let i;
 		var t0 = performance.now();
 		for (i = 0; i < list.length; i++)
+		{
 			overseer.initChunk(list[i].x, list[i].z, list[i].hypo);
+//			overseer.chunks[list[i].x][list[i].z].getBTTLod(list[i].hypo);
+//			overseer.send_chunk(overseer.chunks[list[i].x][list[i].z]);
+		}
+		/*
 		var t1 = performance.now();
 		console.log("INIT " + i + " chunks in " + (t1 - t0) + " ms")
 
 
-/*		var t0 = performance.now();
+
+		var t0 = performance.now();
 		for (i = 0; i < list.length; i++)
 			overseer.linkChunk(list[i].x, list[i].z);
 		var t1 = performance.now();
 		console.log("LINKED in " + (t1 - t0) + " ms")
-*/
+
 		// PROMISE
 		for (let i = 0; i < list.length; i++)
 		{
@@ -117,13 +123,14 @@ ChunksOverseer.prototype = {
 				Promise.all(pro)
 					.then(() => {
 						overseer.send_chunk(overseer.chunks[x][z]);
-//						this.chunks[x][z] = undefined;
+						this.chunks[x][z] = undefined;
 
 					})
 				.catch(error => console.log(`Error in promises ${error}`))
 
 			})
 		}
+		*/
 
 
 	},

@@ -33,7 +33,7 @@ procedural = function(absoluteX, absoluteZ){
 			((finalNoise + 1) / 2) * land * land
 		);
 
-	return ( {
+	return ({
 		height: finalNoise,
 		color: color
 	});
@@ -41,29 +41,32 @@ procedural = function(absoluteX, absoluteZ){
 
 let gradient = [
 	{
-		stop: 0,
-		r: 0x00, g: 0x00, b: 0x00 // Black
+		stop: 0, // Black
+		r: 0x00, g: 0x00, b: 0x00
 	}, {
-		stop: .2,
-		r: 0x22, g: 0x11, b: 0x00 // Oceanic floor
+		stop: .3, // Black
+		r: 0x11, g: 0x09, b: 0x00
 	}, {
-		stop: .5,
-		r: 0x66, g: 0x4c, b: 0x32 // Sand
+		stop: .4, // Oceanic floor
+		r: 0x22, g: 0x11, b: 0x00
 	}, {
-		stop: .52,
-		r: 0x11, g: 0x44, b: 0x11 // plain green
+		stop: .55, // Sand
+		r: 0x66, g: 0x4c, b: 0x32
 	}, {
-		stop: .65,
-		r: 0x00, g: 0x15, b: 0x00 // dark green
+		stop: .6, // plain green
+		r: 0x11, g: 0x44, b: 0x11
 	}, {
-		stop: .8,
-		r: 0x55, g: 0x50, b: 0x41 // brown
+		stop: .65, // dark green
+		r: 0x00, g: 0x15, b: 0x00
 	}, {
-		stop: .9,
-		r: 0x55, g: 0x55, b: 0x55 // GreyE
+		stop: .8, // brown
+		r: 0x55, g: 0x50, b: 0x41
 	}, {
-		stop: 1,
-		r: 0xCC, g: 0xCC, b: 0xCC // WHITE
+		stop: .9, // Grey
+		r: 0x55, g: 0x55, b: 0x55
+	}, {
+		stop: 1, // White
+		r: 0xCC, g: 0xCC, b: 0xCC
 	}
 ];
 
