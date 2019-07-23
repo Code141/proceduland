@@ -1,7 +1,7 @@
 chunkSize = 128;
 maxHeight = 50;
 chunksDistance = 1;
-levelMax = 10;
+levelMax = 2;
 
 var renderer, scene, camera;
 
@@ -29,9 +29,9 @@ function initThreeJs( container )
 {
 	/* --------- BASICS ----------*/
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 1000000 );
-	camera.position.x = 400;
-	camera.position.y = 400;
-	camera.position.z = 400;
+	camera.position.x = 0;
+	camera.position.y = 200;
+	camera.position.z = 200;
 
 	renderer = new THREE.WebGLRenderer( { antialias: true, alpha: false } );
 	renderer.setClearColor( 0x333333 );

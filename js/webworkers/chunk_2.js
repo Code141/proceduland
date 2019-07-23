@@ -117,12 +117,12 @@ Chunk_2.prototype = {
 			vue_colors[i + 1] = pro.color.g;
 			vue_colors[i + 2] = pro.color.b;
 		}
-		*/
+		 */
 
 		for (let i = 0; i < vue_normals.length; i+=3)
 			vue_normals[i+1] =  1;
 
-console.log(info);
+		console.log(info);
 		data = {
 			vertices: vue_vertices,
 			faces: vue_faces,
@@ -135,176 +135,133 @@ console.log(info);
 			chunk : { x : this.x, z : this.z }
 		});
 	},
-	
+
+	generateVertices_1: function(l, i)
+	{
+		indice = Math.pow(2, ((l + 1) / 2)) / 2;
+		for (let z = 0; z < indice; z++)
+		{
+			for (let x = 0; x < indice; x++)
+			{
+				decal = size / (indice * 2);
+				decalage = x + (z * indice);
+				i.v.data[0 + (decalage * 3)] = 0 + decal + (decal * x * 2);
+				i.v.data[1 + (decalage * 3)] = l / 2;
+				i.v.data[2 + (decalage * 3)] = 0 + decal + (decal * z * 2);
+
+				dec_f_1 = (x + z * indice) * 4;
+				dec_f_1 *= 3;
+
+				dec_f_2 = (x + z * (indice/2)) * 4;
+				dec_f_2 *= 3;
+				//						console.log("L", l, "X", x, "Z", z,  dec_f_2);
+
+				diag = x % 2 + (z + 1) % 2;
+				if (diag % 2)
+				{
+					i.f.data[dec_f_1 + 0] = i.v.offset + decalage;
+					i.f.data[dec_f_1 + 1] = last_i.f.data[dec_f_2 + 2];
+					i.f.data[dec_f_1 + 2] = last_i.f.data[dec_f_2 + 0];
+
+					i.f.data[dec_f_1 + 3] = i.v.offset + decalage;
+					i.f.data[dec_f_1 + 4] = last_i.f.data[dec_f_2 + 0];
+					i.f.data[dec_f_1 + 5] = last_i.f.data[dec_f_2 + 1];
+
+					i.f.data[dec_f_1 + 6] = i.v.offset + decalage;
+					i.f.data[dec_f_1 + 7] = last_i.f.data[dec_f_2 + 3];
+					i.f.data[dec_f_1 + 8] = last_i.f.data[dec_f_2 + 4];
+
+					i.f.data[dec_f_1 + 9] = i.v.offset + decalage;
+					i.f.data[dec_f_1 + 10] = last_i.f.data[dec_f_2 + 5];
+					i.f.data[dec_f_1 + 11] = last_i.f.data[dec_f_2 + 3];
+					
+				}
+				else
+				{
+					i.f.data[dec_f_1 + 0] = i.v.offset + decalage;
+					i.f.data[dec_f_1 + 1] = last_i.f.data[dec_f_2 + 0];
+					i.f.data[dec_f_1 + 2] = last_i.f.data[dec_f_2 + 1];
+
+					i.f.data[dec_f_1 + 3] = i.v.offset + decalage;
+					i.f.data[dec_f_1 + 4] = last_i.f.data[dec_f_2 + 2];
+					i.f.data[dec_f_1 + 5] = last_i.f.data[dec_f_2 + 0];
+
+					i.f.data[dec_f_1 + 6] = i.v.offset + decalage;
+					i.f.data[dec_f_1 + 7] = last_i.f.data[dec_f_2 + 5];
+					i.f.data[dec_f_1 + 8] = last_i.f.data[dec_f_2 + 3];
+
+					i.f.data[dec_f_1 + 9] = i.v.offset + decalage;
+					i.f.data[dec_f_1 + 10] = last_i.f.data[dec_f_2 + 3];
+					i.f.data[dec_f_1 + 11] = last_i.f.data[dec_f_2 + 4];
+
+				}
+
+			}
+		}
+	},
+
+	generateVertices_2: function(l, i)
+	{
+		indice = Math.pow(2, l / 2);
+		decal = size / (indice);
+
+		for (let z = 0; z < indice + 1; z++)
+		{
+			decalage = Math.floor((z * indice / 2) + z / 2);
+			if (z % 2)
+			{
+				for (let x = 0; x < indice / 2 + 1; x++)
+				{
+					i.v.data[0 + (decalage + x) * 3] = 2 * decal * x;
+					i.v.data[2 + (decalage + x) * 3] = decal * z;
+					i.v.data[1 + (decalage + x) * 3] = l / 2;
+				}
+			}
+			else
+			{
+				for (let x = 0; x < indice / 2; x++)
+				{
+					i.v.data[0 + (decalage + x) * 3] = 2 * decal * x + decal;
+					i.v.data[2 + (decalage + x) * 3] = decal * z;
+					i.v.data[1 + (decalage + x) * 3] = l / 2;
+				}
+			}
+		}
+
+		for (let z = 0; z < indice; z++)
+		{
+			for (let x = 0; x < indice; x++)
+			{
+				console.log(l, x, z, i, indice);
+
+				dec_f_1 = (x + z * indice) * 2;
+				dec_f_1 *= 3;
+
+				i.f.data[dec_f_1 + 0] = i.v.offset ;
+				i.f.data[dec_f_1 + 1] = last_i.f.data[0];
+				i.f.data[dec_f_1 + 2] = last_i.f.data[1];
+
+				i.f.data[dec_f_1 + 3] = i.v.offset;
+				i.f.data[dec_f_1 + 4] = last_i.f.data[2];
+				i.f.data[dec_f_1 + 5] = last_i.f.data[0];
+
+			}
+		}
+
+	},
+
 	generateLevel: function(info)
 	{
 		for (let l = 1; l < info.length; l++)
 		{
 			last_i = info[l - 1];
-
 			i = info[l];
-			if (l % 2 == 0)
-			{
-				indice = Math.pow(2, ((l) / 2)) / 2;
-				for (let z = 0; z < indice; z++)
-				{
-					for (let x = 0; x < indice; x++)
-					{
-
-						decal = size / (indice * 2);
-
-						decalage = x + (z * indice);
-						pos_x = last_i.v.data[0 + decalage * 3];
-						pos_z = last_i.v.data[2 + decalage * 3];
-
-						if (x == 0 && z == 0)
-						{
-							i.v.data[0] = pos_x - decal;
-							i.v.data[2] = pos_z;
-							i.v.data[3] = pos_x;
-							i.v.data[5] = pos_z - decal;
-							i.v.data[6] = pos_x + decal;
-							i.v.data[8] = pos_z;
-							i.v.data[9] = pos_x;
-							i.v.data[11] = pos_z + decal;
-						}
-						else if (z == 0)
-						{
-							decalage2 = x * 3 + 1;
-
-							decalage2 *= 3;
-
-							i.v.data[0 + decalage2] = pos_x;
-							i.v.data[2 + decalage2] = pos_z - decal;
-
-							i.v.data[3 + decalage2] = pos_x + decal;
-							i.v.data[5 + decalage2] = pos_z;
-
-							i.v.data[6 + decalage2] = pos_x;
-							i.v.data[8 + decalage2] = pos_z + decal;
-
-						}
-						else if (x == 0)
-						{
-							decalage2 = indice * 3 + 1;
-
-							decalage2 += (indice * 2 + 1 ) * (z - 1);
-
-							decalage2 *= 3;
-
-							i.v.data[0 + decalage2] = pos_x - decal;
-							i.v.data[2 + decalage2] = pos_z;
-
-							i.v.data[3 + decalage2] = pos_x + decal;
-							i.v.data[5 + decalage2] = pos_z;
-
-							i.v.data[6 + decalage2] = pos_x;
-							i.v.data[8 + decalage2] = pos_z + decal;
-
-						}
-						else
-						{
-
-							decalage2 = indice * 3 + 1;
-
-							decalage2 += (indice * 2 + 1 ) * (z - 1) + x * 2 + 1;
-
-							decalage2 *= 3;
-
-							i.v.data[0 + decalage2] = pos_x + decal;
-							i.v.data[2 + decalage2] = pos_z;
-							i.v.data[3 + decalage2] = pos_x;
-							i.v.data[5 + decalage2] = pos_z + decal;
-
-		
-						}
-
-
-
-
-/*						i.f.data[0] = i.v.offset + 1;
-						i.f.data[1] = last_i.f.data[0];
-						i.f.data[2] = last_i.f.data[1];
-
-						i.f.data[3] = i.v.offset + 1;
-						i.f.data[4] = last_i.f.data[2];
-						i.f.data[5] = last_i.f.data[0];
-
-						i.f.data[6] = i.v.offset + 0;
-						i.f.data[7] = last_i.f.data[3];
-						i.f.data[8] = last_i.f.data[4];
-
-						i.f.data[9] = i.v.offset + 0;
-						i.f.data[10] = last_i.f.data[5];
-						i.f.data[11] = last_i.f.data[3];
-
-						i.f.data[12] = i.v.offset + 2;
-						i.f.data[13] = last_i.f.data[6];
-						i.f.data[14] = last_i.f.data[7];
-
-						i.f.data[15] = i.v.offset + 2;
-						i.f.data[16] = last_i.f.data[8];
-						i.f.data[17] = last_i.f.data[6];
-
-						i.f.data[18] = i.v.offset;
-						i.f.data[19] = last_i.f.data[9];
-						i.f.data[20] = last_i.f.data[10];
-
-						i.f.data[21] = i.v.offset;
-						i.f.data[22] = last_i.f.data[11];
-						i.f.data[23] = last_i.f.data[9];
-*/
-						
-							i.v.data[1 + (decalage * 12)] = l / 2;
-							i.v.data[4 + (decalage * 12)] = l / 2;
-							i.v.data[7 + (decalage * 12)] = l / 2;
-							i.v.data[10 + (decalage * 12)] = l / 2;
-						 
-					}
-				}
-			}
+			if (l % 2)
+				this.generateVertices_1(l, i);
 			else
-			{
-				indice = Math.pow(2, ((l + 1) / 2)) / 2;
+				this.generateVertices_2(l, i);
 
-console.log(indice);
-
-				for (let z = 0; z < indice; z++)
-				{
-					for (let x = 0; x < indice; x++)
-					{
-//						console.log("L", l, "X", x, "Z", z, indice, i);
-						decal = size / (indice * 2);
-						decalage = x + (z * indice);
-
-						i.v.data[0 + (decalage * 3)] = 0 + decal + (decal * x * 2);
-						i.v.data[2 + (decalage * 3)] = 0 + decal + (decal * z * 2);
-
-
-						i.f.data[0] = i.v.offset + decalage;
-						i.f.data[1] = last_i.f.data[2];
-						i.f.data[2] = last_i.f.data[0];
-
-						i.f.data[3] = i.v.offset + decalage;
-						i.f.data[4] = last_i.f.data[0];
-						i.f.data[5] = last_i.f.data[1];
-
-						i.f.data[6] = i.v.offset + decalage;
-						i.f.data[7] = last_i.f.data[3];
-						i.f.data[8] = last_i.f.data[4];
-
-						i.f.data[9] = i.v.offset + decalage;
-						i.f.data[10] = last_i.f.data[5];
-						i.f.data[11] = last_i.f.data[3];
-
-
-						i.v.data[1 + (decalage * 3)] = (l / 2);
-					}
-				}
-			}
 		}
 	}
 
-
 };
-
