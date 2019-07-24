@@ -1,7 +1,7 @@
 chunkSize = 128;
 maxHeight = 50;
 chunksDistance = 1;
-levelMax = 2;
+levelMax = 3;
 
 var renderer, scene, camera;
 
