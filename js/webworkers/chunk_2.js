@@ -149,7 +149,6 @@ Chunk_2.prototype = {
 				decal = size / (indice * 2);
 				decalage = x + (z * indice);
 				i.v.data[0 + (decalage * 3)] = 0 + decal + (decal * x * 2);
-				i.v.data[1 + (decalage * 3)] = l / 2;
 				i.v.data[2 + (decalage * 3)] = 0 + decal + (decal * z * 2);
 
 				dec_f_1 = x + z * indice;
@@ -216,7 +215,6 @@ Chunk_2.prototype = {
 				{
 					i.v.data[0 + (decalage + x) * 3] = decal * x;
 					i.v.data[2 + (decalage + x) * 3] = decal / 2 * z;
-					i.v.data[1 + (decalage + x) * 3] = l / 2;
 				}
 			}
 			else
@@ -225,7 +223,6 @@ Chunk_2.prototype = {
 				{
 					i.v.data[0 + (decalage + x) * 3] = decal * x + decal /2;
 					i.v.data[2 + (decalage + x) * 3] = decal /2 * z;
-					i.v.data[1 + (decalage + x) * 3] = l / 2;
 				}
 			}
 		}
@@ -239,13 +236,12 @@ Chunk_2.prototype = {
 				ligne2 = (2 * indice) + 1;
 				decalage = i.v.offset + x + (z * (indice * 2 + 1));
 
-				dec_f_1 = x + z * indice;
-				dec_f_1 *= 3 * 8;
-
 				dec_f_2 = x + z * indice;
 				dec_f_2 *= 3 * 4;
 
 
+				dec_f_1 = x + z * indice * 2;
+				dec_f_1 *= 3 * 4;
 
 				// North right
 				i.f.data[dec_f_1 + 0] = decalage;
@@ -268,32 +264,29 @@ Chunk_2.prototype = {
 				i.f.data[dec_f_1 + 10] = last_i.f.data[dec_f_2 + 2 + 6];
 				i.f.data[dec_f_1 + 11] = last_i.f.data[dec_f_2 + 0 + 6];
 
-
-
+				dec_f_1 = x + z * indice * 2 + indice;
+				dec_f_1 *= 3 * 4;
 
 				// West right
-				i.f.data[dec_f_1 + 12] = decalage + ligne1;
-				i.f.data[dec_f_1 + 13] = last_i.f.data[dec_f_2 + 2 + 3];
-				i.f.data[dec_f_1 + 14] = last_i.f.data[dec_f_2 + 0 + 3];
+				i.f.data[dec_f_1 + 0] = decalage + ligne1;
+				i.f.data[dec_f_1 + 1] = last_i.f.data[dec_f_2 + 2 + 3];
+				i.f.data[dec_f_1 + 2] = last_i.f.data[dec_f_2 + 0 + 3];
 
 				// South left
-				i.f.data[dec_f_1 + 15] = decalage + ligne2;
-				i.f.data[dec_f_1 + 16] = last_i.f.data[dec_f_2 + 0 + 9];
-				i.f.data[dec_f_1 + 17] = last_i.f.data[dec_f_2 + 1 + 9];
+				i.f.data[dec_f_1 + 3] = decalage + ligne2;
+				i.f.data[dec_f_1 + 4] = last_i.f.data[dec_f_2 + 0 + 9];
+				i.f.data[dec_f_1 + 5] = last_i.f.data[dec_f_2 + 1 + 9];
 
 
 				// East left
-				i.f.data[dec_f_1 + 18] = decalage + ligne1 + 1;
-				i.f.data[dec_f_1 + 19] = last_i.f.data[dec_f_2 + 0 + 6];
-				i.f.data[dec_f_1 + 20] = last_i.f.data[dec_f_2 + 1 + 6];
+				i.f.data[dec_f_1 + 6] = decalage + ligne1 + 1;
+				i.f.data[dec_f_1 + 7] = last_i.f.data[dec_f_2 + 0 + 6];
+				i.f.data[dec_f_1 + 8] = last_i.f.data[dec_f_2 + 1 + 6];
 
 				// South right
-				i.f.data[dec_f_1 + 21] = decalage + ligne2;
-				i.f.data[dec_f_1 + 22] = last_i.f.data[dec_f_2 + 2 + 9];
-				i.f.data[dec_f_1 + 23] = last_i.f.data[dec_f_2 + 0 + 9];
-
-
-
+				i.f.data[dec_f_1 + 9] = decalage + ligne2;
+				i.f.data[dec_f_1 + 10] = last_i.f.data[dec_f_2 + 2 + 9];
+				i.f.data[dec_f_1 + 11] = last_i.f.data[dec_f_2 + 0 + 9];
 
 			}
 		}

@@ -11,7 +11,6 @@ ground_material = new THREE.MeshLambertMaterial({
 	wireframe: true,
 	transparent : true,
 	opacity : 0.3
-	
 
 });
 

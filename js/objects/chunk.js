@@ -31,7 +31,7 @@ chunk.prototype = {
 
 		geometry.addAttribute( 'position', new THREE.BufferAttribute(data.vertices, 3 ));
 		geometry.addAttribute( 'normal', new THREE.BufferAttribute(data.vertex_normals, 3, true ));
-		geometry.addAttribute( 'color', new THREE.BufferAttribute(data.colors, 3, true ));
+//		geometry.addAttribute( 'color', new THREE.BufferAttribute(data.colors, 3, true ));
 		geometry.setIndex(new THREE.BufferAttribute(data.faces, 1 ));
 
 

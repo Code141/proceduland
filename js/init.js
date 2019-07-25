@@ -43,7 +43,7 @@ function initThreeJs( container )
 	//ORBIT CONTROL
 	scene = new THREE.Scene();
 	scene.background = new THREE.Color(0x333333);
-//	scene.fog = new THREE.Fog( 0xadc3f3, 300, 1000 )
+//	scene.fog = new THREE.Fog( 0xadc3f3, 150, 200 )
 
 	keyboard = new KeyboardState();
 	mouse = new THREE.Vector2();
