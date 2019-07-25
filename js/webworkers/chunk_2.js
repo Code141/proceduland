@@ -103,13 +103,12 @@ Chunk_2.prototype = {
 			size, 0,  size,
 		]);
 
-		vue_faces.set([0, 2, 1, 3, 1, 2]);
-//		vue_faces.set([1, 0, 3, 2, 3, 0]);
+//		vue_faces.set([0, 2, 1, 3, 1, 2]);
+		vue_faces.set([1, 0, 3, 2, 3, 0]);
 
 		this.generateLevel(info);
 
-
-		/*
+/*
 		for (let i = 0; i < vue_normals.length; i+=3)
 		{
 			pro = procedural(
@@ -122,8 +121,7 @@ Chunk_2.prototype = {
 			vue_colors[i + 1] = pro.color.g;
 			vue_colors[i + 2] = pro.color.b;
 		}
-		 */
-
+*/
 		for (let i = 0; i < vue_normals.length; i+=3)
 			vue_normals[i+1] =  1;
 
@@ -160,12 +158,29 @@ Chunk_2.prototype = {
 				dec_f_2 = (x + z * (indice)) / 2;
 				dec_f_2 *= 3 * 4;
 
-				diag = x % 2 + (z + 1) % 2;
 				diag = ((x % 2) + (z % 2)) % 2;
-				console.log("L", l, "X", x, "Z", z, "dec1", dec_f_1,  "dec2", dec_f_2, "diag", diag, "indice", indice);
-
 				if (!diag)
 				{
+					i.f.data[dec_f_1 + 0] = i.v.offset + decalage;
+					i.f.data[dec_f_1 + 1] = last_i.f.data[dec_f_2 + 0];
+					i.f.data[dec_f_1 + 2] = last_i.f.data[dec_f_2 + 1];
+
+					i.f.data[dec_f_1 + 3] = i.v.offset + decalage;
+					i.f.data[dec_f_1 + 4] = last_i.f.data[dec_f_2 + 5];
+					i.f.data[dec_f_1 + 5] = last_i.f.data[dec_f_2 + 3];
+
+					i.f.data[dec_f_1 + 6] = i.v.offset + decalage;
+					i.f.data[dec_f_1 + 7] = last_i.f.data[dec_f_2 + 2];
+					i.f.data[dec_f_1 + 8] = last_i.f.data[dec_f_2 + 0];
+
+					i.f.data[dec_f_1 + 9] = i.v.offset + decalage;
+					i.f.data[dec_f_1 + 10] = last_i.f.data[dec_f_2 + 3];
+					i.f.data[dec_f_1 + 11] = last_i.f.data[dec_f_2 + 4];
+
+				}
+				else
+				{
+
 					i.f.data[dec_f_1 + 0] = i.v.offset + decalage;
 					i.f.data[dec_f_1 + 1] = last_i.f.data[dec_f_2 + 2];
 					i.f.data[dec_f_1 + 2] = last_i.f.data[dec_f_2 + 0];
@@ -181,24 +196,7 @@ Chunk_2.prototype = {
 					i.f.data[dec_f_1 + 9] = i.v.offset + decalage;
 					i.f.data[dec_f_1 + 10] = last_i.f.data[dec_f_2 + 5];
 					i.f.data[dec_f_1 + 11] = last_i.f.data[dec_f_2 + 3];
-				}
-				else
-				{
-					i.f.data[dec_f_1 + 0] = i.v.offset + decalage;
-					i.f.data[dec_f_1 + 1] = last_i.f.data[dec_f_2 + 0];
-					i.f.data[dec_f_1 + 2] = last_i.f.data[dec_f_2 + 1];
 
-					i.f.data[dec_f_1 + 3] = i.v.offset + decalage;
-					i.f.data[dec_f_1 + 4] = last_i.f.data[dec_f_2 + 2];
-					i.f.data[dec_f_1 + 5] = last_i.f.data[dec_f_2 + 0];
-
-					i.f.data[dec_f_1 + 6] = i.v.offset + decalage;
-					i.f.data[dec_f_1 + 7] = last_i.f.data[dec_f_2 + 5];
-					i.f.data[dec_f_1 + 8] = last_i.f.data[dec_f_2 + 3];
-
-					i.f.data[dec_f_1 + 9] = i.v.offset + decalage;
-					i.f.data[dec_f_1 + 10] = last_i.f.data[dec_f_2 + 3];
-					i.f.data[dec_f_1 + 11] = last_i.f.data[dec_f_2 + 4];
 				}
 			}
 		}
@@ -206,90 +204,97 @@ Chunk_2.prototype = {
 
 	generateVertices_2: function(l, i)
 	{
-		indice = Math.pow(2, l / 2);
+		indice = Math.pow(2, l / 2) / 2;
 		decal = size / (indice);
 
-		for (let z = 0; z < indice + 1; z++)
+		for (let z = 0; z < indice * 2 + 1; z++)
 		{
-			decalage = (z * indice / 2) + Math.floor(z / 2);
+			decalage = (z * indice) + Math.floor(z / 2);
 			if (z % 2)
 			{
-				for (let x = 0; x < indice / 2 + 1; x++)
+				for (let x = 0; x < indice + 1; x++)
 				{
-					i.v.data[0 + (decalage + x) * 3] = 2 * decal * x;
-					i.v.data[2 + (decalage + x) * 3] = decal * z;
+					i.v.data[0 + (decalage + x) * 3] = decal * x;
+					i.v.data[2 + (decalage + x) * 3] = decal / 2 * z;
 					i.v.data[1 + (decalage + x) * 3] = l / 2;
 				}
 			}
 			else
 			{
-				for (let x = 0; x < indice / 2; x++)
+				for (let x = 0; x < indice; x++)
 				{
-					i.v.data[0 + (decalage + x) * 3] = 2 * decal * x + decal;
-					i.v.data[2 + (decalage + x) * 3] = decal * z;
+					i.v.data[0 + (decalage + x) * 3] = decal * x + decal /2;
+					i.v.data[2 + (decalage + x) * 3] = decal /2 * z;
 					i.v.data[1 + (decalage + x) * 3] = l / 2;
 				}
 			}
 		}
 
-		for (let z = 0; z < indice / 2; z++)
+		for (let z = 0; z < indice; z++)
 		{
-			for (let x = 0; x < indice / 2; x++)
+			for (let x = 0; x < indice; x++)
 			{
 
-				ligne1 = ((z + 1) * indice / 2) + Math.floor((z + 1) / 2);
-				ligne2 = ((z + 2) * indice / 2) + Math.floor((z + 2) / 2);
+				ligne1 = (1 * indice);
+				ligne2 = (2 * indice) + 1;
+				decalage = i.v.offset + x + (z * (indice * 2 + 1));
 
 				dec_f_1 = x + z * indice;
 				dec_f_1 *= 3 * 8;
 
 				dec_f_2 = x + z * indice;
-				dec_f_2 *= 3 * 2;
+				dec_f_2 *= 3 * 4;
+
+
 
 				// North right
-				i.f.data[dec_f_1 + 0] = i.v.offset;
+				i.f.data[dec_f_1 + 0] = decalage;
 				i.f.data[dec_f_1 + 1] = last_i.f.data[dec_f_2 + 2];
 				i.f.data[dec_f_1 + 2] = last_i.f.data[dec_f_2 + 0];
 
 				// West left
-				i.f.data[dec_f_1 + 3] = i.v.offset + ligne1;
+				i.f.data[dec_f_1 + 3] = decalage + ligne1;
 				i.f.data[dec_f_1 + 4] = last_i.f.data[dec_f_2 + 0 + 3];
 				i.f.data[dec_f_1 + 5] = last_i.f.data[dec_f_2 + 1 + 3];
 
 
 				// North left
-				i.f.data[dec_f_1 + 6] = i.v.offset;
+				i.f.data[dec_f_1 + 6] = decalage;
 				i.f.data[dec_f_1 + 7] = last_i.f.data[dec_f_2 + 0];
-				i.f.data[dec_f_1 + 8] = last_i.f.data[1];
+				i.f.data[dec_f_1 + 8] = last_i.f.data[dec_f_2 + 1];
 
 				// East right
-				i.f.data[dec_f_1 + 9] = i.v.offset + ligne1 + 1;
+				i.f.data[dec_f_1 + 9] = decalage + ligne1 + 1;
 				i.f.data[dec_f_1 + 10] = last_i.f.data[dec_f_2 + 2 + 6];
 				i.f.data[dec_f_1 + 11] = last_i.f.data[dec_f_2 + 0 + 6];
 
 
+
+
 				// West right
-				i.f.data[dec_f_1 + 12] = i.v.offset + ligne1;
+				i.f.data[dec_f_1 + 12] = decalage + ligne1;
 				i.f.data[dec_f_1 + 13] = last_i.f.data[dec_f_2 + 2 + 3];
 				i.f.data[dec_f_1 + 14] = last_i.f.data[dec_f_2 + 0 + 3];
 
 				// South left
-				i.f.data[dec_f_1 + 15] = i.v.offset + ligne2;
+				i.f.data[dec_f_1 + 15] = decalage + ligne2;
 				i.f.data[dec_f_1 + 16] = last_i.f.data[dec_f_2 + 0 + 9];
 				i.f.data[dec_f_1 + 17] = last_i.f.data[dec_f_2 + 1 + 9];
 
 
 				// East left
-				i.f.data[dec_f_1 + 18] = i.v.offset + ligne1 + 1;
+				i.f.data[dec_f_1 + 18] = decalage + ligne1 + 1;
 				i.f.data[dec_f_1 + 19] = last_i.f.data[dec_f_2 + 0 + 6];
 				i.f.data[dec_f_1 + 20] = last_i.f.data[dec_f_2 + 1 + 6];
 
 				// South right
-				i.f.data[dec_f_1 + 21] = i.v.offset + ligne2;
+				i.f.data[dec_f_1 + 21] = decalage + ligne2;
 				i.f.data[dec_f_1 + 22] = last_i.f.data[dec_f_2 + 2 + 9];
 				i.f.data[dec_f_1 + 23] = last_i.f.data[dec_f_2 + 0 + 9];
 
-//				console.log(l, x, z, i, indice);
+
+
+
 			}
 		}
 

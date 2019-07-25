@@ -52,10 +52,10 @@ chunk.prototype = {
 			this.mesh.position.z -= 0.5;
 
 			this.group.add( this.mesh );
-
+/*
 			this.helper = new THREE.VertexNormalsHelper( this.mesh, 5, 0x00ff00, 1 );
 			scene.add(this.helper);
-
+*/
 		}
 
 		this.state_cube("loaded");
