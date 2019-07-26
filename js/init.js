@@ -1,7 +1,7 @@
 chunkSize = 128;
 maxHeight = 50;
-chunksDistance = 1;
-levelMax = 4;
+chunksDistance = 3;
+levelMax = 10;
 
 var renderer, scene, camera;
 
@@ -101,7 +101,7 @@ function fillscene()
 	scene.add(world.group);
 	world.requestChunks();
 
-//	sky = new Sky();
+	sky = new Sky();
 	initLight();
 
 	load("tinnyHouse", 'models/tinnyHouse.dae', 1);

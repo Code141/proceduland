@@ -1,219 +1,81 @@
-let Chunk = function(x, z, hypo)
+let Chunk = function(x, z, hypo, bone)
 {
 	this.x = x;
 	this.z = z;
-	this.LODArray = [];
+	this.bone = bone;
 
-	V3.prototype.setHeight = function()
-	{
-		let pro = procedural(x + this.x, z + this.z);
-		this.y = pro.height;
-		this.color = pro.color;
-	}
+	this.vue_vertices_x = this.bone.vue_vertices_x;
+	this.vue_vertices_z = this.bone.vue_vertices_z;
+
+	this.level = LEVELMAX;
+
 	this.init();
 }
 
 Chunk.prototype = {
 
-	init : function(level)
+	init : function()
 	{
-		let a = new V3(0.5, 0.5, 0.5);
+		last = this.bone.info[this.bone.info.length - 1];
+		nb_v = last.v.offset + last.v.nb;
+		nb_f = last.f.offset + last.f.nb;
 
-		let b = new V3(1, 0, 0);
-		let c = new V3(0, 0, 0);
-		let d = new V3(1, 0, 1);
-		let e = new V3(0, 0, 1);
+		let vertices_y = new ArrayBuffer(nb_v * 4);
+		this.vue_vertices_y = new Float32Array(vertices_y);
 
-		a.setHeight();
-		b.setHeight();
-		c.setHeight();
-		d.setHeight();
-		e.setHeight();
+		let colors = new ArrayBuffer(nb_v * 3);
+		this.vue_colors = new Uint8Array(colors);
 
-		this.north = new BinaryTriangleTree(a, b, c);
-		this.east = new BinaryTriangleTree(a, d, b);
-		this.south = new BinaryTriangleTree(a, e, d);
-		this.west = new BinaryTriangleTree(a, c, e);
+		for (let i = 0, j = 0; i < nb_v; i++, j += 3)
+		{
+			pro = procedural(
+				this.vue_vertices_x[i] + this.x,
+				this.vue_vertices_z[i] + this.z
+			);
 
-		this.north.NL = this.east;
-		this.north.NR = this.west;
-		this.east.NL = this.south;
-		this.east.NR = this.north;
-		this.south.NL = this.west;
-		this.south.NR = this.east;
-		this.west.NL = this.north;
-		this.west.NR = this.south;
+			this.vue_vertices_y[i] = pro.height;
 
-		this.north.createChilds(level);
-		this.east.createChilds(level);
-		this.south.createChilds(level);
-		this.west.createChilds(level);
+			this.vue_colors[j + 0] = pro.color.r;
+			this.vue_colors[j + 1] = pro.color.g;
+			this.vue_colors[j + 2] = pro.color.b;
+		}
+
+
+
+
+
+
+
+		let breaked = new ArrayBuffer(nb_f * 4);
+		this.vue_breaked = new Uint32Array(breaked);
+
+
 	},
 
-
-	getBTTLod : function(hypo)
+	send : function()
 	{
-		this.nb_faces = 0;
 
-		this.north.getLod(hypo);
-		this.east.getLod(hypo);
-		this.south.getLod(hypo);
-		this.west.getLod(hypo);
-	},
 
-	mergeVertices: function (data)
-	{
-		vertices = data.vertices;
-		faces = data.faces;
-		colors = data.colors;
+		let vertices = new ArrayBuffer(nb_v * 3 * 4);
+		this.vue_vertices = new Float32Array(vertices);
 
-		var verticesMap = {}; // Hashmap for looking up vertices by position coordinates (and making sure they are unique)
-		let unique = [];
-		let unique_c = [];
-		let changes = [];
-
-		let key;
-		let i, il;
-		let indices, j, jl;
-
-		var t0 = performance.now();
-
-		for ( i = 0, il = vertices.length / 3; i < il; i ++ )
+		for (let i = 0, j = 0; i < nb_v; i++, j += 3)
 		{
-			index = i * 3;
-			let v = {
-				x : vertices[index],
-				y : vertices[index + 1],
-				z : vertices[index + 2]
-			};
-
-			let c = {
-				r : colors[index],
-				g : colors[index + 1],
-				b : colors[index + 2]
-			};
-
-			key = v.x + '' + v.z  ; // ULTRA HEAVY PERFORMANCES
-
-			if ( verticesMap[ key ] === undefined ) {
-				verticesMap[ key ] = i;
-				unique.push( v );
-				unique_c.push( c );
-				changes[ i ] = unique.length - 1;
-			} else {
-				changes[ i ] = changes[ verticesMap[ key ] ];
-			}
-
+			this.vue_vertices[j] = this.vue_vertices_x[i];
+			this.vue_vertices[j + 1] = this.vue_vertices_y[i];
+			this.vue_vertices[j + 2] = this.vue_vertices_z[i];
 		}
-
-		var t1 = performance.now();
-		console.log("DELETES HASH VERTICES() " + (t1 - t0) + " ms")
-
-
-		// if faces are completely degenerate after merging vertices, we
-		// have to remove them from the geometry.
-		var faceIndicesToRemove = [];
-
-		for ( i = 0, il = faces.length; i < il; i ++ )
-		{
-			face = faces[ i ];
-
-			face.a = changes[ face.a ];
-			face.b = changes[ face.b ];
-			face.c = changes[ face.c ];
-
-			indices = [ face.a, face.b, face.c ];
-
-			// if any duplicate vertices are found in a Face3
-			// we have to remove the face as nothing can be saved
-			for ( var n = 0; n < 3; n ++ ) {
-				if ( indices[ n ] === indices[ ( n + 1 ) % 3 ] ) {
-					faceIndicesToRemove.push( i );
-					break;
-				}
-			}
-		}
-
-		for ( i = faceIndicesToRemove.length - 1; i >= 0; i -- ) {
-			var idx = faceIndicesToRemove[ i ];
-			faces.splice( idx, 1 );
-		}
-
-		// Use unique set of vertices
-
-		var diff = vertices.length - unique.length;
-
-		let new_vertices = new Float32Array(unique.length * 3);
-		for (let i = 0; i < unique.length; i++)
-		{
-			new_vertices[(i * 3)] = unique[i].x;
-			new_vertices[(i * 3) + 1] = unique[i].y;
-			new_vertices[(i * 3) + 2] = unique[i].z;
-		}
-
-		let new_faces = new Uint32Array(faces.length *3 * 3);
-		for (let i = 0; i < faces.length; i++)
-		{
-			new_faces[(i * 3)] = faces[i].a;
-			new_faces[(i * 3) + 1] = faces[i].b;
-			new_faces[(i * 3) + 2] = faces[i].c;
-		}
-
-		let new_colors = new Uint8Array(unique_c.length * 3);
-		for (let i = 0; i < unique_c.length; i++)
-		{
-			new_colors[(i * 3)] = unique_c[i].r;
-			new_colors[(i * 3) + 1] = unique_c[i].g;
-			new_colors[(i * 3) + 2] = unique_c[i].b;
-		}
-
-		data.faces = new_faces;
-		data.colors = new_colors;
-		data.vertices = new_vertices;
-	},
-
-	printLOD : function()
-	{
-		let nb_faces = this.north.count()
-			+ this.east.count()
-			+ this.south.count()
-			+ this.west.count();
-
-		let length = nb_faces * (3 * 3);
-		let vertices = new Float32Array(length);
-		let colors = new Uint8Array(length);
-
-
-		faces = [];
-		for (let i = 0; i < nb_faces * 3; i++)
-		{
-			faces[i] = {
-				a : (i * 3),
-				b : (i * 3) + 1,
-				c : (i * 3) + 2
-			};
-		}
-
 
 		data = {
-			vertices: vertices,
-			faces: faces,
-			colors: colors
-		}
+			vertices: this.vue_vertices,
+			faces: this.bone.info[this.level].f.data,
+//			vertex_normals: this.vue_normals,
+			colors: this.vue_colors
+		};
 
-		let i = 0;
-		i += this.north.printLod(data, i);
-		i += this.east.printLod(data, i);
-		i += this.south.printLod(data, i);
-		i += this.west.printLod(data, i);
-
-
-
-
-		this.mergeVertices(data);
-
-		return data;
+		postMessage({ type : "chunk_refresh", position : { x : 0, z : 0 },
+			data : data,
+			chunk : { x : this.x, z : this.z }
+		});
 	},
-
 };
-

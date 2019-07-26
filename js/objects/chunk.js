@@ -30,12 +30,11 @@ chunk.prototype = {
 		geometry = new THREE.BufferGeometry();
 
 		geometry.addAttribute( 'position', new THREE.BufferAttribute(data.vertices, 3 ));
-		geometry.addAttribute( 'normal', new THREE.BufferAttribute(data.vertex_normals, 3, true ));
-//		geometry.addAttribute( 'color', new THREE.BufferAttribute(data.colors, 3, true ));
+//		geometry.addAttribute( 'normal', new THREE.BufferAttribute(data.vertex_normals, 3, true ));
+		geometry.addAttribute( 'color', new THREE.BufferAttribute(data.colors, 3, true ));
 		geometry.setIndex(new THREE.BufferAttribute(data.faces, 1 ));
 
-
-//		geometry.computeVertexNormals();
+		geometry.computeVertexNormals();
 //		geometry.computeFaceNormals();
 
 		if (this.mesh)
@@ -47,13 +46,9 @@ chunk.prototype = {
 		else
 		{
 			this.mesh = new THREE.Mesh( geometry, ground_material );
-
-			this.mesh.position.x -= 0.5;
-			this.mesh.position.z -= 0.5;
-
 			this.group.add( this.mesh );
 /*
-			this.helper = new THREE.VertexNormalsHelper( this.mesh, 5, 0x00ff00, 1 );
+			this.helper = new THREE.VertexNormalsHelper( this.mesh, 1, 0x00ff00, 1 );
 			scene.add(this.helper);
 */
 		}
