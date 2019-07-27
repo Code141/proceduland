@@ -28,7 +28,7 @@ function init(){
 function initThreeJs( container )
 {
 	/* --------- BASICS ----------*/
-	camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 1000000 );
+	camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000000 );
 	camera.position.x = 0;
 	camera.position.y = 200;
 	camera.position.z = 200;

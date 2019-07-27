@@ -93,7 +93,20 @@ ChunksOverseer.prototype = {
 			let x = list[i].x;
 			let z = list[i].z;
 			overseer.initChunk(x, z, list[i].hypo);
-			this.chunks[x][z].send();
+
+			var t0 = performance.now();
+				this.chunks[x][z].init();
+			console.log("INIT  in " + (performance.now() - t0) + " ms")
+
+			var t0 = performance.now();
+				this.chunks[x][z].break_faces();
+			console.log("BREAKED  in " + (performance.now() - t0) + " ms")
+
+			var t0 = performance.now();
+				this.chunks[x][z].send();
+			console.log("SEND  in " + (performance.now() - t0) + " ms")
+
+			console.log("-------------------------------------------")
 		}
 		/*
 		var t1 = performance.now();

@@ -3,20 +3,20 @@ let Chunk = function(x, z, hypo, bone)
 	this.x = x;
 	this.z = z;
 	this.bone = bone;
+	this.info = this.bone.info;
 
 	this.vue_vertices_x = this.bone.vue_vertices_x;
 	this.vue_vertices_z = this.bone.vue_vertices_z;
 
 	this.level = LEVELMAX;
 
-	this.init();
 }
 
 Chunk.prototype = {
 
 	init : function()
 	{
-		last = this.bone.info[this.bone.info.length - 1];
+		last = this.info[this.info.length - 1];
 		nb_v = last.v.offset + last.v.nb;
 		nb_f = last.f.offset + last.f.nb;
 
@@ -40,22 +40,32 @@ Chunk.prototype = {
 			this.vue_colors[j + 2] = pro.color.b;
 		}
 
+	},
 
 
+	break_faces : function()
+	{
+		let breaked = new ArrayBuffer(nb_f);
+
+		this.vue_breaked = [];
+
+		for (let l = 0; l < this.info.length; l++)
+		{
+			i = this.info[l];
+			this.vue_breaked[l] = new Uint8Array(breaked, i.f.offset, i.f.nb);
+		}
+
+		last = this.vue_breaked[this.vue_breaked.length - 1];
+		for (let i = 0; i < last.length; i++)
+			last[i] = 1;
 
 
-
-
-		let breaked = new ArrayBuffer(nb_f * 4);
-		this.vue_breaked = new Uint32Array(breaked);
-
-
+//		if ((this.deltaBaseApex * 1000) > (hypo * hypo))
+//		this.deltaBaseApex = Math.abs((this.VL.y + this.VR.y) / 2 - this.VC.y);
 	},
 
 	send : function()
 	{
-
-
 		let vertices = new ArrayBuffer(nb_v * 3 * 4);
 		this.vue_vertices = new Float32Array(vertices);
 
@@ -77,5 +87,5 @@ Chunk.prototype = {
 			data : data,
 			chunk : { x : this.x, z : this.z }
 		});
-	},
+	}
 };
