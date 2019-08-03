@@ -1,6 +1,5 @@
 function chunk(x, y)
 {
-
 	this.x = x;
 	this.y = y;
 
@@ -61,8 +60,12 @@ chunk.prototype = {
 	{
 		if (state == "init")
 		{
-			var geometry = new THREE.BoxGeometry( 2, 2, 2 );
+			var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+
 			this.state_cube_mesh = new THREE.Mesh( geometry, state_cube_material );
+
+			this.state_cube_mesh.position.x += 0.5;
+			this.state_cube_mesh.position.z += 0.5;
 
 			this.group.add( this.state_cube_mesh );
 		}

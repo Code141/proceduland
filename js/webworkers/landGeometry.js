@@ -16,7 +16,7 @@ procedural = function(absoluteX, absoluteZ){
 	finalNoise = ( land * land + ( landNoise * land * land * land * land ) ) / 2;
 
 	finalNoise -= river;
-
+/*
 	if (finalNoise < -0.7)
 		finalNoise = -0.2;
 
@@ -25,7 +25,7 @@ procedural = function(absoluteX, absoluteZ){
 
 	if (finalNoise < -0.2)
 		finalNoise /= 1.5;
-
+*/
 
 	color = colorise(
 			gradient, (finalNoise + 1 ) / 2,

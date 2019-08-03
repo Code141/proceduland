@@ -62,7 +62,7 @@ World.prototype = {
 	{
 		let list = andresList(this.chunksDistance, this.position.x, this.position.z);
 
-		list = [{x: 0, z: 0, hypo: 0}];
+//		list = [{x: 0, z: 0, hypo: 0}];
 
 		for (var i = 0; i < list.length; i++)
 			this.newChunk(list[i].x, list[i].z);

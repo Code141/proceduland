@@ -25,35 +25,15 @@ ChunksOverseer.prototype = {
 	{
 		if (this.chunks[x] == undefined)
 			this.chunks[x] = [];
+
 		if (this.chunks[x][z] == undefined)
 			this.chunks[x][z] = new Chunk(x, z, hypo, this.bone);
 
 	},
 
-	linkChunk : function( x, z )
-	{
-		/*
-		if (this.chunks[x][z + 1])
-			this.chunks[x][z].south.NB = this.chunks[x][z + 1].north;
-
-		if (this.chunks[x][z-1])
-			this.chunks[x][z].north.NB = this.chunks[x][z - 1].south;
-
-		if (this.chunks[x + 1] && this.chunks[x + 1][z])
-			this.chunks[x][z].east.NB = this.chunks[x + 1][z].west;
-
-		if (this.chunks[x - 1] && this.chunks[x - 1][z])
-			this.chunks[x][z].west.NB = this.chunks[x - 1][z].east;
-
-		this.chunks[x][z].north.linkNeighbor();
-		this.chunks[x][z].east.linkNeighbor();
-		this.chunks[x][z].south.linkNeighbor();
-		this.chunks[x][z].west.linkNeighbor();
-		*/
-	},
-
 	does_neighbour_resolved : function(x, z)
 	{
+		/*
 		promises = [];
 
 		if (this.chunks[x - 1])
@@ -82,6 +62,7 @@ ChunksOverseer.prototype = {
 		}
 
 		return (promises);
+		*/
 	},
 
 	get : function(list)
@@ -99,7 +80,7 @@ ChunksOverseer.prototype = {
 			console.log("INIT  in " + (performance.now() - t0) + " ms")
 
 			var t0 = performance.now();
-				this.chunks[x][z].break_faces();
+				this.chunks[x][z].break_faces( list[i].hypo);
 			console.log("BREAKED  in " + (performance.now() - t0) + " ms")
 
 			var t0 = performance.now();
@@ -112,13 +93,6 @@ ChunksOverseer.prototype = {
 		var t1 = performance.now();
 		console.log("INIT " + i + " chunks in " + (t1 - t0) + " ms")
 
-
-
-		var t0 = performance.now();
-		for (i = 0; i < list.length; i++)
-			overseer.linkChunk(list[i].x, list[i].z);
-		var t1 = performance.now();
-		console.log("LINKED in " + (t1 - t0) + " ms")
 
 		// PROMISE
 		for (let i = 0; i < list.length; i++)

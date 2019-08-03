@@ -136,9 +136,7 @@ normal! zo
 normal! zo
 58
 normal! zo
-67
-normal! zo
-67
+63
 normal! zo
 71
 normal! zo
@@ -166,11 +164,9 @@ setlocal fdn=20
 setlocal fen
 16
 normal! zo
-39
+40
 normal! zo
-41
-normal! zo
-41
+40
 normal! zo
 let s:l = 38 - ((37 * winheight(0) + 46) / 92)
 if s:l < 1 | let s:l = 1 | endif
@@ -195,7 +191,7 @@ if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 15
-normal! 06|
+normal! 02|
 lcd ~/cursus/proceduland
 wincmd w
 argglobal
@@ -239,7 +235,12 @@ if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 47
-normal! 064|
+let s:c = 64 - ((60 * winwidth(0) + 33) / 66)
+if s:c > 0
+  exe 'normal! ' . s:c . '|zs' . 64 . '|'
+else
+  normal! 064|
+endif
 lcd ~/cursus/proceduland
 wincmd w
 exe '1resize ' . ((&lines * 5 + 48) / 96)
@@ -268,23 +269,16 @@ vsplit
 3wincmd h
 wincmd w
 wincmd w
-wincmd _ | wincmd |
-split
-1wincmd k
-wincmd w
 wincmd w
 wincmd t
 set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 75 + 182) / 365)
+exe 'vert 1resize ' . ((&columns * 84 + 182) / 365)
 exe 'vert 2resize ' . ((&columns * 84 + 182) / 365)
-exe '3resize ' . ((&lines * 45 + 48) / 96)
-exe 'vert 3resize ' . ((&columns * 93 + 182) / 365)
-exe '4resize ' . ((&lines * 46 + 48) / 96)
-exe 'vert 4resize ' . ((&columns * 93 + 182) / 365)
-exe 'vert 5resize ' . ((&columns * 110 + 182) / 365)
+exe 'vert 3resize ' . ((&columns * 146 + 182) / 365)
+exe 'vert 4resize ' . ((&columns * 48 + 182) / 365)
 argglobal
 setlocal fdm=indent
 setlocal fde=0
@@ -294,34 +288,28 @@ setlocal fdl=7
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
-21
+24
 normal! zo
-23
+26
 normal! zo
-83
+36
 normal! zo
-90
+36
+normal! zc
+70
 normal! zo
-90
+118
 normal! zo
-117
+141
 normal! zo
-121
+142
 normal! zo
-124
-normal! zo
-140
-normal! zo
-164
-normal! zo
-168
-normal! zo
-let s:l = 25 - ((24 * winheight(0) + 46) / 92)
+let s:l = 68 - ((49 * winheight(0) + 46) / 92)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-25
-normal! 018|
+68
+normal! 05|
 lcd ~/cursus/proceduland
 wincmd w
 argglobal
@@ -336,12 +324,12 @@ setlocal fdn=20
 setlocal fen
 3
 normal! zo
-let s:l = 10 - ((9 * winheight(0) + 46) / 92)
+let s:l = 59 - ((43 * winheight(0) + 46) / 92)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-10
-normal! 0
+59
+normal! 011|
 lcd ~/cursus/proceduland
 wincmd w
 argglobal
@@ -354,30 +342,18 @@ setlocal fdl=5
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
-let s:l = 279 - ((22 * winheight(0) + 22) / 45)
+17
+normal! zo
+19
+normal! zo
+31
+normal! zo
+let s:l = 70 - ((45 * winheight(0) + 46) / 92)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-279
-normal! 040|
-lcd ~/cursus/proceduland
-wincmd w
-argglobal
-terminal ++curwin ++cols=93 ++rows=46 
-setlocal fdm=indent
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-let s:l = 1 - ((0 * winheight(0) + 23) / 46)
-if s:l < 1 | let s:l = 1 | endif
-exe s:l
-normal! zt
-1
-normal! 0
+70
+normal! 017|
 lcd ~/cursus/proceduland
 wincmd w
 argglobal
@@ -430,14 +406,10 @@ normal! zt
 normal! 016|
 lcd ~/cursus/proceduland
 wincmd w
-3wincmd w
-exe 'vert 1resize ' . ((&columns * 75 + 182) / 365)
+exe 'vert 1resize ' . ((&columns * 84 + 182) / 365)
 exe 'vert 2resize ' . ((&columns * 84 + 182) / 365)
-exe '3resize ' . ((&lines * 45 + 48) / 96)
-exe 'vert 3resize ' . ((&columns * 93 + 182) / 365)
-exe '4resize ' . ((&lines * 46 + 48) / 96)
-exe 'vert 4resize ' . ((&columns * 93 + 182) / 365)
-exe 'vert 5resize ' . ((&columns * 110 + 182) / 365)
+exe 'vert 3resize ' . ((&columns * 146 + 182) / 365)
+exe 'vert 4resize ' . ((&columns * 48 + 182) / 365)
 tabnext 2
 badd +1 ~/cursus/proceduland/index.html
 badd +1 ~/cursus/proceduland/js
@@ -448,10 +420,11 @@ badd +55 ~/cursus/proceduland/js/objects/chunk.js
 badd +13 ~/cursus/proceduland/js/materials.js
 badd +32 ~/cursus/proceduland/js/algo/andresCircle.js
 badd +1 ~/cursus/proceduland/js/gui.js
-badd +37 ~/cursus/proceduland/js/webworkers/chunk_2.js
+badd +1 ~/cursus/proceduland/js/webworkers/bone.js
+badd +0 ~/cursus/proceduland/js/webworkers/chunk.js
 badd +1 ~/cursus/proceduland/js/webworkers/landGeometry.js
+badd +37 ~/cursus/proceduland/js/webworkers/chunk_2.js
 badd +1 ~/cursus/proceduland/js/loader.js
-badd +1 ~/cursus/proceduland/js/webworkers/chunk.js
 badd +1 ~/cursus/proceduland/js/webworkers/btt.js
 badd +1 ~/cursus/proceduland/js/tools.js
 badd +509 ~/cursus/proceduland/js/libs/voronoi/voronoi.js
@@ -477,7 +450,6 @@ badd +30 ~/cursus/proceduland/e
 badd +1 ~/cursus/proceduland/n
 badd +20 ~/cursus/proceduland/js/objects/sky.js
 badd +1 ~/cursus/proceduland/js/webworkers/chunk_squelet.js
-badd +0 ~/cursus/proceduland/js/webworkers/bone.js
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0
   silent exe 'bwipe ' . s:wipebuf
 endif
@@ -489,6 +461,7 @@ if file_readable(s:sx)
   exe "source " . fnameescape(s:sx)
 endif
 let &so = s:so_save | let &siso = s:siso_save
+nohlsearch
 doautoall SessionLoadPost
 unlet SessionLoad
 " vim: set ft=vim :

@@ -69,15 +69,15 @@ Bone.prototype = {
 			let v = 0;
 			if (l % 2 == 0)
 			{
+				indice = Math.pow(2, (l / 2));
 				v1 = i * (i + 1) * 2;
 				v = v1;
 				i *= 2;
 
-			indice = Math.pow(2, ((l) / 2));
 			}
 			else
 			{
-				indice = Math.pow(2, ((l+ 1) / 2));
+				indice = Math.pow(2, ((l + 1) / 2));
 				v2 *= 4;
 				v = v2;
 			}
@@ -121,39 +121,44 @@ Bone.prototype = {
 
 	generateVertices_1: function(l, i)
 	{
+		let decal = size / (i.indice * 2);
+		let decal_2 = decal * 2;
+
 		for (let z = 0; z < i.indice; z++)
-		{
+		{	
+			let ligne_height = decal + (decal_2 * z);
+			let decalage = (z * i.indice);
 			for (let x = 0; x < i.indice; x++)
 			{
-				decal = size / (i.indice * 2);
-				decalage = x + (z * i.indice);
-				i.v.data_x[decalage] = decal + (decal * x * 2);
-				i.v.data_z[decalage] = decal + (decal * z * 2);
+				i.v.data_x[decalage + x] = decal + (decal_2 * x);
+				i.v.data_z[decalage + x] = ligne_height;
 			}
 		}
 	},
 
 	generateVertices_2: function(l, i)
 	{
-		decal = size / (i.indice);
+		let decal = size / (i.indice * 2);
+		let decal_2 = decal * 2;
 
 		for (let z = 0; z < i.indice * 2 + 1; z++)
 		{
-			decalage = (z * i.indice) + Math.floor(z / 2);
+			let decalage = (z * i.indice) + Math.floor(z / 2);
+			let ligne_height = decal * z;
 			if (z % 2)
 			{
 				for (let x = 0; x < i.indice + 1; x++)
 				{
-					i.v.data_x[decalage + x] = decal * x;
-					i.v.data_z[decalage + x] = decal / 2 * z;
+					i.v.data_x[decalage + x] = decal_2 * x;
+					i.v.data_z[decalage + x] = ligne_height;
 				}
 			}
 			else
 			{
 				for (let x = 0; x < i.indice; x++)
 				{
-					i.v.data_x[decalage + x] = decal * x + decal /2;
-					i.v.data_z[decalage + x] = decal / 2 * z;
+					i.v.data_x[decalage + x] = decal_2 * x + decal;
+					i.v.data_z[decalage + x] = ligne_height;
 				}
 			}
 		}
@@ -165,52 +170,51 @@ Bone.prototype = {
 		{
 			for (let x = 0; x < i.indice; x++)
 			{
-				decalage = x + (z * i.indice);
+				apex = i.v.offset + x + (z * i.indice);
 
 				dec_f_1 = x + z * i.indice;
 				dec_f_1 *= 3 * 4;
-				dec_f_2 = (x + z * (i.indice)) / 2;
-				dec_f_2 *= 3 * 4;
+
+				dec_f_2 = x + z * (i.indice);
+				dec_f_2 *= 3 * 2;
 
 				diag = ((x % 2) + (z % 2)) % 2;
 
 				if (diag)
 				{
-					i.f.data[dec_f_1 + 0] = i.v.offset + decalage;
+					i.f.data[dec_f_1 + 0] = apex;
 					i.f.data[dec_f_1 + 1] = last_i.f.data[dec_f_2 + 2];
 					i.f.data[dec_f_1 + 2] = last_i.f.data[dec_f_2 + 0];
 
-					i.f.data[dec_f_1 + 3] = i.v.offset + decalage;
+					i.f.data[dec_f_1 + 3] = apex;
 					i.f.data[dec_f_1 + 4] = last_i.f.data[dec_f_2 + 0];
 					i.f.data[dec_f_1 + 5] = last_i.f.data[dec_f_2 + 1];
 
-					i.f.data[dec_f_1 + 6] = i.v.offset + decalage;
+					i.f.data[dec_f_1 + 6] = apex;
 					i.f.data[dec_f_1 + 7] = last_i.f.data[dec_f_2 + 3];
 					i.f.data[dec_f_1 + 8] = last_i.f.data[dec_f_2 + 4];
 
-					i.f.data[dec_f_1 + 9] = i.v.offset + decalage;
+					i.f.data[dec_f_1 + 9] = apex;
 					i.f.data[dec_f_1 + 10] = last_i.f.data[dec_f_2 + 5];
 					i.f.data[dec_f_1 + 11] = last_i.f.data[dec_f_2 + 3];
 				}
 				else
 				{
-					i.f.data[dec_f_1 + 0] = i.v.offset + decalage;
+					i.f.data[dec_f_1 + 0] = apex;
 					i.f.data[dec_f_1 + 1] = last_i.f.data[dec_f_2 + 0];
 					i.f.data[dec_f_1 + 2] = last_i.f.data[dec_f_2 + 1];
 
-					i.f.data[dec_f_1 + 3] = i.v.offset + decalage;
+					i.f.data[dec_f_1 + 3] = apex;
 					i.f.data[dec_f_1 + 4] = last_i.f.data[dec_f_2 + 5];
 					i.f.data[dec_f_1 + 5] = last_i.f.data[dec_f_2 + 3];
 
-					i.f.data[dec_f_1 + 6] = i.v.offset + decalage;
+					i.f.data[dec_f_1 + 6] = apex;
 					i.f.data[dec_f_1 + 7] = last_i.f.data[dec_f_2 + 2];
 					i.f.data[dec_f_1 + 8] = last_i.f.data[dec_f_2 + 0];
 
-					i.f.data[dec_f_1 + 9] = i.v.offset + decalage;
+					i.f.data[dec_f_1 + 9] = apex;
 					i.f.data[dec_f_1 + 10] = last_i.f.data[dec_f_2 + 3];
 					i.f.data[dec_f_1 + 11] = last_i.f.data[dec_f_2 + 4];
-
-
 				}
 			}
 		}
@@ -218,14 +222,15 @@ Bone.prototype = {
 
 	generateFace_2: function(l, i)
 	{
+		let ligne1 = (1 * i.indice);
+		let ligne2 = (2 * i.indice) + 1;
+
 		for (let z = 0; z < i.indice; z++)
 		{
 			for (let x = 0; x < i.indice; x++)
 			{
 
-				ligne1 = (1 * i.indice);
-				ligne2 = (2 * i.indice) + 1;
-				decalage = i.v.offset + x + (z * (i.indice * 2 + 1));
+				decalage = i.v.offset + x + (z * ligne2);
 
 				dec_f_2 = x + z * i.indice;
 				dec_f_2 *= 3 * 4;
