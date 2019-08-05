@@ -1,22 +1,16 @@
-var LEVELMAX, DISTANCE;
-
-importScripts('bone.js', 'chunk.js', '../algo/perlin.js', 'landGeometry.js', '../algo/andresCircle.js'); 
-
-V3 = function ( x, y, z )
-{
-	this.x = x;
-	this.y = y;
-	this.z = z;
-}
-
+importScripts(
+	'bone.js',
+	'chunk.js',
+	'../algo/perlin.js',
+	'landGeometry.js',
+	'../algo/andresCircle.js'
+);
 
 ChunksOverseer = function(levelMax){
 	this.chunks = [];
 	this.position = { x : 0, z : 0 };
-	LEVELMAX = levelMax;
 
-	this.bone = new Bone(LEVELMAX);
-
+	this.bone = new Bone(levelMax);
 }
 
 ChunksOverseer.prototype = {
@@ -73,21 +67,24 @@ ChunksOverseer.prototype = {
 		{
 			let x = list[i].x;
 			let z = list[i].z;
-			overseer.initChunk(x, z, list[i].hypo);
 
+			console.log("|", x, z, "|---------------------", i)
 			var t0 = performance.now();
-				this.chunks[x][z].init();
+			overseer.initChunk(x, z, list[i].hypo);
 			console.log("INIT  in " + (performance.now() - t0) + " ms")
 
 			var t0 = performance.now();
-				this.chunks[x][z].break_faces( list[i].hypo);
+				this.chunks[x][z].break_all(list[i].hypo);
 			console.log("BREAKED  in " + (performance.now() - t0) + " ms")
+
+			var t0 = performance.now();
+				this.chunks[x][z].realoc();
+			console.log("REALOC  in " + (performance.now() - t0) + " ms")
 
 			var t0 = performance.now();
 				this.chunks[x][z].send();
 			console.log("SEND  in " + (performance.now() - t0) + " ms")
 
-			console.log("-------------------------------------------")
 		}
 		/*
 		var t1 = performance.now();

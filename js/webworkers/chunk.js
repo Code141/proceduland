@@ -2,14 +2,14 @@ let Chunk = function(x, z, hypo, bone)
 {
 	this.x = x;
 	this.z = z;
+
 	this.bone = bone;
 	this.info = this.bone.info;
 
 	this.vue_vertices_x = this.bone.vue_vertices_x;
 	this.vue_vertices_z = this.bone.vue_vertices_z;
 
-	this.level = LEVELMAX;
-
+	this.init();
 }
 
 Chunk.prototype = {
@@ -41,7 +41,105 @@ Chunk.prototype = {
 		}
 	},
 
-	break_faces : function(hypo)
+	send : function()
+	{
+		postMessage({
+			type : "chunk_refresh",
+			position : {
+				x : 0,
+				z : 0
+			},
+			data : {
+				vertices: this.send_vertices,
+				faces: this.faces,
+//				vertex_normals: this.vue_normals,
+				colors: this.send_colors
+			},
+			chunk : {
+				x : this.x,
+				z : this.z
+			}
+		});
+	},
+
+	break_face : function(l, )
+	{
+		last_i = this.info[l - 1];
+		i = this.info[l];
+
+		if (l % 2)
+		{
+			// mark 4 faces
+			for (let z = 0; z < i.indice; z++)
+			{
+				for (let x = 0; x < i.indice; x++)
+				{
+					dec_f_1 = x + z * i.indice;
+					dec_f_1 *= 4;
+
+					dec_f_2 = x + z * i.indice;
+					dec_f_2 *= 3 * 2;
+
+					real = this.vue_vertices_y[i.v.offset + x + (z * i.indice)];
+					virtual = (this.vue_vertices_y[last_i.f.data[dec_f_2 + 2]]
+						+ this.vue_vertices_y[last_i.f.data[dec_f_2 + 1]]) / 2;
+					delta = Math.abs(virtual - real);
+
+					if ( (delta * 1000) > hypo)
+					{
+						// set parents
+						this.vue_breaked[l - 1][dec_f_2 / 3] = 1;
+						this.vue_breaked[l - 1][dec_f_2 / 3 + 1] = 1;
+						// set self
+						this.vue_breaked[l][dec_f_1] = 1;
+						this.vue_breaked[l][dec_f_1 + 1] = 1;
+						this.vue_breaked[l][dec_f_1 + 2] = 1;
+						this.vue_breaked[l][dec_f_1 + 3] = 1;
+					}
+				}
+			}
+		}
+		else
+		{
+			// mark 8 faces
+
+			let ligne1 = (1 * i.indice);
+			let ligne2 = (2 * i.indice) + 1;
+
+			for (let z = 0; z < i.indice; z++)
+			{
+				for (let x = 0; x < i.indice; x++)
+				{
+					decalage = i.v.offset + x + (z * ligne2);
+
+					dec_f_2 = x + z * i.indice;
+					dec_f_2 *= 3 * 4;
+
+					dec_f_1a = x + z * i.indice * 2;
+					dec_f_1a *= 4;
+
+					dec_f_1b =  x + z * i.indice * 2 + i.indice;
+					dec_f_1b *= 4;
+
+					// ---------------------------------------------------------------------------------------------- //
+					real1 = this.vue_vertices_y[decalage];
+					virtual = (this.vue_vertices_y[last_i.f.data[dec_f_2 + 2]]
+						+ this.vue_vertices_y[last_i.f.data[dec_f_2 + 1]]) / 2;
+					delta = Math.abs(virtual - real1);
+
+					if ( (delta * 1000) > hypo)
+					{
+						this.vue_breaked[l - 1][dec_f_2 / 3] = 1; // set parents
+
+						this.vue_breaked[l][dec_f_1a + 0] = 1;
+						this.vue_breaked[l][dec_f_1a + 2] = 1;
+					}
+				}
+			}
+		}
+	},
+
+	break_all : function(hypo)
 	{
 		this.vue_breaked = [];
 		let breaked = new ArrayBuffer(nb_f);
@@ -63,181 +161,179 @@ Chunk.prototype = {
 			last_i = this.info[l - 1];
 			i = this.info[l];
 
+			let indice = i.indice;
+
+
+
+
+
+
+
+
+
 			if (l % 2)
 			{
-				for (let z = 0; z < i.indice; z++)
+				for (let z = 0; z < indice; z++)
 				{
-					for (let x = 0; x < i.indice; x++)
+					for (let x = 0; x < indice; x++)
 					{
-						// index of real Y apex
-						real = this.vue_vertices_y[i.v.offset + x + (z * i.indice)];
+						dec_f_1 = x + z * indice;
+						dec_f_1 *= 4;
 
-						dec_f_1 = x + z * i.indice;
-						dec_f_1 *= 3 * 4;
-
-						dec_f_2 = x + z * (i.indice);
+						dec_f_2 = x + z * indice;
 						dec_f_2 *= 3 * 2;
 
-						diag = ((x % 2) + (z % 2)) % 2;
-
-						if (diag)
-							virtual = (this.vue_vertices_y[last_i.f.data[dec_f_2 + 1]]
-									+ this.vue_vertices_y[last_i.f.data[dec_f_2 + 2]]) / 2;
-						else
-							virtual = (this.vue_vertices_y[last_i.f.data[dec_f_2 + 0]]
-									+ this.vue_vertices_y[last_i.f.data[dec_f_2 + 3]]) / 2;
-
+						real = this.vue_vertices_y[i.v.offset + x + (z * indice)];
+						virtual = (this.vue_vertices_y[last_i.f.data[dec_f_2 + 2]]
+								+ this.vue_vertices_y[last_i.f.data[dec_f_2 + 1]]) / 2;
 						delta = Math.abs(virtual - real);
 
-						if ( (delta * 1000) > (hypo * hypo))
+						if ( (delta * 1000) > hypo)
 						{
 							// set parents
 							this.vue_breaked[l - 1][dec_f_2 / 3] = 1;
 							this.vue_breaked[l - 1][dec_f_2 / 3 + 1] = 1;
 							// set self
-							this.vue_breaked[l][dec_f_1 / 3] = 1;
-							this.vue_breaked[l][dec_f_1 / 3 + 1] = 1;
-							this.vue_breaked[l][dec_f_1 / 3 + 2] = 1;
-							this.vue_breaked[l][dec_f_1 / 3 + 3] = 1;
+							this.vue_breaked[l][dec_f_1] = 1;
+							this.vue_breaked[l][dec_f_1 + 1] = 1;
+							this.vue_breaked[l][dec_f_1 + 2] = 1;
+							this.vue_breaked[l][dec_f_1 + 3] = 1;
 						}
 					}
 				}
 			}
 			else
 			{
-				let ligne1 = (1 * i.indice);
-				let ligne2 = (2 * i.indice) + 1;
+				let ligne1 = (1 * indice);
+				let ligne2 = (2 * indice) + 1;
 
-				for (let z = 0; z < i.indice; z++)
+				for (let z = 0; z < indice; z++)
 				{
-					for (let x = 0; x < i.indice; x++)
+					for (let x = 0; x < indice; x++)
 					{
 						decalage = i.v.offset + x + (z * ligne2);
-						dec_f_2 = x + z * i.indice;
+
+						dec_f_2 = x + z * indice;
 						dec_f_2 *= 3 * 4;
 
-						dec_f_1a = x + z * i.indice * 2;
-						dec_f_1a *= 3 * 4;
+						dec_f_1a = x + z * indice * 2;
+						dec_f_1a *= 4;
 
-						dec_f_1b = x + z * i.indice * 2 + i.indice;
-						dec_f_1b *= 3 * 4;
+						dec_f_1b =  x + z * indice * 2 + indice;
+						dec_f_1b *= 4;
 
+// ---------------------------------------------------------------------------------------------- //
 						real1 = this.vue_vertices_y[decalage];
 						virtual = (this.vue_vertices_y[last_i.f.data[dec_f_2 + 2]]
 								+ this.vue_vertices_y[last_i.f.data[dec_f_2 + 1]]) / 2;
 						delta = Math.abs(virtual - real1);
-						if ( (delta * 1000) > (hypo * hypo))
+
+						if ( (delta * 1000) > hypo)
 						{
-							// set parents
-							this.vue_breaked[l - 1][dec_f_2 / 3] = 1;
-							// set self
-							this.vue_breaked[l][dec_f_1a / 3] = 1;
-							this.vue_breaked[l][dec_f_1a / 3 + 2] = 1;
+							this.vue_breaked[l - 1][dec_f_2 / 3] = 1; // set parents
+
+							this.vue_breaked[l][dec_f_1a + 0] = 1;
+							this.vue_breaked[l][dec_f_1a + 2] = 1;
 						}
+// ---------------------------------------------------------------------------------------------- //
 
 						real2 = this.vue_vertices_y[decalage + ligne1];
 						virtual = (this.vue_vertices_y[last_i.f.data[dec_f_2 + 2 + 3]]
 								+ this.vue_vertices_y[last_i.f.data[dec_f_2 + 1 + 3]]) / 2;
 						delta = Math.abs(virtual - real2);
-						if ( (delta * 1000) > (hypo * hypo))
+
+						if ( (delta * 1000) > hypo)
 						{
-							// set parents
-							this.vue_breaked[l - 1][dec_f_2 / 3 + 1] = 1;
-							// set self
-							this.vue_breaked[l][dec_f_1a / 3 + 1] = 1;
-							this.vue_breaked[l][dec_f_1b / 3 + 0] = 1;
+							this.vue_breaked[l - 1][dec_f_2 / 3 + 1] = 1; // set parents
+
+							this.vue_breaked[l][dec_f_1a + 1] = 1;
+							this.vue_breaked[l][dec_f_1b + 0] = 1;
 						}
 
 						real3 = this.vue_vertices_y[decalage + ligne1 + 1];
 						virtual = (this.vue_vertices_y[last_i.f.data[dec_f_2 + 2 + 6]]
 								+ this.vue_vertices_y[last_i.f.data[dec_f_2 + 1 + 6]]) / 2;
 						delta = Math.abs(virtual - real3);
-						if ( (delta * 1000) > (hypo * hypo))
+
+						if ( (delta * 1000) > hypo)
 						{
-							// set parents
-							this.vue_breaked[l - 1][dec_f_2 / 3 + 2] = 1;
-							// set self
-							this.vue_breaked[l][dec_f_1a / 3 + 3] = 1;
-							this.vue_breaked[l][dec_f_1b / 3 + 2] = 1;
+							this.vue_breaked[l - 1][dec_f_2 / 3 + 2] = 1; // set parents
+
+							this.vue_breaked[l][dec_f_1a + 3] = 1;
+							this.vue_breaked[l][dec_f_1b + 2] = 1;
 						}
 
 						real4 = this.vue_vertices_y[decalage + ligne2];
 						virtual = (this.vue_vertices_y[last_i.f.data[dec_f_2 + 2 + 9]]
 								+ this.vue_vertices_y[last_i.f.data[dec_f_2 + 1 + 9]]) / 2;
-
 						delta = Math.abs(virtual - real4);
 
-						if ( (delta * 1000) > (hypo * hypo))
+						if ( (delta * 1000) > hypo)
 						{
-							// set parents
-							this.vue_breaked[l - 1][dec_f_2 / 3 + 3] = 1;
-							// set self
-							this.vue_breaked[l][dec_f_1b / 3 + 3] = 1;
-							this.vue_breaked[l][dec_f_1b / 3 + 1] = 1;
-						}
+							this.vue_breaked[l - 1][dec_f_2 / 3 + 3] = 1; // set parents
 
+							this.vue_breaked[l][dec_f_1b + 3] = 1;
+							this.vue_breaked[l][dec_f_1b + 1] = 1;
+						}
 					}
 				}
 			}
 		}
+	},
 
-		let nb = 0;
+	realoc : function()
+	{
+		let new_vertice = [];
+		let nb_v = 0;
+		let f = 0;
+		let nb_f = 0;
 
 		for (let i = 0; i < this.vue_breaked.length; i++)
 			for (let j = 0; j < this.vue_breaked[i].length; j++)
 				if (this.vue_breaked[i][j])
-					nb++;
+					nb_f++;
 
-
-		let faces = new ArrayBuffer(nb * 3 * 4);
-		this.faces = new Uint32Array(faces);
-
-		let f = 0;
+		this.faces = new Uint32Array(nb_f * 3 );
 
 		for (let l = 0; l < this.vue_breaked.length; l++)
 		{
+			let data = this.info[l].f.data;
 			for (let i = 0; i < this.vue_breaked[l].length; i++)
 			{
 				if (this.vue_breaked[l][i])
 				{
-					this.faces[f + 0] = this.info[l].f.data[i * 3 + 0];
-					this.faces[f + 1] = this.info[l].f.data[i * 3 + 1];
-					this.faces[f + 2] = this.info[l].f.data[i * 3 + 2];
-
+					let b = i * 3;
+					if (new_vertice[data[b + 0]] == undefined)
+						new_vertice[data[b + 0]] = nb_v++;
+					if (new_vertice[data[b + 1]] == undefined)
+						new_vertice[data[b + 1]] = nb_v++;
+					if (new_vertice[data[b + 2]] == undefined)
+						new_vertice[data[b + 2]] = nb_v++;
+					this.faces[f + 0] = new_vertice[data[b + 0]];
+					this.faces[f + 1] = new_vertice[data[b + 1]];
+					this.faces[f + 2] = new_vertice[data[b + 2]];
 					f += 3;
 				}
-
 			}
 		}
 
-console.log(nb, this.vue_breaked, this.faces);
+		this.send_vertices = new Float32Array(nb_v * 3);
+		this.send_colors = new Uint8Array(nb_v * 3);
 
-
-	},
-
-	send : function()
-	{
-		let vertices = new ArrayBuffer(nb_v * 3 * 4);
-		this.vue_vertices = new Float32Array(vertices);
-
-		for (let i = 0, j = 0; i < nb_v; i++, j += 3)
+		for (let i = 0; i < new_vertice.length; i++)
 		{
-			this.vue_vertices[j] = this.vue_vertices_x[i];
-			this.vue_vertices[j + 1] = this.vue_vertices_y[i];
-			this.vue_vertices[j + 2] = this.vue_vertices_z[i];
+			if (new_vertice[i] != undefined )
+			{
+				let pos = new_vertice[i] * 3;
+				this.send_vertices[pos + 0] = this.vue_vertices_x[i];
+				this.send_vertices[pos + 1] = this.vue_vertices_y[i];
+				this.send_vertices[pos + 2] = this.vue_vertices_z[i];
+
+				this.send_colors[pos + 0] = this.vue_colors[i * 3];
+				this.send_colors[pos + 1] = this.vue_colors[i * 3 + 1];
+				this.send_colors[pos + 2] = this.vue_colors[i * 3 + 2];
+			}
 		}
-
-		data = {
-			vertices: this.vue_vertices,
-			faces: this.faces,
-
-//			vertex_normals: this.vue_normals,
-			colors: this.vue_colors
-		};
-
-		postMessage({ type : "chunk_refresh", position : { x : 0, z : 0 },
-			data : data,
-			chunk : { x : this.x, z : this.z }
-		});
 	}
+
 };

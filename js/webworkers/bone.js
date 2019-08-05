@@ -15,8 +15,6 @@ let Bone = function(level)
 
 	this.vue_faces = new Uint32Array(faces);
 
-
-
 	for (let l = 0; l < this.info.length; l++)
 	{
 		i = this.info[l];
@@ -50,7 +48,7 @@ Bone.prototype = {
 
 		let info = [];
 		let i = 1;
-		let v2 = 1;
+		let v2 = 1
 
 		info.push({
 			indice: 1,
@@ -126,8 +124,9 @@ Bone.prototype = {
 
 		for (let z = 0; z < i.indice; z++)
 		{	
-			let ligne_height = decal + (decal_2 * z);
 			let decalage = (z * i.indice);
+			let ligne_height = decal + (decal_2 * z);
+
 			for (let x = 0; x < i.indice; x++)
 			{
 				i.v.data_x[decalage + x] = decal + (decal_2 * x);
@@ -166,55 +165,59 @@ Bone.prototype = {
 
 	generateFace_1: function(l, i)
 	{
-		for (let z = 0; z < i.indice; z++)
+		let child = i.f.data;
+		let paren = last_i.f.data;
+		let indice = i.indice;
+		let v_offset = i.v.offset;
+
+		for (let z = 0; z < indice; z++)
 		{
-			for (let x = 0; x < i.indice; x++)
+			for (let x = 0; x < indice; x++)
 			{
-				apex = i.v.offset + x + (z * i.indice);
+				let apex = v_offset + x + (z * indice);
 
-				dec_f_1 = x + z * i.indice;
+				let dec_f_1 = x + z * indice;
+				let dec_f_2 = x + z * indice;
+
 				dec_f_1 *= 3 * 4;
-
-				dec_f_2 = x + z * (i.indice);
 				dec_f_2 *= 3 * 2;
 
 				diag = ((x % 2) + (z % 2)) % 2;
-
 				if (diag)
 				{
-					i.f.data[dec_f_1 + 0] = apex;
-					i.f.data[dec_f_1 + 1] = last_i.f.data[dec_f_2 + 2];
-					i.f.data[dec_f_1 + 2] = last_i.f.data[dec_f_2 + 0];
+					child[dec_f_1 + 0] = apex;
+					child[dec_f_1 + 1] = paren[dec_f_2 + 2];
+					child[dec_f_1 + 2] = paren[dec_f_2 + 0];
 
-					i.f.data[dec_f_1 + 3] = apex;
-					i.f.data[dec_f_1 + 4] = last_i.f.data[dec_f_2 + 0];
-					i.f.data[dec_f_1 + 5] = last_i.f.data[dec_f_2 + 1];
+					child[dec_f_1 + 3] = apex;
+					child[dec_f_1 + 4] = paren[dec_f_2 + 0];
+					child[dec_f_1 + 5] = paren[dec_f_2 + 1];
 
-					i.f.data[dec_f_1 + 6] = apex;
-					i.f.data[dec_f_1 + 7] = last_i.f.data[dec_f_2 + 3];
-					i.f.data[dec_f_1 + 8] = last_i.f.data[dec_f_2 + 4];
+					child[dec_f_1 + 6] = apex;
+					child[dec_f_1 + 7] = paren[dec_f_2 + 3];
+					child[dec_f_1 + 8] = paren[dec_f_2 + 4];
 
-					i.f.data[dec_f_1 + 9] = apex;
-					i.f.data[dec_f_1 + 10] = last_i.f.data[dec_f_2 + 5];
-					i.f.data[dec_f_1 + 11] = last_i.f.data[dec_f_2 + 3];
+					child[dec_f_1 + 9] = apex;
+					child[dec_f_1 + 10] = paren[dec_f_2 + 5];
+					child[dec_f_1 + 11] = paren[dec_f_2 + 3];
 				}
 				else
 				{
-					i.f.data[dec_f_1 + 0] = apex;
-					i.f.data[dec_f_1 + 1] = last_i.f.data[dec_f_2 + 0];
-					i.f.data[dec_f_1 + 2] = last_i.f.data[dec_f_2 + 1];
+					child[dec_f_1 + 0] = apex;
+					child[dec_f_1 + 1] = paren[dec_f_2 + 0];
+					child[dec_f_1 + 2] = paren[dec_f_2 + 1];
 
-					i.f.data[dec_f_1 + 3] = apex;
-					i.f.data[dec_f_1 + 4] = last_i.f.data[dec_f_2 + 5];
-					i.f.data[dec_f_1 + 5] = last_i.f.data[dec_f_2 + 3];
+					child[dec_f_1 + 3] = apex;
+					child[dec_f_1 + 4] = paren[dec_f_2 + 5];
+					child[dec_f_1 + 5] = paren[dec_f_2 + 3];
 
-					i.f.data[dec_f_1 + 6] = apex;
-					i.f.data[dec_f_1 + 7] = last_i.f.data[dec_f_2 + 2];
-					i.f.data[dec_f_1 + 8] = last_i.f.data[dec_f_2 + 0];
+					child[dec_f_1 + 6] = apex;
+					child[dec_f_1 + 7] = paren[dec_f_2 + 2];
+					child[dec_f_1 + 8] = paren[dec_f_2 + 0];
 
-					i.f.data[dec_f_1 + 9] = apex;
-					i.f.data[dec_f_1 + 10] = last_i.f.data[dec_f_2 + 3];
-					i.f.data[dec_f_1 + 11] = last_i.f.data[dec_f_2 + 4];
+					child[dec_f_1 + 9] = apex;
+					child[dec_f_1 + 10] = paren[dec_f_2 + 3];
+					child[dec_f_1 + 11] = paren[dec_f_2 + 4];
 				}
 			}
 		}
@@ -222,59 +225,61 @@ Bone.prototype = {
 
 	generateFace_2: function(l, i)
 	{
-		let ligne1 = (1 * i.indice);
-		let ligne2 = (2 * i.indice) + 1;
+		let child = i.f.data;
+		let paren = last_i.f.data;
+		let indice = i.indice;
+		let v_offset = i.v.offset;
 
-		for (let z = 0; z < i.indice; z++)
+		let ligne1 = (1 * indice);
+		let ligne2 = (2 * indice) + 1;
+
+		for (let z = 0; z < indice; z++)
 		{
-			for (let x = 0; x < i.indice; x++)
+			for (let x = 0; x < indice; x++)
 			{
+				let decalage = v_offset + x + (z * ligne2);
 
-				decalage = i.v.offset + x + (z * ligne2);
+				let dec_f_2 = x + z * indice;
+				let dec_f_1a = x + z * indice * 2;
+				let dec_f_1b = x + z * indice * 2 + indice;
 
-				dec_f_2 = x + z * i.indice;
 				dec_f_2 *= 3 * 4;
-
-				dec_f_1 = x + z * i.indice * 2;
-				dec_f_1 *= 3 * 4;
+				dec_f_1a *= 3 * 4;
+				dec_f_1b *= 3 * 4;
 
 				// North right
-				i.f.data[dec_f_1 + 0] = decalage;
-				i.f.data[dec_f_1 + 1] = last_i.f.data[dec_f_2 + 2];
-				i.f.data[dec_f_1 + 2] = last_i.f.data[dec_f_2 + 0];
+				child[dec_f_1a + 0] = decalage;
+				child[dec_f_1a + 1] = paren[dec_f_2 + 2];
+				child[dec_f_1a + 2] = paren[dec_f_2 + 0];
 				// West left
-				i.f.data[dec_f_1 + 3] = decalage + ligne1;
-				i.f.data[dec_f_1 + 4] = last_i.f.data[dec_f_2 + 0 + 3];
-				i.f.data[dec_f_1 + 5] = last_i.f.data[dec_f_2 + 1 + 3];
+				child[dec_f_1a + 3] = decalage + ligne1;
+				child[dec_f_1a + 4] = paren[dec_f_2 + 0 + 3];
+				child[dec_f_1a + 5] = paren[dec_f_2 + 1 + 3];
 				// North left
-				i.f.data[dec_f_1 + 6] = decalage;
-				i.f.data[dec_f_1 + 7] = last_i.f.data[dec_f_2 + 0];
-				i.f.data[dec_f_1 + 8] = last_i.f.data[dec_f_2 + 1];
-
+				child[dec_f_1a + 6] = decalage;
+				child[dec_f_1a + 7] = paren[dec_f_2 + 0];
+				child[dec_f_1a + 8] = paren[dec_f_2 + 1];
 				// East right
-				i.f.data[dec_f_1 + 9] = decalage + ligne1 + 1;
-				i.f.data[dec_f_1 + 10] = last_i.f.data[dec_f_2 + 2 + 6];
-				i.f.data[dec_f_1 + 11] = last_i.f.data[dec_f_2 + 0 + 6];
-
-				dec_f_1 = x + z * i.indice * 2 + i.indice;
-				dec_f_1 *= 3 * 4;
+				child[dec_f_1a + 9] = decalage + ligne1 + 1;
+				child[dec_f_1a + 10] = paren[dec_f_2 + 2 + 6];
+				child[dec_f_1a + 11] = paren[dec_f_2 + 0 + 6];
 
 				// West right
-				i.f.data[dec_f_1 + 0] = decalage + ligne1;
-				i.f.data[dec_f_1 + 1] = last_i.f.data[dec_f_2 + 2 + 3];
-				i.f.data[dec_f_1 + 2] = last_i.f.data[dec_f_2 + 0 + 3];
+				child[dec_f_1b + 0] = decalage + ligne1;
+				child[dec_f_1b + 1] = paren[dec_f_2 + 2 + 3];
+				child[dec_f_1b + 2] = paren[dec_f_2 + 0 + 3];
 				// South left
-				i.f.data[dec_f_1 + 3] = decalage + ligne2;
-				i.f.data[dec_f_1 + 4] = last_i.f.data[dec_f_2 + 0 + 9];
-				i.f.data[dec_f_1 + 5] = last_i.f.data[dec_f_2 + 1 + 9];
+				child[dec_f_1b + 3] = decalage + ligne2;
+				child[dec_f_1b + 4] = paren[dec_f_2 + 0 + 9];
+				child[dec_f_1b + 5] = paren[dec_f_2 + 1 + 9];
 				// East left
-				i.f.data[dec_f_1 + 6] = decalage + ligne1 + 1;
-				i.f.data[dec_f_1 + 7] = last_i.f.data[dec_f_2 + 0 + 6];
-				i.f.data[dec_f_1 + 8] = last_i.f.data[dec_f_2 + 1 + 6];
+				child[dec_f_1b + 6] = decalage + ligne1 + 1;
+				child[dec_f_1b + 7] = paren[dec_f_2 + 0 + 6];
+				child[dec_f_1b + 8] = paren[dec_f_2 + 1 + 6];
 				// South right
-				i.f.data[dec_f_1 + 9] = decalage + ligne2;
-				i.f.data[dec_f_1 + 10] = last_i.f.data[dec_f_2 + 2 + 9];
-				i.f.data[dec_f_1 + 11] = last_i.f.data[dec_f_2 + 0 + 9];
+				child[dec_f_1b + 9] = decalage + ligne2;
+				child[dec_f_1b + 10] = paren[dec_f_2 + 2 + 9];
+				child[dec_f_1b + 11] = paren[dec_f_2 + 0 + 9];
 			}
 		}
 	}
