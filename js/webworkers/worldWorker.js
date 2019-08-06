@@ -9,7 +9,7 @@ importScripts(
 ChunksOverseer = function(levelMax){
 	this.chunks = [];
 	this.position = { x : 0, z : 0 };
-
+	this.levelMax = levelMax;
 	this.bone = new Bone(levelMax);
 }
 
@@ -67,24 +67,49 @@ ChunksOverseer.prototype = {
 		{
 			let x = list[i].x;
 			let z = list[i].z;
+			let hypo = list[i].hypo;
+			let level = Math.floor(this.levelMax - hypo / 2);
 
-			console.log("|", x, z, "|---------------------", i)
 			var t0 = performance.now();
+
 			overseer.initChunk(x, z, list[i].hypo);
-			console.log("INIT  in " + (performance.now() - t0) + " ms")
 
-			var t0 = performance.now();
-				this.chunks[x][z].break_all(list[i].hypo);
-			console.log("BREAKED  in " + (performance.now() - t0) + " ms")
+			var t1 = performance.now();
 
-			var t0 = performance.now();
-				this.chunks[x][z].realoc();
-			console.log("REALOC  in " + (performance.now() - t0) + " ms")
+			this.chunks[x][z].break_all(hypo, level);
 
-			var t0 = performance.now();
-				this.chunks[x][z].send();
-			console.log("SEND  in " + (performance.now() - t0) + " ms")
+			var t2 = performance.now();
 
+			this.chunks[x][z].clean(level);
+
+			var t3 = performance.now();
+
+			this.chunks[x][z].realoc();
+
+			var t4 = performance.now();
+
+			this.chunks[x][z].send();
+
+			var t5 = performance.now();
+
+			console.log("------------------------------------------------------");
+			console.log(
+				"x", x,
+				"z", z,
+				"	nb", i,
+				"		L", level,
+				"		INIT", (t1 - t0)
+			)
+			console.log(
+				"BREAK", (t2 - t1),
+				"	CLEAN", (t3 - t2),
+				"	REALOC", (t4 - t3),
+				"	SEND", (t5 - t4)
+			);
+			console.log(
+				"TOTAL", (t5 - t0), "ms"
+
+			);
 		}
 		/*
 		var t1 = performance.now();

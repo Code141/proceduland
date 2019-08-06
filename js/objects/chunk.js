@@ -5,9 +5,18 @@ function chunk(x, y)
 
 	this.group = new THREE.Group();
 
-//	this.add_water();
+	this.add_water();
 	this.state_cube("init");
 
+	this.geometry = new THREE.BufferGeometry();
+	this.geometry.boundingBox = new THREE.Box3(
+		new THREE.Vector3(0, 0, 0),
+		new THREE.Vector3(100, 100, 100)
+	);
+	this.mesh = new THREE.Mesh( this.geometry, ground_material );
+	this.mesh.matrixAutoUpdate = false;
+
+	this.group.add( this.mesh );
 }
 
 chunk.prototype = {
@@ -26,34 +35,20 @@ chunk.prototype = {
 	update : function(data)
 	{
 
-		geometry = new THREE.BufferGeometry();
+		this.geometry.addAttribute( 'position', new THREE.BufferAttribute(data.vertices, 3 ));
+		this.geometry.addAttribute( 'normal', new THREE.BufferAttribute(data.vertex_normals, 3, true ));
+		this.geometry.addAttribute( 'color', new THREE.BufferAttribute(data.colors, 3, true ));
+		this.geometry.setIndex(new THREE.BufferAttribute(data.faces, 1));
 
-		geometry.addAttribute( 'position', new THREE.BufferAttribute(data.vertices, 3 ));
-//		geometry.addAttribute( 'normal', new THREE.BufferAttribute(data.vertex_normals, 3, true ));
-		geometry.addAttribute( 'color', new THREE.BufferAttribute(data.colors, 3, true ));
-		geometry.setIndex(new THREE.BufferAttribute(data.faces, 1 ));
-
-		geometry.computeVertexNormals();
-//		geometry.computeFaceNormals();
-
-		if (this.mesh)
-		{
-			this.mesh.geometry.dispose();
-			this.mesh.geometry = null;
-			this.mesh.geometry = geometry;
-		}
-		else
-		{
-			this.mesh = new THREE.Mesh( geometry, ground_material );
-			this.group.add( this.mesh );
-/*
-			this.helper = new THREE.VertexNormalsHelper( this.mesh, 1, 0x00ff00, 1 );
-			scene.add(this.helper);
-*/
-		}
+		this.geometry.attributes.position.needsUpdate = true;
+		this.geometry.attributes.color.needsUpdate = true;
+		this.geometry.attributes.normal.needsUpdate = true;
+		this.geometry.index.needsUpdate = true;
+		
+		this.geometry.computeBoundingSphere();
+		this.geometry.computeVertexNormals();
 
 		this.state_cube("loaded");
-
 	},
 
 	state_cube : function(state)

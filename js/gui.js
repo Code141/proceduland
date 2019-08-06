@@ -65,11 +65,17 @@ initGUI = function(){
 	var worldGui = gui.addFolder('World');
 
 	var worldData  = {
+
 		chunksDistance: 1,
+
 		levelMax: 12,
+
 		chunkSize: 128,
+
 		maxHeight: 50,
+
 		wireframe: false,
+
 		reload: function(){
 			scene.remove(world.group);
 			world = new World(
@@ -96,8 +102,8 @@ initGUI = function(){
 			scene.overrideMaterial =  new THREE.MeshLambertMaterial( {
 				emissive : 0x000000,
 				vertexColors : THREE.VertexColors,
-				transparent : false,
-				opacity : 0.2,
+				transparent : true,
+				opacity : 0.3,
 				side : THREE.BackSide,
 				wireframe : true
 			} );

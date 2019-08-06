@@ -188,36 +188,30 @@ Bone.prototype = {
 					child[dec_f_1 + 0] = apex;
 					child[dec_f_1 + 1] = paren[dec_f_2 + 2];
 					child[dec_f_1 + 2] = paren[dec_f_2 + 0];
-
 					child[dec_f_1 + 3] = apex;
 					child[dec_f_1 + 4] = paren[dec_f_2 + 0];
 					child[dec_f_1 + 5] = paren[dec_f_2 + 1];
-
 					child[dec_f_1 + 6] = apex;
-					child[dec_f_1 + 7] = paren[dec_f_2 + 3];
-					child[dec_f_1 + 8] = paren[dec_f_2 + 4];
-
+					child[dec_f_1 + 7] = paren[dec_f_2 + 0 + 3];
+					child[dec_f_1 + 8] = paren[dec_f_2 + 1 + 3];
 					child[dec_f_1 + 9] = apex;
-					child[dec_f_1 + 10] = paren[dec_f_2 + 5];
-					child[dec_f_1 + 11] = paren[dec_f_2 + 3];
+					child[dec_f_1 + 10] = paren[dec_f_2 + 2 + 3];
+					child[dec_f_1 + 11] = paren[dec_f_2 + 0 + 3];
 				}
 				else
 				{
 					child[dec_f_1 + 0] = apex;
 					child[dec_f_1 + 1] = paren[dec_f_2 + 0];
 					child[dec_f_1 + 2] = paren[dec_f_2 + 1];
-
 					child[dec_f_1 + 3] = apex;
-					child[dec_f_1 + 4] = paren[dec_f_2 + 5];
-					child[dec_f_1 + 5] = paren[dec_f_2 + 3];
-
+					child[dec_f_1 + 4] = paren[dec_f_2 + 2 + 3];
+					child[dec_f_1 + 5] = paren[dec_f_2 + 0 + 3];
 					child[dec_f_1 + 6] = apex;
 					child[dec_f_1 + 7] = paren[dec_f_2 + 2];
 					child[dec_f_1 + 8] = paren[dec_f_2 + 0];
-
 					child[dec_f_1 + 9] = apex;
-					child[dec_f_1 + 10] = paren[dec_f_2 + 3];
-					child[dec_f_1 + 11] = paren[dec_f_2 + 4];
+					child[dec_f_1 + 10] = paren[dec_f_2 + 0 + 3];
+					child[dec_f_1 + 11] = paren[dec_f_2 + 1 + 3];
 				}
 			}
 		}

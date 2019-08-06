@@ -14,7 +14,6 @@ procedural = function(absoluteX, absoluteZ){
 	finalNoise = ( land * land + ( landNoise * land * land * land * land ) ) / 2;
 	finalNoise -= river * river;
 
-	/*
 	if (finalNoise < -0.7)
 		finalNoise = -0.2;
 
@@ -23,15 +22,12 @@ procedural = function(absoluteX, absoluteZ){
 
 	if (finalNoise < -0.2)
 		finalNoise /= 1.5;
-	*/
 
 	color = colorise(
 			gradient, (finalNoise + 1 ) / 2,
 			gradient2, landNoise / 3  ,
 			((finalNoise + 1) / 2) * land * land
 		);
-	finalNoise = finalNoise * finalNoise * finalNoise * finalNoise;
-	finalNoise *= 5;
 	return ({
 		height: finalNoise,
 		color: color
@@ -51,8 +47,8 @@ let gradient = [
 ];
 
 let gradient2 = [
-	{ stop: 0, r: 0x00, g: 0x00, b: 0x00 },
-	{ stop: 1, r: 0xff, g: 0xff, b: 0xff }
+	{ stop: 0.0, r: 0x00, g: 0x00, b: 0x00 },
+	{ stop: 1.0, r: 0xff, g: 0xff, b: 0xff }
 ];
 
 let lerp = function (v0, v1, t) {

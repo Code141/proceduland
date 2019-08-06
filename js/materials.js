@@ -8,9 +8,11 @@ ground_material = new THREE.MeshLambertMaterial({
 	vertexColors: THREE.VertexColors,
 	shading: THREE.FlatShading,
 	color: 0xffffff,
+/*
 	wireframe: true,
 	transparent : true,
 	opacity : 0.3
+	*/
 });
 
 state_cube_material = new THREE.MeshBasicMaterial( {
