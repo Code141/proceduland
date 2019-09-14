@@ -5,7 +5,7 @@ function chunk(x, y)
 
 	this.group = new THREE.Group();
 
-	this.add_water();
+//	this.add_water();
 	this.state_cube("init");
 
 	this.geometry = new THREE.BufferGeometry();
@@ -44,7 +44,7 @@ chunk.prototype = {
 		this.geometry.attributes.color.needsUpdate = true;
 		this.geometry.attributes.normal.needsUpdate = true;
 		this.geometry.index.needsUpdate = true;
-		
+
 		this.geometry.computeBoundingSphere();
 		this.geometry.computeVertexNormals();
 

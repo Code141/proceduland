@@ -115,39 +115,31 @@ ChunksOverseer.prototype = {
 		var t1 = performance.now();
 		console.log("INIT " + i + " chunks in " + (t1 - t0) + " ms")
 
-
 		// PROMISE
 		for (let i = 0; i < list.length; i++)
 		{
 			let x = list[i].x;
 			let z = list[i].z;
-
 			this.chunks[x][z].resolved = new Promise((resolve, reject) => {
 				overseer.chunks[x][z].getBTTLod(list[i].hypo);
 				resolve();
 			})
 		}
-
 		for (let i = 0; i < list.length; i++)
 		{
 			let x = list[i].x;
 			let z = list[i].z;
-
 			this.chunks[x][z].resolved.then(() => {
 				pro = overseer.does_neighbour_resolved(x, z);
-				
 				Promise.all(pro)
 					.then(() => {
 						overseer.send_chunk(overseer.chunks[x][z]);
 						this.chunks[x][z] = undefined;
-
 					})
 				.catch(error => console.log(`Error in promises ${error}`))
-
 			})
 		}
 		*/
-
 
 	},
 
