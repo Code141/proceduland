@@ -1,0 +1,23 @@
+server {
+    listen 80 default_server;
+
+# NO "ssl on" HERE!!!
+
+    return 301 https://$host$request_uri;
+}
+
+server {
+	listen 443 ssl;
+	ssl on;
+	ssl_certificate      /etc/nginx/ssl/server.crt;
+	ssl_certificate_key  /etc/nginx/ssl/server.key;
+
+	root /var/www/proceduland;
+	index index.html; 
+
+	server_name jgefroh.com www.jgefroh.com;
+
+	location / {
+		try_files $uri $uri/ =404;
+	}
+}
