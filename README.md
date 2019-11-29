@@ -12,8 +12,8 @@ a black and white earth height map png for example.
 * LOD (https://fr.wikipedia.org/wiki/Level_of_detail)
 
 # Screenshot
-![Alt text](/screenshoots/1.png?raw=true "Optional Title")
-![Alt text](/screenshoots/2.png?raw=true "Optional Title")
-![Alt text](/screenshoots/3.png?raw=true "Optional Title")
-![Alt text](/screenshoots/4.png?raw=true "Optional Title")
-![Alt text](/screenshoots/5.png?raw=true "Optional Title")
+![Alt text](/screenshot/1.png?raw=true "Optional Title")
+![Alt text](/screenshot/2.png?raw=true "Optional Title")
+![Alt text](/screenshot/3.png?raw=true "Optional Title")
+![Alt text](/screenshot/4.png?raw=true "Optional Title")
+![Alt text](/screenshot/5.png?raw=true "Optional Title")
