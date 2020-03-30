@@ -65,25 +65,19 @@ initGUI = function(){
 	var worldGui = gui.addFolder('World');
 
 	var worldData  = {
-
 		chunksDistance: 1,
-
 		levelMax: 12,
-
 		chunkSize: 128,
-
 		maxHeight: 50,
-
 		wireframe: false,
-
 		reload: function(){
 			scene.remove(world.group);
-			world = new World(
-				worldData.chunkSize,
-				worldData.maxHeight,
-				worldData.chunksDistance,
-				worldData.levelMax
-			);
+			world = new World({
+				chunkSize: worldData.chunkSize,
+				maxHeight: worldData.maxHeight,
+				chunksDistance: worldData.chunksDistance,
+				levelMax: worldData.levelMax
+			});
 			scene.add(world.group);
 			world.requestChunks();
 
@@ -99,6 +93,8 @@ initGUI = function(){
 	
 	controller.onFinishChange(function(value) {
 		if(value == true){
+			ground_material.wireframe = true;
+		/*
 			scene.overrideMaterial =  new THREE.MeshLambertMaterial( {
 				emissive : 0x000000,
 				vertexColors : THREE.VertexColors,
@@ -107,8 +103,12 @@ initGUI = function(){
 				side : THREE.BackSide,
 				wireframe : true
 			} );
+		*/
 		}else{
+			ground_material.wireframe = false;
+		/*
 			scene.overrideMaterial = null;
+		*/
 		}
 	});
 	

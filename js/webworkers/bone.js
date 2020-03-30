@@ -7,7 +7,6 @@ let Bone = function(level)
 
 	let vertices_x = new ArrayBuffer(nb_v * 4);
 	let vertices_z = new ArrayBuffer(nb_v * 4);
-
 	let faces = new ArrayBuffer(nb_f * 3 * 4);
 
 	this.vue_vertices_x = new Float32Array(vertices_x);
@@ -50,14 +49,12 @@ Bone.prototype = {
 		let i = 1;
 		let v2 = 1
 
-		info.push({
-			indice: 1,
+		info.push({ indice: 1,
 			v : { nb: 4, offset: 0, },
 			f : { nb: 2, offset: 0, }
 		});
 
-		info.push({
-			indice: 1,
+		info.push({ indice: 1,
 			v : { nb: 1, offset: 4, },
 			f : { nb: 4, offset: 2, }
 		});

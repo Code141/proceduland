@@ -1,8 +1,3 @@
-chunkSize = 128;
-maxHeight = 50;
-chunksDistance = 3;
-levelMax = 10;
-
 var renderer, scene, camera;
 
 INTERSECTED = null;
@@ -27,7 +22,8 @@ function init(){
 
 function initThreeJs( container )
 {
-	/* --------- BASICS ----------*/
+
+/* --------- BASICS ----------*/
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000000 );
 	camera.position.x = 0;
 	camera.position.y = 200;
@@ -40,14 +36,12 @@ function initThreeJs( container )
 
 	container.appendChild( renderer.domElement );
 
-	//ORBIT CONTROL
 	scene = new THREE.Scene();
 	scene.background = new THREE.Color(0x333333);
-//	scene.fog = new THREE.Fog( 0xadc3f3, 150, 200 )
+//	scene.fog = new THREE.Fog( 0xadc3f3, 500, 1000 );
 
 	keyboard = new KeyboardState();
 	mouse = new THREE.Vector2();
-
 
 	window.addEventListener( 'resize', () => {
 		camera.aspect = window.innerWidth / window.innerHeight;
@@ -62,22 +56,17 @@ function initThreeJs( container )
 
 
 /* -------- DEV TOOLS --------*/
-	if (DEV){
-		//STATS
-		stats = new Stats();
-		stats.domElement.style.position = 'absolute';
-		stats.domElement.style.top = '0px';
-		container.appendChild( stats.domElement );
+	stats = new Stats();
+	stats.domElement.style.position = 'absolute';
+	stats.domElement.style.top = '0px';
+	container.appendChild( stats.domElement );
 
-		controls = new THREE.OrbitControls( camera );
-		controls.target.set( 0, 0, 0 );
+	controls = new THREE.OrbitControls( camera );
+	controls.target.set( 0, 0, 0 );
 
-		//AXIS HELPER
-/*		var axisHelper = new THREE.AxesHelper( 500 );
-		scene.add( axisHelper );i
-			*/
-	}
-
+	//AXIS HELPER
+	var axisHelper = new THREE.AxesHelper( 500 );
+	scene.add( axisHelper );
 
 }
 
@@ -85,8 +74,7 @@ function loop()
 {
 	window.requestAnimationFrame( loop );
 
-	if ( DEV )
-		stats.update();
+	stats.update();
 
 	keyboardState();
 
@@ -97,30 +85,28 @@ function loop()
 
 function fillscene()
 {
-	world = new World(chunkSize, maxHeight, chunksDistance, levelMax);
+
+	world = new World({
+		chunkSize: 100,
+		maxHeight: 50,
+		chunksDistance: 3,
+		levelMax: 10
+	});
 	scene.add(world.group);
 	world.requestChunks();
 
 	sky = new Sky();
-	initLight();
 
 	load("tinnyHouse", 'models/tinnyHouse.dae', 1);
-//	voronoi();
-}
-
-function initLight()
-{
-
 
 	var light = new THREE.AmbientLight( 0x333333 ); // soft white light
 	scene.add( light );
 
-
-
-
+//	voronoi(100, 10);
 }
 
-function voronoi(){
+
+function voronoi(chunkSize, chunksDistance){
 	chunksDistance = 7;
 	w = chunkSize * (chunksDistance * 2 - 1);
 	h = chunkSize * (chunksDistance * 2 - 1);

@@ -1,9 +1,10 @@
-function World(chunkSize, maxHeight, chunksDistance, levelMax)
+function World(options)
 {
-	this.chunkSize = chunkSize;
-	this.maxHeight = maxHeight;
-	this.chunksDistance = chunksDistance;
-	this.levelMax = levelMax;
+
+	this.chunkSize = options.chunkSize;
+	this.maxHeight = options.maxHeight;
+	this.chunksDistance = options.chunksDistance;
+	this.levelMax = options.levelMax;
 
 	this.chunks = [];
 	this.position = { x: 0, z: 0 };
@@ -37,7 +38,7 @@ World.prototype = {
 			switch(r.type) {
 				case "chunk_refresh" :
 					this.chunks[r.chunk.x][r.chunk.z].update(r.data);
-				break;
+					break;
 				default:
 					console.log("WORLD WORKER RESPONSE ERROR");
 			}
@@ -54,7 +55,6 @@ World.prototype = {
 		this.position.x += x;
 		this.position.z += z;
 
-//		this.worker_init();
 		this.requestChunks();
 	},
 
@@ -62,21 +62,18 @@ World.prototype = {
 	{
 		let list = andresList(this.chunksDistance, this.position.x, this.position.z);
 
-//		list = [{x: 0, z: 0, hypo: 0}];
-
 		for (var i = 0; i < list.length; i++)
 			this.newChunk(list[i].x, list[i].z);
 
-		this.ChunksWorker.postMessage(
+		this.ChunksWorker.postMessage( {
+			type : "request_chunks_list",
+			list : list,
+			position :
 			{
-				type : "request_chunks_list",
-				list : list,
-				position :
-				{
-					x : this.position.x,
-					z : this.position.z
-				}
-			});
+				x : this.position.x,
+				z : this.position.z
+			}
+		});
 	},
 
 	newChunk : function (x, z)

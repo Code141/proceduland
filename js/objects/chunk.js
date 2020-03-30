@@ -34,7 +34,6 @@ chunk.prototype = {
 
 	update : function(data)
 	{
-
 		this.geometry.addAttribute( 'position', new THREE.BufferAttribute(data.vertices, 3 ));
 		this.geometry.addAttribute( 'normal', new THREE.BufferAttribute(data.vertex_normals, 3, true ));
 		this.geometry.addAttribute( 'color', new THREE.BufferAttribute(data.colors, 3, true ));
@@ -47,6 +46,10 @@ chunk.prototype = {
 
 		this.geometry.computeBoundingSphere();
 		this.geometry.computeVertexNormals();
+
+
+//		helper = new THREE.VertexNormalsHelper( this.mesh, 0.2, 0x00ff00, 0.1);
+//		scene.add(helper);
 
 		this.state_cube("loaded");
 	},

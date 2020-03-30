@@ -15,14 +15,12 @@ ChunksOverseer = function(levelMax){
 
 ChunksOverseer.prototype = {
 
-	initChunk : function( x, z, hypo)
+	initChunk : function(x, z, hypo)
 	{
 		if (this.chunks[x] == undefined)
 			this.chunks[x] = [];
-
 		if (this.chunks[x][z] == undefined)
 			this.chunks[x][z] = new Chunk(x, z, hypo, this.bone);
-
 	},
 
 	does_neighbour_resolved : function(x, z)
@@ -70,44 +68,39 @@ ChunksOverseer.prototype = {
 			let hypo = list[i].hypo;
 			let level = Math.floor(this.levelMax - hypo / 2);
 
-			var t0 = performance.now();
+var t0 = performance.now();
 
 			overseer.initChunk(x, z, list[i].hypo);
 
-			var t1 = performance.now();
+var t1 = performance.now();
 
 			this.chunks[x][z].break_all(hypo, level);
 
-			var t2 = performance.now();
+var t2 = performance.now();
 
 			this.chunks[x][z].clean(level);
 
-			var t3 = performance.now();
+var t3 = performance.now();
 
 			this.chunks[x][z].realoc();
 
-			var t4 = performance.now();
+var t4 = performance.now();
 
 			this.chunks[x][z].send();
 
-			var t5 = performance.now();
+var t5 = performance.now();
 
-			console.log("------------------------------------------------------");
 			console.log(
 				"x", x,
 				"z", z,
 				"	nb", i,
 				"		L", level,
-				"		INIT", (t1 - t0)
-			)
-			console.log(
-				"BREAK", (t2 - t1),
+				"		INIT", (t1 - t0),
+				"\nBREAK", (t2 - t1),
 				"	CLEAN", (t3 - t2),
 				"	REALOC", (t4 - t3),
-				"	SEND", (t5 - t4)
-			);
-			console.log(
-				"TOTAL", (t5 - t0), "ms"
+				"	SEND", (t5 - t4),
+				"\nTOTAL", (t5 - t0), "ms"
 
 			);
 		}
@@ -166,7 +159,6 @@ ChunksOverseer.prototype = {
 				this.chunks[x][z].unbreakChunk();
 	}
 }
-
 
 onmessage = function(e) {
 	order = e.data;

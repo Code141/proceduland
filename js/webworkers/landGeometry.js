@@ -1,28 +1,39 @@
-let procedural = function(absoluteX, absoluteZ){
+let procedural = function(absoluteX, absoluteZ)
+{
 	landNoise = 0.1;
 	plumb = 5;
+	plumb2 = 0.04;
 	land = 1;
 	riverFrequance = 7;
 
 	land = ( noise.simplex2( absoluteX / land , absoluteZ / land ) + 1 ) / 2;
+//	land = land * Math.round(land * 5 ) / 10;
+
 	landNoise = ( noise.simplex2( absoluteX / landNoise, absoluteZ / landNoise ) + 1 ) / 2;
 	plumb = ( noise.simplex2( absoluteX / plumb -5, absoluteZ / plumb ) + 1 ) / 2;
+	plumb2 = ( noise.simplex2( absoluteX / plumb2 -5, absoluteZ / plumb2 ) + 1 ) / 2;
 	river = ( noise.simplex2( absoluteX / riverFrequance , absoluteZ / riverFrequance ) + 1 ) / 2;
 	river = 1 - ( Math.abs(river )  );
 
-	finalNoise = ( land * land + ( landNoise * land * land * land * land ) ) / 2;
+	finalNoise = ( land  + ( landNoise * land * land * land * land ) + plumb2 / 30) / 2  ;
 	finalNoise -= river * river;
+
+	if (finalNoise < -1)
+		finalNoise = -1;
+	if (finalNoise > 1)
+		finalNoise = 1;
 
 	if (finalNoise < -0.7 || finalNoise < -0.2 && finalNoise > -0.6)
 		finalNoise = -0.2;
 	if (finalNoise < -0.2)
-		finalNoise /= 1.5;
+		finalNoise /= 1.05;
+
 
 	color = colorise(
-			gradient, (finalNoise + 1 ) / 2,
-			gradient2, landNoise / 3  ,
-			((finalNoise + 1) / 2) * land * land
-		);
+		gradient, (finalNoise + 1 ) / 2,
+		gradient2, landNoise / 3  ,
+		((finalNoise + 1) / 2) * land * land
+	);
 	return ({
 		height: finalNoise,
 		color: color
@@ -52,7 +63,7 @@ let lerp = function (v0, v1, t) {
 
 let rgb_lerp = function (c1, c2, t)
 {
-	return ( {
+	return ({
 		r: lerp(c1.r, c2.r, t),
 		g: lerp(c1.g, c2.g, t),
 		b: lerp(c1.b, c2.b, t)
@@ -75,6 +86,14 @@ function colorise(g1, t1, g2, t2, t3)
 	let i = 0;
 	let j = 0;
 
+/*WARN*/
+	/*
+	t1 = (t1 + Math.random() / 80 );
+	t2 = (t2 + Math.random() / 80 );
+	t3 = (t3 + Math.random() / 80 );
+	*/
+/*WARN*/
+
 	while (g1[i + 1].stop < t1 && i + 1 < g1.length)
 		i++;
 	while (g2[j + 1].stop < t2 && j + 1 < g2.length)
@@ -84,7 +103,6 @@ function colorise(g1, t1, g2, t2, t3)
 	c2 = g1[i + 1];
 	c3 = g2[j];
 	c4 = g2[j + 1];
-
 	t1 = (t1 - c1.stop) / (c2.stop - c1.stop);
 	t2 = (t2 - c3.stop) / (c4.stop - c3.stop);
 

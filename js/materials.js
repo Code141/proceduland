@@ -17,7 +17,8 @@ ground_material = new THREE.MeshLambertMaterial({
 
 state_cube_material = new THREE.MeshBasicMaterial( {
 	color: 0xff5500,
-	wireframe: true,
+	transparent : true,
+	opacity : 0.3,
 	wireframeLinewidth: 1,
 	wireframeLinejoin: 'round',
 	wireframeLineCap: 'round'
