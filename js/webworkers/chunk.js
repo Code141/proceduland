@@ -83,13 +83,120 @@ Chunk.prototype = {
       z = Math.floor(z/2);
 
       // if (((x % 2) + (z % 2)) % 2)
-      this.break2(l - 1, x, z, 1)
-      this.break2(l - 1, x, z, 2)
-      this.break2(l - 1, x, z, 0)
-      this.break2(l - 1, x, z, 3)
+      this.break_N(l - 1, x, z);
+      this.break_E(l - 1, x, z);
+      this.break_W(l - 1, x, z);
+      this.break_S(l - 1, x, z);
     }
 
   },
+
+  break_N: function(l, x, z)
+  {
+    let indice = this.info[l].indice;
+
+    dec_f_1a = (x + (z * indice * 2)) * 4;
+
+    c1 = dec_f_1a + 0;
+    c2 = dec_f_1a + 2;
+
+    if (this.breaked_bitmap[l][c1] && this.breaked_bitmap[l][c2])
+      return
+
+    this.breaked_bitmap[l][c1] = 1; // Right 
+    this.breaked_bitmap[l][c2] = 1; // Left 
+
+    // BREAK PARENT
+    this.break1(l - 1, x, z);
+
+    // BREAK NEIGNBOUR
+    if (z - 1 < 0)
+      return
+    else
+      this.break_S(l, x, z - 1);
+  },
+
+  break_S: function(l, x, z)
+  {
+    let indice = this.info[l].indice;
+
+    dec_f_1b = (x + (z * indice * 2) + indice) * 4;
+
+      c1 = dec_f_1b + 3;
+      c2 = dec_f_1b + 1;
+
+    if (this.breaked_bitmap[l][c1] && this.breaked_bitmap[l][c2])
+      return
+
+    this.breaked_bitmap[l][c1] = 1; // Right 
+    this.breaked_bitmap[l][c2] = 1; // Left 
+
+    // BREAK PARENT
+    this.break1(l - 1, x, z);
+
+    // BREAK NEIGNBOUR
+    if (z + 1 >= indice)
+      return
+    else
+      this.break_N(l, x, z + 1);
+  },
+
+
+  break_E: function(l, x, z)
+  {
+    let indice = this.info[l].indice;
+
+    dec_f_1a = (x + (z * indice * 2)) * 4;
+    dec_f_1b = (x + (z * indice * 2) + indice) * 4;
+
+    c1 = dec_f_1a + 1;
+    c2 = dec_f_1b + 0;
+
+    if (this.breaked_bitmap[l][c1] && this.breaked_bitmap[l][c2])
+      return
+
+    this.breaked_bitmap[l][c1] = 1; // Right 
+    this.breaked_bitmap[l][c2] = 1; // Left 
+
+    // BREAK PARENT
+    this.break1(l - 1, x, z);
+
+    // BREAK NEIGNBOUR
+      if (x - 1 < 0)
+        return
+      else
+        this.break_W(l, x - 1, z);
+},
+
+  break_W: function(l, x, z)
+  {
+    let indice = this.info[l].indice;
+
+    dec_f_1a = (x + (z * indice * 2)) * 4;
+    dec_f_1b = (x + (z * indice * 2) + indice) * 4;
+
+    c1 = dec_f_1a + 3;
+    c2 = dec_f_1b + 2;
+
+    if (this.breaked_bitmap[l][c1] && this.breaked_bitmap[l][c2])
+      return
+
+    this.breaked_bitmap[l][c1] = 1; // Right 
+    this.breaked_bitmap[l][c2] = 1; // Left 
+
+    // BREAK PARENT
+    this.break1(l - 1, x, z);
+
+    // BREAK NEIGNBOUR
+    
+    if (x + 1 >= indice)
+      return
+    else
+      this.break_E(l, x + 1, z, 1);
+},
+
+
+
 
   break2: function(l, x, z, o)
   {
@@ -129,7 +236,6 @@ Chunk.prototype = {
     this.break1(l - 1, x, z);
 
     // BREAK NEIGNBOUR
-
     if (o == 0)
     {
       if (z - 1 < 0)
@@ -158,7 +264,7 @@ Chunk.prototype = {
       else
         this.break2(l, x, z + 1, 0);
     }
-},
+  },
 
   does_break: function(hypo, real, v)
   {
@@ -193,6 +299,7 @@ Chunk.prototype = {
     for (let l = level; l > 0; l--)
     {
       parents_faces = this.info[l - 1].f.data;
+
       i = this.info[l];
       let indice = i.indice;
       if (l % 2)
@@ -221,16 +328,16 @@ Chunk.prototype = {
             let dec_f_2 = (x + z * indice) * 4 * 3;
 
             if (this.does_break(hypo, decalage, dec_f_2))
-              this.break2(l, x, z, 0);
+              this.break_N(l, x, z);
 
             if (this.does_break(hypo, decalage + ligne1, dec_f_2 + 3))
-              this.break2(l, x, z, 1);
+              this.break_E(l, x, z);
 
             if (this.does_break(hypo, decalage + ligne1 + 1, dec_f_2 + 6))
-              this.break2(l, x, z, 2);
+              this.break_W(l, x, z);
 
             if (this.does_break(hypo, decalage + ligne2, dec_f_2 + 9))
-              this.break2(l, x, z, 3);
+              this.break_S(l, x, z);
 
           }
         }
