@@ -47,7 +47,6 @@ chunk.prototype = {
 		this.geometry.computeBoundingSphere();
 		this.geometry.computeVertexNormals();
 
-
 //		helper = new THREE.VertexNormalsHelper( this.mesh, 0.2, 0x00ff00, 0.1);
 //		scene.add(helper);
 
@@ -78,5 +77,6 @@ chunk.prototype = {
 		{
 			this.group.remove( this.state_cube_mesh );
 		}
+
 	}
 }

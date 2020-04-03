@@ -25,7 +25,6 @@ ChunksOverseer.prototype = {
 
 	does_neighbour_resolved : function(x, z)
 	{
-		/*
 		promises = [];
 
 		if (this.chunks[x - 1])
@@ -54,7 +53,6 @@ ChunksOverseer.prototype = {
 		}
 
 		return (promises);
-		*/
 	},
 
 	get : function(list)
@@ -89,7 +87,6 @@ var t4 = performance.now();
 			this.chunks[x][z].send();
 
 var t5 = performance.now();
-      /*
 			console.log(
 				"x", x,
 				"z", z,
@@ -102,10 +99,8 @@ var t5 = performance.now();
 				"	SEND", (t5 - t4),
 				"\nTOTAL", (t5 - t0), "ms"
 			);
-      */
 		}
 
-		/*
 		var t1 = performance.now();
 		console.log("INIT " + i + " chunks in " + (t1 - t0) + " ms")
 
@@ -133,7 +128,6 @@ var t5 = performance.now();
 				.catch(error => console.log(`Error in promises ${error}`))
 			})
 		}
-		*/
 
 	},
 

@@ -38,7 +38,7 @@ function initThreeJs( container )
 
 	scene = new THREE.Scene();
 	scene.background = new THREE.Color(0x333333);
-	//scene.fog = new THREE.Fog( 0xadc3f3, 500, 1000 );
+//	scene.fog = new THREE.Fog( 0xadc3f3, 200, 900 );
 
 	keyboard = new KeyboardState();
 	mouse = new THREE.Vector2();
