@@ -61,10 +61,8 @@ World.prototype = {
 	requestChunks : function()
 	{
 		let list = andresList(this.chunksDistance, this.position.x, this.position.z);
-
 		for (var i = 0; i < list.length; i++)
 			this.newChunk(list[i].x, list[i].z);
-
 		this.ChunksWorker.postMessage( {
 			type : "request_chunks_list",
 			list : list,

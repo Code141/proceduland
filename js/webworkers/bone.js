@@ -185,12 +185,15 @@ Bone.prototype = {
 					child[dec_f_1 + 0] = apex;
 					child[dec_f_1 + 1] = paren[dec_f_2 + 2];
 					child[dec_f_1 + 2] = paren[dec_f_2 + 0];
+
 					child[dec_f_1 + 3] = apex;
 					child[dec_f_1 + 4] = paren[dec_f_2 + 0];
 					child[dec_f_1 + 5] = paren[dec_f_2 + 1];
+
 					child[dec_f_1 + 6] = apex;
 					child[dec_f_1 + 7] = paren[dec_f_2 + 0 + 3];
 					child[dec_f_1 + 8] = paren[dec_f_2 + 1 + 3];
+
 					child[dec_f_1 + 9] = apex;
 					child[dec_f_1 + 10] = paren[dec_f_2 + 2 + 3];
 					child[dec_f_1 + 11] = paren[dec_f_2 + 0 + 3];
@@ -200,12 +203,15 @@ Bone.prototype = {
 					child[dec_f_1 + 0] = apex;
 					child[dec_f_1 + 1] = paren[dec_f_2 + 0];
 					child[dec_f_1 + 2] = paren[dec_f_2 + 1];
+
 					child[dec_f_1 + 3] = apex;
 					child[dec_f_1 + 4] = paren[dec_f_2 + 2 + 3];
 					child[dec_f_1 + 5] = paren[dec_f_2 + 0 + 3];
+
 					child[dec_f_1 + 6] = apex;
 					child[dec_f_1 + 7] = paren[dec_f_2 + 2];
 					child[dec_f_1 + 8] = paren[dec_f_2 + 0];
+
 					child[dec_f_1 + 9] = apex;
 					child[dec_f_1 + 10] = paren[dec_f_2 + 0 + 3];
 					child[dec_f_1 + 11] = paren[dec_f_2 + 1 + 3];
@@ -242,31 +248,39 @@ Bone.prototype = {
 				child[dec_f_1a + 0] = decalage;
 				child[dec_f_1a + 1] = paren[dec_f_2 + 2];
 				child[dec_f_1a + 2] = paren[dec_f_2 + 0];
+
 				// West left
 				child[dec_f_1a + 3] = decalage + ligne1;
 				child[dec_f_1a + 4] = paren[dec_f_2 + 0 + 3];
 				child[dec_f_1a + 5] = paren[dec_f_2 + 1 + 3];
+
 				// North left
 				child[dec_f_1a + 6] = decalage;
 				child[dec_f_1a + 7] = paren[dec_f_2 + 0];
 				child[dec_f_1a + 8] = paren[dec_f_2 + 1];
+
 				// East right
 				child[dec_f_1a + 9] = decalage + ligne1 + 1;
 				child[dec_f_1a + 10] = paren[dec_f_2 + 2 + 6];
 				child[dec_f_1a + 11] = paren[dec_f_2 + 0 + 6];
 
+
+
 				// West right
 				child[dec_f_1b + 0] = decalage + ligne1;
 				child[dec_f_1b + 1] = paren[dec_f_2 + 2 + 3];
 				child[dec_f_1b + 2] = paren[dec_f_2 + 0 + 3];
+
 				// South left
 				child[dec_f_1b + 3] = decalage + ligne2;
 				child[dec_f_1b + 4] = paren[dec_f_2 + 0 + 9];
 				child[dec_f_1b + 5] = paren[dec_f_2 + 1 + 9];
+
 				// East left
 				child[dec_f_1b + 6] = decalage + ligne1 + 1;
 				child[dec_f_1b + 7] = paren[dec_f_2 + 0 + 6];
 				child[dec_f_1b + 8] = paren[dec_f_2 + 1 + 6];
+
 				// South right
 				child[dec_f_1b + 9] = decalage + ligne2;
 				child[dec_f_1b + 10] = paren[dec_f_2 + 2 + 9];

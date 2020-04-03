@@ -7,12 +7,14 @@ let procedural = function(absoluteX, absoluteZ)
 	riverFrequance = 7;
 
 	land = ( noise.simplex2( absoluteX / land , absoluteZ / land ) + 1 ) / 2;
-//	land = land * Math.round(land * 5 ) / 10;
+	land2 = ( Math.round( noise.simplex2( absoluteX / land , absoluteZ / land )) + 1 ) / 2;
 
 	landNoise = ( noise.simplex2( absoluteX / landNoise, absoluteZ / landNoise ) + 1 ) / 2;
 	plumb = ( noise.simplex2( absoluteX / plumb -5, absoluteZ / plumb ) + 1 ) / 2;
 	plumb2 = ( noise.simplex2( absoluteX / plumb2 -5, absoluteZ / plumb2 ) + 1 ) / 2;
+
 	river = ( noise.simplex2( absoluteX / riverFrequance , absoluteZ / riverFrequance ) + 1 ) / 2;
+
 	river = 1 - ( Math.abs(river )  );
 
 	finalNoise = ( land  + ( landNoise * land * land * land * land ) + plumb2 / 30) / 2  ;
@@ -20,24 +22,43 @@ let procedural = function(absoluteX, absoluteZ)
 
 	if (finalNoise < -1)
 		finalNoise = -1;
+
 	if (finalNoise > 1)
 		finalNoise = 1;
 
 	if (finalNoise < -0.7 || finalNoise < -0.2 && finalNoise > -0.6)
 		finalNoise = -0.2;
+
 	if (finalNoise < -0.2)
 		finalNoise /= 1.05;
-
 
 	color = colorise(
 		gradient, (finalNoise + 1 ) / 2,
 		gradient2, landNoise / 3  ,
 		((finalNoise + 1) / 2) * land * land
 	);
+
+
+
+  /*
+finalNoise = 0;
+
+  if (absoluteX < 0.6 && absoluteX > 0.4 &&
+  absoluteZ < 0.6 && absoluteZ > 0.4
+  )
+    finalNoise = 0.5;
+
+	color = colorise(
+		gradient, (finalNoise + 1 ) / 2,
+		gradient2, finalNoise / 3  ,
+		((finalNoise + 1) / 2)
+	);
+  */
 	return ({
 		height: finalNoise,
 		color: color
 	});
+
 }
 
 let gradient = [

@@ -38,7 +38,7 @@ function initThreeJs( container )
 
 	scene = new THREE.Scene();
 	scene.background = new THREE.Color(0x333333);
-//	scene.fog = new THREE.Fog( 0xadc3f3, 500, 1000 );
+	//scene.fog = new THREE.Fog( 0xadc3f3, 500, 1000 );
 
 	keyboard = new KeyboardState();
 	mouse = new THREE.Vector2();
@@ -89,8 +89,8 @@ function fillscene()
 	world = new World({
 		chunkSize: 100,
 		maxHeight: 50,
-		chunksDistance: 3,
-		levelMax: 10
+		chunksDistance: 1,
+		levelMax: 5
 	});
 	scene.add(world.group);
 	world.requestChunks();

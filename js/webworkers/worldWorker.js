@@ -89,7 +89,6 @@ var t4 = performance.now();
 			this.chunks[x][z].send();
 
 var t5 = performance.now();
-
 			console.log(
 				"x", x,
 				"z", z,
@@ -101,7 +100,6 @@ var t5 = performance.now();
 				"	REALOC", (t4 - t3),
 				"	SEND", (t5 - t4),
 				"\nTOTAL", (t5 - t0), "ms"
-
 			);
 		}
 		/*

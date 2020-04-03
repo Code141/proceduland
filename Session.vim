@@ -45,30 +45,24 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe '1resize ' . ((&lines * 12 + 48) / 96)
-exe 'vert 1resize ' . ((&columns * 84 + 182) / 365)
-exe '2resize ' . ((&lines * 66 + 48) / 96)
-exe 'vert 2resize ' . ((&columns * 84 + 182) / 365)
-exe '3resize ' . ((&lines * 12 + 48) / 96)
-exe 'vert 3resize ' . ((&columns * 84 + 182) / 365)
-exe 'vert 4resize ' . ((&columns * 84 + 182) / 365)
-exe 'vert 5resize ' . ((&columns * 84 + 182) / 365)
-exe '6resize ' . ((&lines * 26 + 48) / 96)
-exe 'vert 6resize ' . ((&columns * 110 + 182) / 365)
-exe '7resize ' . ((&lines * 25 + 48) / 96)
-exe 'vert 7resize ' . ((&columns * 110 + 182) / 365)
-exe '8resize ' . ((&lines * 39 + 48) / 96)
-exe 'vert 8resize ' . ((&columns * 110 + 182) / 365)
+exe '1resize ' . ((&lines * 11 + 47) / 95)
+exe 'vert 1resize ' . ((&columns * 83 + 182) / 365)
+exe '2resize ' . ((&lines * 63 + 47) / 95)
+exe 'vert 2resize ' . ((&columns * 83 + 182) / 365)
+exe '3resize ' . ((&lines * 11 + 47) / 95)
+exe 'vert 3resize ' . ((&columns * 83 + 182) / 365)
+exe '4resize ' . ((&lines * 87 + 47) / 95)
+exe 'vert 4resize ' . ((&columns * 83 + 182) / 365)
+exe '5resize ' . ((&lines * 87 + 47) / 95)
+exe 'vert 5resize ' . ((&columns * 82 + 182) / 365)
+exe '6resize ' . ((&lines * 25 + 47) / 95)
+exe 'vert 6resize ' . ((&columns * 108 + 182) / 365)
+exe '7resize ' . ((&lines * 23 + 47) / 95)
+exe 'vert 7resize ' . ((&columns * 108 + 182) / 365)
+exe '8resize ' . ((&lines * 37 + 47) / 95)
+exe 'vert 8resize ' . ((&columns * 108 + 182) / 365)
 argglobal
-setlocal fdm=indent
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=1
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-let s:l = 6 - ((5 * winheight(0) + 6) / 12)
+let s:l = 6 - ((5 * winheight(0) + 5) / 11)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -78,37 +72,17 @@ lcd ~/cursus/proceduland
 wincmd w
 argglobal
 if bufexists("~/cursus/proceduland/js/init.js") | buffer ~/cursus/proceduland/js/init.js | else | edit ~/cursus/proceduland/js/init.js | endif
-setlocal fdm=indent
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=5
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-124
-normal! zo
-124
-normal! zc
-let s:l = 59 - ((58 * winheight(0) + 33) / 66)
+let s:l = 59 - ((55 * winheight(0) + 31) / 63)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 59
-normal! 042|
+normal! 022|
 lcd ~/cursus/proceduland
 wincmd w
 argglobal
 terminal ++curwin ++cols=84 ++rows=12 
-setlocal fdm=indent
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-let s:l = 1 - ((0 * winheight(0) + 6) / 12)
+let s:l = 1 - ((0 * winheight(0) + 5) / 11)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -118,35 +92,7 @@ lcd ~/cursus/proceduland
 wincmd w
 argglobal
 if bufexists("~/cursus/proceduland/js/objects/world.js") | buffer ~/cursus/proceduland/js/objects/world.js | else | edit ~/cursus/proceduland/js/objects/world.js | endif
-setlocal fdm=indent
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=6
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-19
-normal! zo
-21
-normal! zo
-36
-normal! zo
-38
-normal! zo
-58
-normal! zo
-67
-normal! zo
-67
-normal! zo
-71
-normal! zo
-72
-normal! zo
-84
-normal! zo
-let s:l = 42 - ((41 * winheight(0) + 46) / 92)
+let s:l = 42 - ((39 * winheight(0) + 43) / 87)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -156,19 +102,7 @@ lcd ~/cursus/proceduland
 wincmd w
 argglobal
 if bufexists("~/cursus/proceduland/js/objects/chunk.js") | buffer ~/cursus/proceduland/js/objects/chunk.js | else | edit ~/cursus/proceduland/js/objects/chunk.js | endif
-setlocal fdm=indent
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=3
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-9
-normal! zo
-24
-normal! zo
-let s:l = 41 - ((40 * winheight(0) + 46) / 92)
+let s:l = 41 - ((38 * winheight(0) + 43) / 87)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -178,15 +112,7 @@ lcd ~/cursus/proceduland
 wincmd w
 argglobal
 if bufexists("~/cursus/proceduland/js/materials.js") | buffer ~/cursus/proceduland/js/materials.js | else | edit ~/cursus/proceduland/js/materials.js | endif
-setlocal fdm=indent
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=3
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-let s:l = 15 - ((11 * winheight(0) + 13) / 26)
+let s:l = 15 - ((11 * winheight(0) + 12) / 25)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -196,19 +122,7 @@ lcd ~/cursus/proceduland
 wincmd w
 argglobal
 if bufexists("~/cursus/proceduland/js/algo/andresCircle.js") | buffer ~/cursus/proceduland/js/algo/andresCircle.js | else | edit ~/cursus/proceduland/js/algo/andresCircle.js | endif
-setlocal fdm=indent
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=4
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-2
-normal! zo
-16
-normal! zo
-let s:l = 18 - ((7 * winheight(0) + 12) / 25)
+let s:l = 18 - ((6 * winheight(0) + 11) / 23)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -218,21 +132,7 @@ lcd ~/cursus/proceduland
 wincmd w
 argglobal
 if bufexists("~/cursus/proceduland/js/gui.js") | buffer ~/cursus/proceduland/js/gui.js | else | edit ~/cursus/proceduland/js/gui.js | endif
-setlocal fdm=indent
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=4
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-3
-normal! zo
-69
-normal! zo
-69
-normal! zc
-let s:l = 38 - ((29 * winheight(0) + 19) / 39)
+let s:l = 38 - ((28 * winheight(0) + 18) / 37)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -240,20 +140,22 @@ normal! zt
 normal! 0
 lcd ~/cursus/proceduland
 wincmd w
-exe '1resize ' . ((&lines * 12 + 48) / 96)
-exe 'vert 1resize ' . ((&columns * 84 + 182) / 365)
-exe '2resize ' . ((&lines * 66 + 48) / 96)
-exe 'vert 2resize ' . ((&columns * 84 + 182) / 365)
-exe '3resize ' . ((&lines * 12 + 48) / 96)
-exe 'vert 3resize ' . ((&columns * 84 + 182) / 365)
-exe 'vert 4resize ' . ((&columns * 84 + 182) / 365)
-exe 'vert 5resize ' . ((&columns * 84 + 182) / 365)
-exe '6resize ' . ((&lines * 26 + 48) / 96)
-exe 'vert 6resize ' . ((&columns * 110 + 182) / 365)
-exe '7resize ' . ((&lines * 25 + 48) / 96)
-exe 'vert 7resize ' . ((&columns * 110 + 182) / 365)
-exe '8resize ' . ((&lines * 39 + 48) / 96)
-exe 'vert 8resize ' . ((&columns * 110 + 182) / 365)
+exe '1resize ' . ((&lines * 11 + 47) / 95)
+exe 'vert 1resize ' . ((&columns * 83 + 182) / 365)
+exe '2resize ' . ((&lines * 63 + 47) / 95)
+exe 'vert 2resize ' . ((&columns * 83 + 182) / 365)
+exe '3resize ' . ((&lines * 11 + 47) / 95)
+exe 'vert 3resize ' . ((&columns * 83 + 182) / 365)
+exe '4resize ' . ((&lines * 87 + 47) / 95)
+exe 'vert 4resize ' . ((&columns * 83 + 182) / 365)
+exe '5resize ' . ((&lines * 87 + 47) / 95)
+exe 'vert 5resize ' . ((&columns * 82 + 182) / 365)
+exe '6resize ' . ((&lines * 25 + 47) / 95)
+exe 'vert 6resize ' . ((&columns * 108 + 182) / 365)
+exe '7resize ' . ((&lines * 23 + 47) / 95)
+exe 'vert 7resize ' . ((&columns * 108 + 182) / 365)
+exe '8resize ' . ((&lines * 37 + 47) / 95)
+exe 'vert 8resize ' . ((&columns * 108 + 182) / 365)
 tabnext
 edit ~/cursus/proceduland/js/webworkers/worldWorker.js
 set splitbelow splitright
@@ -273,57 +175,21 @@ set winheight=1
 set winminwidth=0
 set winwidth=1
 exe 'vert 1resize ' . ((&columns * 84 + 182) / 365)
-exe 'vert 2resize ' . ((&columns * 93 + 182) / 365)
-exe 'vert 3resize ' . ((&columns * 93 + 182) / 365)
-exe 'vert 4resize ' . ((&columns * 92 + 182) / 365)
+exe 'vert 2resize ' . ((&columns * 90 + 182) / 365)
+exe 'vert 3resize ' . ((&columns * 92 + 182) / 365)
+exe 'vert 4resize ' . ((&columns * 96 + 182) / 365)
 argglobal
-setlocal fdm=indent
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=7
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-18
-normal! zo
-20
-normal! zo
-28
-normal! zo
-33
-normal! zo
-34
-normal! zc
-62
-normal! zo
-66
-normal! zo
-170
-normal! zo
-let s:l = 68 - ((31 * winheight(0) + 46) / 92)
+let s:l = 68 - ((30 * winheight(0) + 45) / 91)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 68
-normal! 032|
+normal! 030|
 lcd ~/cursus/proceduland
 wincmd w
 argglobal
 if bufexists("~/cursus/proceduland/js/webworkers/bone.js") | buffer ~/cursus/proceduland/js/webworkers/bone.js | else | edit ~/cursus/proceduland/js/webworkers/bone.js | endif
-setlocal fdm=indent
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=5
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-43
-normal! zo
-45
-normal! zo
-let s:l = 50 - ((49 * winheight(0) + 46) / 92)
+let s:l = 50 - ((48 * winheight(0) + 45) / 91)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -333,15 +199,7 @@ lcd ~/cursus/proceduland
 wincmd w
 argglobal
 if bufexists("~/cursus/proceduland/js/webworkers/chunk.js") | buffer ~/cursus/proceduland/js/webworkers/chunk.js | else | edit ~/cursus/proceduland/js/webworkers/chunk.js | endif
-setlocal fdm=indent
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=8
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-let s:l = 63 - ((62 * winheight(0) + 46) / 92)
+let s:l = 63 - ((62 * winheight(0) + 45) / 91)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -351,15 +209,7 @@ lcd ~/cursus/proceduland
 wincmd w
 argglobal
 if bufexists("~/cursus/proceduland/js/webworkers/landGeometry.js") | buffer ~/cursus/proceduland/js/webworkers/landGeometry.js | else | edit ~/cursus/proceduland/js/webworkers/landGeometry.js | endif
-setlocal fdm=indent
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=3
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-let s:l = 37 - ((36 * winheight(0) + 46) / 92)
+let s:l = 37 - ((36 * winheight(0) + 45) / 91)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -367,11 +217,11 @@ normal! zt
 normal! 06|
 lcd ~/cursus/proceduland
 wincmd w
-4wincmd w
+3wincmd w
 exe 'vert 1resize ' . ((&columns * 84 + 182) / 365)
-exe 'vert 2resize ' . ((&columns * 93 + 182) / 365)
-exe 'vert 3resize ' . ((&columns * 93 + 182) / 365)
-exe 'vert 4resize ' . ((&columns * 92 + 182) / 365)
+exe 'vert 2resize ' . ((&columns * 90 + 182) / 365)
+exe 'vert 3resize ' . ((&columns * 92 + 182) / 365)
+exe 'vert 4resize ' . ((&columns * 96 + 182) / 365)
 tabnext 2
 badd +1 ~/cursus/proceduland/index.html
 badd +1 ~/cursus/proceduland/js
@@ -384,7 +234,7 @@ badd +32 ~/cursus/proceduland/js/algo/andresCircle.js
 badd +1 ~/cursus/proceduland/js/gui.js
 badd +1 ~/cursus/proceduland/js/webworkers/bone.js
 badd +1 ~/cursus/proceduland/js/webworkers/chunk.js
-badd +1 ~/cursus/proceduland/js/webworkers/landGeometry.js
+badd +0 ~/cursus/proceduland/js/webworkers/landGeometry.js
 badd +37 ~/cursus/proceduland/js/webworkers/chunk_2.js
 badd +1 ~/cursus/proceduland/js/loader.js
 badd +1 ~/cursus/proceduland/js/webworkers/btt.js
