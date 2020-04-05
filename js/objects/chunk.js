@@ -5,7 +5,7 @@ function chunk(x, y)
 
 	this.group = new THREE.Group();
 
-//	this.add_water();
+	//this.add_water();
 	this.state_cube("init");
 
 	this.geometry = new THREE.BufferGeometry();
@@ -33,20 +33,19 @@ chunk.prototype = {
 	},
 
 	update : function(data)
-	{
-		this.geometry.addAttribute( 'position', new THREE.BufferAttribute(data.vertices, 3 ));
-		this.geometry.addAttribute( 'normal', new THREE.BufferAttribute(data.vertex_normals, 3, true ));
-		this.geometry.addAttribute( 'color', new THREE.BufferAttribute(data.colors, 3, true ));
-		this.geometry.setIndex(new THREE.BufferAttribute(data.faces, 1));
+  {
 
+    this.geometry.addAttribute( 'position', new THREE.BufferAttribute(data.vertices, 3 ));
+    this.geometry.addAttribute( 'normal', new THREE.BufferAttribute(data.vertex_normals, 3, true ));
+    this.geometry.addAttribute( 'color', new THREE.BufferAttribute(data.colors, 3, true ));
+    this.geometry.setIndex(new THREE.BufferAttribute(data.faces, 1));
 		this.geometry.attributes.position.needsUpdate = true;
 		this.geometry.attributes.color.needsUpdate = true;
 		this.geometry.attributes.normal.needsUpdate = true;
 		this.geometry.index.needsUpdate = true;
 
 		this.geometry.computeBoundingSphere();
-		this.geometry.computeVertexNormals();
-
+//		this.geometry.computeVertexNormals();
 //		helper = new THREE.VertexNormalsHelper( this.mesh, 0.2, 0x00ff00, 0.1);
 //		scene.add(helper);
 

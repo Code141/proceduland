@@ -1,6 +1,7 @@
 let Bone = function(level)
 {
 	this.info = this.get_info(level);
+
 	last = this.info[this.info.length - 1];
 	nb_v = last.v.offset + last.v.nb;
 	nb_f = last.f.offset + last.f.nb;
@@ -29,8 +30,6 @@ let Bone = function(level)
 	this.vue_vertices_x.set([ 0, size, 0, size]);
 	this.vue_vertices_z.set([ 0, 0, size, size]);
 
-
-//	vue_faces.set([0, 2, 1, 3, 1, 2]);
 	this.vue_faces.set([1, 0, 3, 2, 3, 0]);
 
 	this.generateLevel(this.info);
@@ -68,7 +67,6 @@ Bone.prototype = {
 				v1 = i * (i + 1) * 2;
 				v = v1;
 				i *= 2;
-
 			}
 			else
 			{
@@ -99,85 +97,85 @@ Bone.prototype = {
 	{
 		for (let l = 1; l < info.length; l++)
 		{
-			last_i = info[l - 1];
-			i = info[l];
+			let last_i = info[l - 1];
+			let i = info[l];
+
+      let indice = i.indice;
+      let data_x = i.v.data_x;
+      let data_z = i.v.data_z;
+
+      let child = i.f.data;
+      let paren = last_i.f.data;
+      let v_offset = i.v.offset;
 
 			if (l % 2)
-				this.generateVertices_1(l, i);
+				this.generateVertices_1(indice, data_x, data_z);
 			else
-				this.generateVertices_2(l, i);
+				this.generateVertices_2(indice, data_x, data_z);
 
 			if (l % 2)
-				this.generateFace_1(l, i);
+				this.generateFace_1(child, paren, indice, v_offset);
 			else
-				this.generateFace_2(l, i);
+				this.generateFace_2(child, paren, indice, v_offset);
 		}
 	},
 
-	generateVertices_1: function(l, i)
+	generateVertices_1: function(indice, data_x, data_z)
 	{
-		let decal = size / (i.indice * 2);
+		let decal = size / (indice * 2);
 		let decal_2 = decal * 2;
 
-		for (let z = 0; z < i.indice; z++)
-		{	
-			let decalage = (z * i.indice);
+		for (let z = 0; z < indice; z++)
+		{
+			let decalage = (z * indice);
 			let ligne_height = decal + (decal_2 * z);
 
-			for (let x = 0; x < i.indice; x++)
+			for (let x = 0; x < indice; x++)
 			{
-				i.v.data_x[decalage + x] = decal + (decal_2 * x);
-				i.v.data_z[decalage + x] = ligne_height;
+				data_x[decalage + x] = decal + (decal_2 * x);
+				data_z[decalage + x] = ligne_height;
 			}
 		}
 	},
 
-	generateVertices_2: function(l, i)
+	generateVertices_2: function(indice, data_x, data_z)
 	{
-		let decal = size / (i.indice * 2);
+		let decal = size / (indice * 2);
 		let decal_2 = decal * 2;
 
-		for (let z = 0; z < i.indice * 2 + 1; z++)
+		for (let z = 0, l = indice * 2 + 1; z < l; z++)
 		{
-			let decalage = (z * i.indice) + Math.floor(z / 2);
+			let decalage = (z * indice) + Math.floor(z / 2);
 			let ligne_height = decal * z;
 			if (z % 2)
 			{
-				for (let x = 0; x < i.indice + 1; x++)
+				for (let x = 0, ll = indice + 1; x < ll; x++)
 				{
-					i.v.data_x[decalage + x] = decal_2 * x;
-					i.v.data_z[decalage + x] = ligne_height;
+					data_x[decalage + x] = decal_2 * x;
+					data_z[decalage + x] = ligne_height;
 				}
 			}
 			else
 			{
-				for (let x = 0; x < i.indice; x++)
+				for (let x = 0; x < indice; x++)
 				{
-					i.v.data_x[decalage + x] = decal_2 * x + decal;
-					i.v.data_z[decalage + x] = ligne_height;
+					data_x[decalage + x] = decal_2 * x + decal;
+					data_z[decalage + x] = ligne_height;
 				}
 			}
 		}
 	},
 
-	generateFace_1: function(l, i)
+	generateFace_1: function(child, paren, indice, v_offset)
 	{
-		let child = i.f.data;
-		let paren = last_i.f.data;
-		let indice = i.indice;
-		let v_offset = i.v.offset;
-
 		for (let z = 0; z < indice; z++)
 		{
 			for (let x = 0; x < indice; x++)
 			{
 				let apex = v_offset + x + (z * indice);
 
-				let dec_f_1 = x + z * indice;
-				let dec_f_2 = x + z * indice;
-
-				dec_f_1 *= 3 * 4;
-				dec_f_2 *= 3 * 2;
+				let dec_f_1 = (x + z * indice) * 3 * 4;
+				let dec_f_2 = (x + z * indice) * 3 * 2;
 
 				diag = ((x % 2) + (z % 2)) % 2;
 				if (diag)
@@ -220,13 +218,8 @@ Bone.prototype = {
 		}
 	},
 
-	generateFace_2: function(l, i)
+	generateFace_2: function(child, paren, indice, v_offset)
 	{
-		let child = i.f.data;
-		let paren = last_i.f.data;
-		let indice = i.indice;
-		let v_offset = i.v.offset;
-
 		let ligne1 = (1 * indice);
 		let ligne2 = (2 * indice) + 1;
 
@@ -235,14 +228,9 @@ Bone.prototype = {
 			for (let x = 0; x < indice; x++)
 			{
 				let decalage = v_offset + x + (z * ligne2);
-
-				let dec_f_2 = x + z * indice;
-				let dec_f_1a = x + z * indice * 2;
-				let dec_f_1b = x + z * indice * 2 + indice;
-
-				dec_f_2 *= 3 * 4;
-				dec_f_1a *= 3 * 4;
-				dec_f_1b *= 3 * 4;
+				let dec_f_2 = (x + z * indice) * 3 * 4;
+				let dec_f_1a = (x + z * indice * 2) * 3 * 4;
+				let dec_f_1b = (x + z * indice * 2 + indice) * 3 * 4;
 
 				// North right
 				child[dec_f_1a + 0] = decalage;
@@ -263,7 +251,6 @@ Bone.prototype = {
 				child[dec_f_1a + 9] = decalage + ligne1 + 1;
 				child[dec_f_1a + 10] = paren[dec_f_2 + 2 + 6];
 				child[dec_f_1a + 11] = paren[dec_f_2 + 0 + 6];
-
 
 
 				// West right

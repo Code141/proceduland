@@ -84,8 +84,8 @@ World.prototype = {
 			this.chunks[x][z] = new chunk(x, z);
 
 			group = this.chunks[x][z].group;
-			group.position.x = x ;
-			group.position.z = z ;
+			group.position.x = x;
+			group.position.z = z;
 
 			this.group.add(group);
 		}

@@ -31,7 +31,8 @@ function initThreeJs( container )
 
 	renderer = new THREE.WebGLRenderer( { antialias: true, alpha: false } );
 	renderer.setClearColor( 0x333333 );
-	renderer.setPixelRatio( window.devicePixelRatio );
+	renderer.setPixelRatio( 1 );
+	//renderer.setPixelRatio( window.devicePixelRatio / 2 );
 	renderer.setSize( window.innerWidth, window.innerHeight );
 
 	container.appendChild( renderer.domElement );
@@ -89,8 +90,8 @@ function fillscene()
 	world = new World({
 		chunkSize: 100,
 		maxHeight: 50,
-		chunksDistance: 1,
-		levelMax: 5
+		chunksDistance: 2,
+		levelMax: 10
 	});
 	scene.add(world.group);
 	world.requestChunks();

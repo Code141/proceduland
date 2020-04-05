@@ -46,8 +46,8 @@ exe '1resize ' . ((&lines * 11 + 47) / 95)
 exe 'vert 1resize ' . ((&columns * 84 + 182) / 365)
 exe '2resize ' . ((&lines * 79 + 47) / 95)
 exe 'vert 2resize ' . ((&columns * 84 + 182) / 365)
-exe 'vert 3resize ' . ((&columns * 82 + 182) / 365)
-exe 'vert 4resize ' . ((&columns * 88 + 182) / 365)
+exe 'vert 3resize ' . ((&columns * 84 + 182) / 365)
+exe 'vert 4resize ' . ((&columns * 86 + 182) / 365)
 exe '5resize ' . ((&lines * 25 + 47) / 95)
 exe 'vert 5resize ' . ((&columns * 108 + 182) / 365)
 exe '6resize ' . ((&lines * 23 + 47) / 95)
@@ -65,11 +65,11 @@ lcd ~/cursus/proceduland
 wincmd w
 argglobal
 if bufexists("~/cursus/proceduland/js/init.js") | buffer ~/cursus/proceduland/js/init.js | else | edit ~/cursus/proceduland/js/init.js | endif
-let s:l = 59 - ((16 * winheight(0) + 39) / 79)
+let s:l = 60 - ((17 * winheight(0) + 39) / 79)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-59
+60
 normal! 03|
 lcd ~/cursus/proceduland
 wincmd w
@@ -105,7 +105,7 @@ lcd ~/cursus/proceduland
 wincmd w
 argglobal
 if bufexists("~/cursus/proceduland/js/algo/andresCircle.js") | buffer ~/cursus/proceduland/js/algo/andresCircle.js | else | edit ~/cursus/proceduland/js/algo/andresCircle.js | endif
-let s:l = 18 - ((6 * winheight(0) + 11) / 23)
+let s:l = 18 - ((7 * winheight(0) + 11) / 23)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -123,13 +123,12 @@ normal! zt
 normal! 0
 lcd ~/cursus/proceduland
 wincmd w
-2wincmd w
 exe '1resize ' . ((&lines * 11 + 47) / 95)
 exe 'vert 1resize ' . ((&columns * 84 + 182) / 365)
 exe '2resize ' . ((&lines * 79 + 47) / 95)
 exe 'vert 2resize ' . ((&columns * 84 + 182) / 365)
-exe 'vert 3resize ' . ((&columns * 82 + 182) / 365)
-exe 'vert 4resize ' . ((&columns * 88 + 182) / 365)
+exe 'vert 3resize ' . ((&columns * 84 + 182) / 365)
+exe 'vert 4resize ' . ((&columns * 86 + 182) / 365)
 exe '5resize ' . ((&lines * 25 + 47) / 95)
 exe 'vert 5resize ' . ((&columns * 108 + 182) / 365)
 exe '6resize ' . ((&lines * 23 + 47) / 95)
@@ -155,8 +154,8 @@ set winheight=1
 set winminwidth=0
 set winwidth=1
 exe 'vert 1resize ' . ((&columns * 84 + 182) / 365)
-exe 'vert 2resize ' . ((&columns * 90 + 182) / 365)
-exe 'vert 3resize ' . ((&columns * 92 + 182) / 365)
+exe 'vert 2resize ' . ((&columns * 92 + 182) / 365)
+exe 'vert 3resize ' . ((&columns * 90 + 182) / 365)
 exe 'vert 4resize ' . ((&columns * 96 + 182) / 365)
 argglobal
 let s:l = 68 - ((30 * winheight(0) + 45) / 91)
@@ -164,16 +163,6 @@ if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 68
-normal! 0
-lcd ~/cursus/proceduland
-wincmd w
-argglobal
-if bufexists("~/cursus/proceduland/js/webworkers/bone.js") | buffer ~/cursus/proceduland/js/webworkers/bone.js | else | edit ~/cursus/proceduland/js/webworkers/bone.js | endif
-let s:l = 50 - ((48 * winheight(0) + 45) / 91)
-if s:l < 1 | let s:l = 1 | endif
-exe s:l
-normal! zt
-50
 normal! 0
 lcd ~/cursus/proceduland
 wincmd w
@@ -188,6 +177,16 @@ normal! 06|
 lcd ~/cursus/proceduland
 wincmd w
 argglobal
+if bufexists("~/cursus/proceduland/js/webworkers/bone.js") | buffer ~/cursus/proceduland/js/webworkers/bone.js | else | edit ~/cursus/proceduland/js/webworkers/bone.js | endif
+let s:l = 1 - ((0 * winheight(0) + 45) / 91)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+1
+normal! 0
+lcd ~/cursus/proceduland
+wincmd w
+argglobal
 if bufexists("~/cursus/proceduland/js/webworkers/landGeometry.js") | buffer ~/cursus/proceduland/js/webworkers/landGeometry.js | else | edit ~/cursus/proceduland/js/webworkers/landGeometry.js | endif
 let s:l = 37 - ((36 * winheight(0) + 45) / 91)
 if s:l < 1 | let s:l = 1 | endif
@@ -197,22 +196,23 @@ normal! zt
 normal! 06|
 lcd ~/cursus/proceduland
 wincmd w
+2wincmd w
 exe 'vert 1resize ' . ((&columns * 84 + 182) / 365)
-exe 'vert 2resize ' . ((&columns * 90 + 182) / 365)
-exe 'vert 3resize ' . ((&columns * 92 + 182) / 365)
+exe 'vert 2resize ' . ((&columns * 92 + 182) / 365)
+exe 'vert 3resize ' . ((&columns * 90 + 182) / 365)
 exe 'vert 4resize ' . ((&columns * 96 + 182) / 365)
-tabnext 1
+tabnext 2
 badd +1 ~/cursus/proceduland/index.html
 badd +1 ~/cursus/proceduland/js
 badd +1 ~/cursus/proceduland/js/webworkers/worldWorker.js
-badd +1 ~/cursus/proceduland/js/init.js
+badd +0 ~/cursus/proceduland/js/init.js
 badd +1 ~/cursus/proceduland/js/objects/world.js
 badd +55 ~/cursus/proceduland/js/objects/chunk.js
 badd +13 ~/cursus/proceduland/js/materials.js
 badd +32 ~/cursus/proceduland/js/algo/andresCircle.js
 badd +1 ~/cursus/proceduland/js/gui.js
 badd +1 ~/cursus/proceduland/js/webworkers/bone.js
-badd +0 ~/cursus/proceduland/js/webworkers/chunk.js
+badd +1 ~/cursus/proceduland/js/webworkers/chunk.js
 badd +1 ~/cursus/proceduland/js/webworkers/landGeometry.js
 badd +37 ~/cursus/proceduland/js/webworkers/chunk_2.js
 badd +1 ~/cursus/proceduland/js/loader.js
