@@ -71,7 +71,7 @@ Chunk.prototype = {
     vr = this.get_vertice_from_layer(real);
 
     delta = Math.abs((( v1 + v2 ) / 2) - vr);
-    if ( (delta * 100) / hypo > 1)
+    if ( (delta * 300) / hypo > 1)
       return (true);
 
     return (false);
@@ -79,8 +79,6 @@ Chunk.prototype = {
 
   break_all: function(hypo, level)
   {
-
-
     for(let i = 0, l = this.breaked_bitmap[0].length; i < l; i++)
       this.breaked_bitmap[0][i] = 1;
 
@@ -257,7 +255,6 @@ Chunk.prototype = {
 
   clean: function(level)
   {
-
     for (let l = 1; l <= level; l++)
     {
       last_i = this.info[l - 1];
@@ -340,6 +337,15 @@ Chunk.prototype = {
 
     this.faces = new Uint32Array(nb_f * 3 );
 
+
+
+	  last = this.info[this.info.length - 1];
+    total = last.v.offset + last.v.nb;
+    new_vertice = new Uint32Array(total);
+
+    for (let i = 0; i < total ; i++)
+      new_vertice[i] = 0xFFFFFFFF;
+
     let nb_v = 0;
     for (let l = 0; l < this.breaked_bitmap.length; l++)
     {
@@ -348,40 +354,62 @@ Chunk.prototype = {
 
       for (let i = 0, ll = breaked.length, b = 0; i < ll; i++, b += 3)
       {
+
         if (breaked[i])
         {
-          if (new_vertice[data[b + 0]] == undefined)
+          if (new_vertice[data[b + 0]] == 0xFFFFFFFF)
+          {
+            this.faces[f + 0] = nb_v;
             new_vertice[data[b + 0]] = nb_v++;
-          if (new_vertice[data[b + 1]] == undefined)
-            new_vertice[data[b + 1]] = nb_v++;
-          if (new_vertice[data[b + 2]] == undefined)
-            new_vertice[data[b + 2]] = nb_v++;
+          }
+          else
+            this.faces[f + 0] = new_vertice[data[b + 0]];
 
-          this.faces[f + 0] = new_vertice[data[b + 0]];
-          this.faces[f + 1] = new_vertice[data[b + 1]];
-          this.faces[f + 2] = new_vertice[data[b + 2]];
+          if (new_vertice[data[b + 1]] == 0xFFFFFFFF)
+          {
+            this.faces[f + 1] = nb_v;
+            new_vertice[data[b + 1]] = nb_v++;
+          }
+          else
+            this.faces[f + 1] = new_vertice[data[b + 1]];
+
+          if (new_vertice[data[b + 2]] == 0xFFFFFFFF)
+          {
+            this.faces[f + 2] = nb_v;
+            new_vertice[data[b + 2]] = nb_v++;
+          }
+          else
+            this.faces[f + 2] = new_vertice[data[b + 2]];
 
           f += 3;
         }
       }
     }
 
+
     this.send_vertices = new Float32Array(nb_v * 3);
     this.send_normals = new Float32Array(nb_v * 3);
     this.send_colors = new Uint8Array(nb_v * 3);
+    this.uvs = new Float32Array(nb_v * 2);
 
     for (let i = 0; i < new_vertice.length; i++)
     {
-      if (new_vertice[i] != undefined )
+      if (new_vertice[i] != 0xFFFFFFFF)
       {
         let pos = new_vertice[i] * 3;
 
         l = this.get_layer_from_vertice(i);
         relI = i - this.info[l].v.offset;
 
-        this.send_vertices[pos + 0] = this.vue_vertices_x[l][relI];
-        this.send_vertices[pos + 1] = this.vue_vertices_y[l][relI];
-        this.send_vertices[pos + 2] = this.vue_vertices_z[l][relI];
+
+        let x = this.vue_vertices_x[l][relI];
+        let y = this.vue_vertices_y[l][relI];
+        let z = this.vue_vertices_z[l][relI];
+
+
+        this.send_vertices[pos + 0] = x;
+        this.send_vertices[pos + 1] = y;
+        this.send_vertices[pos + 2] = z;
 
         this.send_colors[pos + 0] = this.vue_colors[l][relI * 3];
         this.send_colors[pos + 1] = this.vue_colors[l][relI * 3 + 1];
@@ -390,6 +418,13 @@ Chunk.prototype = {
         this.send_normals[pos + 0] = 0;
         this.send_normals[pos + 1] = 1;
         this.send_normals[pos + 2] = 0;
+
+        this.send_normals[pos + 0] = 0;
+        this.send_normals[pos + 1] = 1;
+        this.send_normals[pos + 2] = 0;
+
+        this.uvs[new_vertice[i] * 2 + 0] = x;
+        this.uvs[new_vertice[i] * 2 + 1] = z;
       }
     }
   },
@@ -403,7 +438,8 @@ Chunk.prototype = {
         vertices: this.send_vertices,
         faces: this.faces,
         vertex_normals: this.send_normals,
-        colors: this.send_colors
+        colors: this.send_colors,
+        uvs: this.uvs
       }
     });
   }

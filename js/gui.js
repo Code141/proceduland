@@ -1,7 +1,6 @@
 
 initGUI = function(){
-	var gui = new dat.GUI();
-
+	var gui = new dat.GUI( { width: 300 } );
 	//-------------------SKY
 
 	var sunGui = gui.addFolder('Sky');
@@ -65,10 +64,10 @@ initGUI = function(){
 	var worldGui = gui.addFolder('World');
 
 	var worldData  = {
-		chunksDistance: 1,
-		levelMax: 12,
-		chunkSize: 100,
-		maxHeight: 50,
+		chunksDistance: 2,
+		levelMax: 14,
+		chunkSize: 500,
+		maxHeight: 200,
 		wireframe: false,
 		reload: function(){
 			scene.remove(world.group);
@@ -84,34 +83,28 @@ initGUI = function(){
 		}
 	};
 
-	worldGui.add(worldData, 'chunksDistance', 1, 20).step(1);
-	worldGui.add(worldData, 'levelMax', 1, 25).step(1);
-	worldGui.add(worldData, 'chunkSize');
-	worldGui.add(worldData, 'maxHeight');
+	worldGui.add(world, 'chunksDistance', 1, 20).step(1).onChange( () => {
+    world.requestChunks()
+  });
 
-	controller = worldGui.add(worldData, 'wireframe');
-	
-	controller.onFinishChange(function(value) {
-		if(value == true){
-			ground_material.wireframe = true;
-		/*
-			scene.overrideMaterial =  new THREE.MeshLambertMaterial( {
-				emissive : 0x000000,
-				vertexColors : THREE.VertexColors,
-				transparent : true,
-				opacity : 0.3,
-				side : THREE.BackSide,
-				wireframe : true
-			} );
-		*/
-		}else{
-			ground_material.wireframe = false;
-		/*
-			scene.overrideMaterial = null;
-		*/
-		}
-	});
-	
+	worldGui.add(world, 'levelMax', 1, 25).step(1).onChange( () => {
+    world.requestChunks()
+  });
+
+  worldGui.add(world, 'chunkSize', 10, 1000).onChange(() => {
+    world.group.scale.set(world.chunkSize, world.maxHeight, world.chunkSize)
+  });
+
+	worldGui.add(world, 'maxHeight', 10, 1000).onChange(() => {
+    world.group.scale.set(world.chunkSize, world.maxHeight, world.chunkSize)
+  });
+
+  var params = {
+				format: THREE.DepthFormat,
+				type: THREE.UnsignedShortType
+			};
+
+
 	worldGui.add(worldData, 'reload');
 
 }

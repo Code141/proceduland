@@ -1,13 +1,13 @@
 function keyboardState(){
 	keyboard.update();
 
-	if ( keyboard.down("Z")){ 
+	if ( keyboard.down("W")){ 
 		world.move( 0, -1 );
 	}
 	if ( keyboard.down("S")){ 
 		world.move( 0, +1 );
 	}
-	if ( keyboard.down("Q")){ 
+	if ( keyboard.down("A")){ 
 		world.move( -1, 0 );
 	}
 	if ( keyboard.down("D")){ 

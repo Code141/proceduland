@@ -94,7 +94,7 @@ ChunksOverseer.prototype = {
     }
 
     var tend = performance.now();
-    console.log( "--------- FINISHED IN", (tend - tstart));
+    console.log( list.length, "chunks FINISHED IN", (tend - tstart));
 
   },
 

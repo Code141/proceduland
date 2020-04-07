@@ -29,6 +29,9 @@ function initThreeJs( container )
 	camera.position.y = 200;
 	camera.position.z = 200;
 
+
+
+
 	renderer = new THREE.WebGLRenderer( { antialias: true, alpha: false } );
 	renderer.setClearColor( 0x333333 );
 	renderer.setPixelRatio( 1 );
@@ -37,9 +40,10 @@ function initThreeJs( container )
 
 	container.appendChild( renderer.domElement );
 
+
 	scene = new THREE.Scene();
 	scene.background = new THREE.Color(0x333333);
-//	scene.fog = new THREE.Fog( 0xadc3f3, 200, 900 );
+	scene.fog = new THREE.Fog( 0xadc3f3, 00, 4500 );
 
 	keyboard = new KeyboardState();
 	mouse = new THREE.Vector2();
@@ -69,6 +73,8 @@ function initThreeJs( container )
 	var axisHelper = new THREE.AxesHelper( 500 );
 	scene.add( axisHelper );
 
+  test = new test()
+//  scene.add(test.group);
 }
 
 function loop()
@@ -80,24 +86,23 @@ function loop()
 	keyboardState();
 
 	world.update();
+  
+//  test.update();
 
 	renderer.render(scene, camera);
 }
 
 function fillscene()
 {
-
 	world = new World({
-		chunkSize: 100,
-		maxHeight: 50,
+		chunkSize: 500,
+		maxHeight: 200,
 		chunksDistance: 2,
-		levelMax: 10
+		levelMax: 14
 	});
-	scene.add(world.group);
+  scene.add(world.group);
 	world.requestChunks();
-
 	sky = new Sky();
-
 	load("tinnyHouse", 'models/tinnyHouse.dae', 1);
 
 	var light = new THREE.AmbientLight( 0x333333 ); // soft white light
