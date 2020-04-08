@@ -73,8 +73,6 @@ function initThreeJs( container )
 	var axisHelper = new THREE.AxesHelper( 500 );
 	scene.add( axisHelper );
 
-  test = new test()
-//  scene.add(test.group);
 }
 
 function loop()
@@ -87,7 +85,6 @@ function loop()
 
 	world.update();
   
-//  test.update();
 
 	renderer.render(scene, camera);
 }

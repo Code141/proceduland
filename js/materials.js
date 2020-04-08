@@ -14,12 +14,27 @@ ground_material = new THREE.MeshLambertMaterial({
 	opacity : 0.3
 	*/
 });
+let name;
+let path = 'textures/';
 
-var map = new THREE.TextureLoader().load('texture/025_KaiMoischCom_Grass_Ground_Mixed_1x1_Seamless_Albedo_1K.jpg');
+name = '025_KaiMoischCom_Grass_Ground_Mixed_1x1_Seamless_';
+//name = '022_KaiMoischCom_Soil_Ground_Mixed_1,5x1,5_Seamless_';
+//name = '019_KaiMoischCom_Gravel_Branches_1,5x1,5_Seamless_';
+//name = '026_KaiMoischCom_Brick_Wall_Old_1x2_Seamless_';
+//name = 'KaiMoischCom_Dirt_Ground_0,5x0,5_Seamless_';
+//name = 'KaiMoischCom_Gravel_1,5x1,5_Seamless_';
+//name = 'KaiMoischCom_Gravel_1x1_Seamless_';
+//name = 'KaiMoischCom_Gravel_Ground_Grass_2x2_Seamless_';
+//name = 'KaiMoischCom_Leaves_Ground_2x2_Seamless_';
+//name = 'KaiMoischCom_Pine_Forest_Ground_2x2_Seamless_';
+//name = 'KaiMoischCom_Sand_Footprints1,5x1,5_Seamless_';
 
-var normalMap = new THREE.TextureLoader().load('texture/025_KaiMoischCom_Grass_Ground_Mixed_1x1_Seamless_Normal_1K.jpg');
-var bumpMap = new THREE.TextureLoader().load('texture/025_KaiMoischCom_Grass_Ground_Mixed_1x1_Seamless_Height_1K.jpg');
-var specularMap = new THREE.TextureLoader().load('texture/025_KaiMoischCom_Grass_Ground_Mixed_1x1_Seamless_Specular_1K.jpg');
+let ext = '_1K.png';
+
+var map = new THREE.TextureLoader().load(path + name + 'Albedo' + ext);
+var normalMap = new THREE.TextureLoader().load(path + name + 'Normal' + ext);
+var bumpMap = new THREE.TextureLoader().load(path + name + 'Height' + ext);
+var specularMap = new THREE.TextureLoader().load(path + name + 'Specular' + ext);
 
 
 var terrain_material = new THREE.MeshPhongMaterial({
