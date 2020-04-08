@@ -99,11 +99,13 @@ initGUI = function(){
     world.group.scale.set(world.chunkSize, world.maxHeight, world.chunkSize)
   });
 
-  var params = {
-				format: THREE.DepthFormat,
-				type: THREE.UnsignedShortType
-			};
+api = {};
+  api.distribution = 90
+  worldGui.add( api, 'distribution' ).options( [ 'random', 'weighted' ] ).onChange( 
+    () =>{
 
+    world.group.scale.set(world.chunkSize, world.maxHeight, world.chunkSize)
+    } );	
 
 	worldGui.add(worldData, 'reload');
 
