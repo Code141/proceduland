@@ -44,7 +44,7 @@ chunk.prototype = {
       fLAMBDA += data.faces.length;
     else
       fOPTI += data.faces.length;
-    console.log ("faces", fOPTI, (1 - ((fLAMBDA - fOPTI) / fLAMBDA)) * 100);
+    console.log ("faces", fLAMBDA, fOPTI, (1 - ((fLAMBDA - fOPTI) / fLAMBDA)) * 100);
 
     this.geometry.addAttribute( 'position',
       new THREE.BufferAttribute(
