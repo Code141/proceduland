@@ -3,7 +3,6 @@ importScripts(
   'chunk.js',
   '../algo/perlin.js',
   'landGeometry.js',
-  '../algo/andresCircle.js'
 );
 
 ChunksOverseer = function(levelMax){

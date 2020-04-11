@@ -10,16 +10,18 @@ a black and white height map png for example could be used.
 # Features :
 * Chunks generation in separated thread with a dedicated webworker
 * LOD (https://fr.wikipedia.org/wiki/Level_of_detail)
-* Texture splatting with bumpmap
 * Moving around with WASD will refreash all necessary chunks with new appropriate LOD
 * Procedural terrain generation (simplex2)
 * Fast reload, Worker store in buffers only whats needed where and when it is. (reload 2km diametre zone in less than one seconde with a tesselation ground's precision of 25cm)
+* UV mapping generated
 
 # To do :
 * Finish tesselation cracks and parents / neigbour detection algo (While breaking diagonals, N S E W are diplayed. it should't)
 * Jumbo chunks (chunks with size doubled for less number of mesh's objects)
 * Vertices morphing for eye smooth replacement chunks
 * Normal's map generation
+* Texture splatting with bumpmap
+* JSM it
 
 # Screenshot
 ![Alt text](/screenshot/0.png?raw=true "Optional Title")
