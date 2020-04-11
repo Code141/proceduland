@@ -36,17 +36,17 @@ User can move in the world.
 
 LOD by distance and relief optimisation
 
-- Vertices ----------
-Left    : 1 175 310
-Right   :   499 344
-Display :        42%
-Gain    :       235%
-- Faces -------------
-Left    : 2 279 424
-Right   :   952 794
-Display :        41%
-Gain    :       239%
----------------------
+- Vertices ----------  
+Left    : 1 175 310  
+Right   :   499 344  
+Display :        42%  
+Gain    :       235%  
+- Faces -------------  
+Left    : 2 279 424  
+Right   :   952 794  
+Display :        41%  
+Gain    :       239%  
+---------------------  
 
 ![Alt text](/screenshot/6.png?raw=true "Optional Title")
 ![Alt text](/screenshot/7.png?raw=true "Optional Title")
