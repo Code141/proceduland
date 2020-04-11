@@ -20,7 +20,7 @@ ChunksOverseer.prototype = {
     if (this.chunks[x] == undefined)
       this.chunks[x] = [];
     if (this.chunks[x][z] == undefined)
-      this.chunks[x][z] = new Chunk(x, z, this.bone.info);
+      this.chunks[x][z] = new Chunk(x, z, this.bone);
   },
 
   link_neighbour : function(x, z)
@@ -40,6 +40,7 @@ ChunksOverseer.prototype = {
 
   get : function(list)
   {
+    this.bone.set_layer_deepness(this.levelMax);
     var tstart = performance.now();
     for (let i = 0; i < list.length; i++)
     {
@@ -54,7 +55,7 @@ ChunksOverseer.prototype = {
       let level = Math.floor(this.levelMax - hypo / 2);
       if (level < 1)
         level = 1;
-      this.chunks[x][z].set_level(level);
+      this.chunks[x][z].set_layer_deepness(level);
     }
 
     for (let i = 0; i < list.length; i++)
@@ -73,6 +74,12 @@ ChunksOverseer.prototype = {
       let level = Math.floor(this.levelMax - hypo / 2);
       if (level < 1)
         level = 1;
+/*
+      this.chunks[x][z].break_all(hypo, level);
+      this.chunks[x][z].clean(level);
+      this.chunks[x][z].realoc(level);
+      this.chunks[x][z].send();
+      */
 
       this.chunks[x][z].resolved = new Promise((resolve, reject) => {
         this.chunks[x][z].break_all(hypo, level);
@@ -84,7 +91,7 @@ ChunksOverseer.prototype = {
         Promise.all(pro)
           .then(() => {
               this.chunks[x][z].clean(level);
-              this.chunks[x][z].realoc();
+              this.chunks[x][z].realoc(level);
               this.chunks[x][z].send();
           })
           .catch((error) => {
@@ -143,6 +150,14 @@ onmessage = function(e) {
     case "request_chunks_list":
       overseer.position.x = order.position.x;
       overseer.position.z = order.position.z;
+
+      let levelMax = order.levelMax;
+      if (levelMax > 24)
+        throw "error level max is 24"
+      levelMax = (levelMax < 1) ? 1: levelMax;
+
+      overseer.levelMax = levelMax;
+
       overseer.get(order.list);
       break;
     default:

@@ -13,7 +13,7 @@ function chunk(x, y)
 		new THREE.Vector3(0, 0, 0),
 		new THREE.Vector3(100, 100, 100)
 	);
-	this.mesh = new THREE.Mesh( this.geometry, terrain_material );
+	this.mesh = new THREE.Mesh( this.geometry, ground_material );
 	this.mesh.matrixAutoUpdate = false;
 
 	this.group.add( this.mesh );
@@ -34,17 +34,26 @@ chunk.prototype = {
 
 	update : function(data)
   {
+    if (this.x < 0)
+      vLAMBDA += data.vertices.length;
+    else
+      vOPTI += data.vertices.length;
 
-    this.geometry.addAttribute(
-      'position',
+    console.log ("VERTICES :", vLAMBDA, vOPTI, (1 - ((vLAMBDA - vOPTI) / vLAMBDA)) * 100);
+    if (this.x < 0)
+      fLAMBDA += data.faces.length;
+    else
+      fOPTI += data.faces.length;
+    console.log ("faces", fOPTI, (1 - ((fLAMBDA - fOPTI) / fLAMBDA)) * 100);
+
+    this.geometry.addAttribute( 'position',
       new THREE.BufferAttribute(
         data.vertices,
         3
       )
     );
 
-    this.geometry.addAttribute(
-      'normal',
+    this.geometry.addAttribute( 'normal',
       new THREE.BufferAttribute(
         data.vertex_normals,
         3,
@@ -52,8 +61,7 @@ chunk.prototype = {
       )
     );
 
-    this.geometry.addAttribute(
-      'color',
+    this.geometry.addAttribute( 'color',
       new THREE.BufferAttribute(
         data.colors,
         3,
@@ -61,8 +69,7 @@ chunk.prototype = {
       )
     );
 
-    this.geometry.addAttribute(
-      'uv',
+    this.geometry.addAttribute( 'uv',
       new THREE.BufferAttribute(
         new Float32Array(
         data.uvs,
@@ -76,11 +83,6 @@ chunk.prototype = {
         1
       )
     );
-
-		this.geometry.attributes.position.needsUpdate = true;
-		this.geometry.attributes.color.needsUpdate = true;
-		this.geometry.attributes.normal.needsUpdate = true;
-		this.geometry.index.needsUpdate = true;
 
 		this.geometry.computeBoundingSphere();
 		this.geometry.computeVertexNormals();

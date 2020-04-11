@@ -4,15 +4,13 @@ water_material = new THREE.MeshPhongMaterial( {
 	opacity : 0.6
 } );
 
-ground_material = new THREE.MeshLambertMaterial({
+ground_material = new THREE.MeshNormalMaterial({
 	vertexColors: THREE.VertexColors,
 	shading: THREE.FlatShading,
 	color: 0xffffff,
-/*
-	wireframe: true,
-	transparent : true,
-	opacity : 0.3
-	*/
+	//wireframe: true,
+	//transparent : true,
+	//opacity : 0.3
 });
 let name;
 let path = 'textures/';

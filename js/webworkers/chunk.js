@@ -1,10 +1,11 @@
-let Chunk = function(x, z, info)
+let Chunk = function(x, z, bone)
 {
   this.x = x;
   this.z = z;
-  this.info = info;
-  this.level = 0;
+  this.bone = bone;
+  this.info = null;
 
+  this.level = 0;
 
   this.vue_vertices_x = [];
   this.vue_vertices_y = [];
@@ -22,26 +23,28 @@ let Chunk = function(x, z, info)
 
 Chunk.prototype = {
 
-  set_level: function(level)
-  {
+  set_layer_deepness(level) {
+    this.info = this.bone.info;
+
     if (level > this.level)
     {
-      for (let l = 0; l < this.info.length; l++)
+      for (let l = this.level; l < this.info.length; l++)
         this.init_layer(l);
       this.level = level;
     }
+
+    for (let l = 0; l <= this.level; l++)
+      for(let i = 0, ll = this.breaked_bitmap[l].length; i < ll; i++)
+        this.breaked_bitmap[l][i] = 0;
     // ELSE DESTRUCT LAYERS OR STORE IT ON HDD
     // FREE MEMORY
 
-    for (let l = 0; l < this.info.length; l++)
-      for(let i = 0, ll = this.breaked_bitmap[l].length; i < ll; i++)
-        this.breaked_bitmap[l][i] = 0;
+    for(let i = 0, l = this.breaked_bitmap[0].length; i < l; i++)
+      this.breaked_bitmap[0][i] = 1;
   },
 
-  init_layer(level)
-  {
-    info = this.info[level];
-
+  init_layer(level) {
+    let info = this.info[level];
     this.vue_vertices_y[level] = new Float32Array(info.v.nb);
     this.vue_vertices_x[level] = this.info[level].v.data_x;
     this.vue_vertices_z[level] = this.info[level].v.data_z;
@@ -64,24 +67,28 @@ Chunk.prototype = {
     }
   },
 
-  does_break: function(parents_faces, hypo, real, v)
-  {
+  get_vertice_from_layer(vertice) {
+    let i = this.info.length - 1;
+    while (vertice < this.info[i].v.offset)
+      i--;
+    return (this.vue_vertices_y[i][vertice - this.info[i].v.offset]);
+  },
+
+  does_break(parents_faces, hypo, real, v) {
+    if (this.x < 0)
+      return (true);
     v1 = this.get_vertice_from_layer(parents_faces[v + 1]);
     v2 = this.get_vertice_from_layer(parents_faces[v + 2]);
     vr = this.get_vertice_from_layer(real);
 
     delta = Math.abs((( v1 + v2 ) / 2) - vr);
-    if ( (delta * 300) / hypo > 1)
+    if ( (delta * 400) / (hypo + 1)> 1)
       return (true);
 
     return (false);
   },
 
-  break_all: function(hypo, level)
-  {
-    for(let i = 0, l = this.breaked_bitmap[0].length; i < l; i++)
-      this.breaked_bitmap[0][i] = 1;
-
+  break_all(hypo, level) {
     for (let l = level; l > 0; l--)
     {
       i = this.info[l];
@@ -124,24 +131,7 @@ Chunk.prototype = {
     }
   },
 
-  get_vertice_from_layer(vertice)
-  {
-    let i = this.info.length - 1;
-    while (vertice < this.info[i].v.offset)
-      i--;
-    return (this.vue_vertices_y[i][vertice - this.info[i].v.offset]);
-  },
-
-  get_layer_from_vertice(vertice)
-  {
-    let i = this.info.length - 1;
-    while (vertice < this.info[i].v.offset)
-      i--;
-    return (i);
-  },
-
-
-  break_Diag: function(l, x, z) {
+  break_Diag(l, x, z) {
     let indice = this.info[l].indice;
     let breaked = this.breaked_bitmap[l];
     let dec_f_1 = (x + z * indice) * 4;
@@ -170,7 +160,7 @@ Chunk.prototype = {
     }
   },
 
-  break_N: function(l, x, z) {
+  break_N(l, x, z) {
     let indice = this.info[l].indice;
     let breaked = this.breaked_bitmap[l];
     let dec_f_1a = (x + (z * indice * 2)) * 4;
@@ -190,7 +180,7 @@ Chunk.prototype = {
       this.neighbourNorth.break_S( l, x, this.neighbourNorth.info[l].indice - 1);
   },
 
-  break_S: function(l, x, z) {
+  break_S(l, x, z) {
     let indice = this.info[l].indice;
     let breaked = this.breaked_bitmap[l];
     let dec_f_1b = (x + (z * indice * 2) + indice) * 4;
@@ -211,7 +201,7 @@ Chunk.prototype = {
       this.neighbourSouth.break_N(l, x, 0);
   },
 
-  break_E: function(l, x, z) {
+  break_E(l, x, z) {
     let indice = this.info[l].indice;
     let breaked = this.breaked_bitmap[l];
     let dec_f_1a = (x + (z * indice * 2)) * 4;
@@ -232,7 +222,7 @@ Chunk.prototype = {
       this.neighbourEst.break_W( l, this.neighbourEst.info[l].indice - 1, z);
   },
 
-  break_W: function(l, x, z) {
+  break_W(l, x, z) {
     let indice = this.info[l].indice;
     let breaked = this.breaked_bitmap[l];
     let dec_f_1a = (x + (z * indice * 2)) * 4;
@@ -253,8 +243,7 @@ Chunk.prototype = {
       this.neighbourWest.break_E(l, 0, z);
   },
 
-  clean: function(level)
-  {
+  clean(level) {
     for (let l = 1; l <= level; l++)
     {
       last_i = this.info[l - 1];
@@ -319,118 +308,120 @@ Chunk.prototype = {
     }
   },
 
-  realoc: function()
-  {
-    let new_vertice = []; // DYNAMIQUE ARRAY KILL PERFORMANCES (300%)
-
-
-    let f = 0;
+  count_visible_faces(level) {
     let nb_f = 0;
-
-    for (let i = 0, l = this.breaked_bitmap.length; i < l; i++)
+    //for (let i = 0, l = this.breaked_bitmap.length; i < l; i++)
+    for (let i = 0; i <= level; i++)
     {
       let breaked = this.breaked_bitmap[i];
       for (let j = 0, ll = breaked.length; j < ll; j++)
         if (breaked[j])
           nb_f++;
     }
+    return (nb_f);
+  },
 
-    this.faces = new Uint32Array(nb_f * 3 );
-
-
-
-	  last = this.info[this.info.length - 1];
-    total = last.v.offset + last.v.nb;
-    new_vertice = new Uint32Array(total);
-
-    for (let i = 0; i < total ; i++)
+  remap_faces(level, new_vertice) {
+    for (let i = 0, l = new_vertice.length ; i < l; i++)
       new_vertice[i] = 0xFFFFFFFF;
 
     let nb_v = 0;
-    for (let l = 0; l < this.breaked_bitmap.length; l++)
+    let f = 0;
+    for (let l = 0; l <= level; l++)
     {
       let data = this.info[l].f.data;
       let breaked = this.breaked_bitmap[l];
 
       for (let i = 0, ll = breaked.length, b = 0; i < ll; i++, b += 3)
-      {
-
         if (breaked[i])
         {
-          if (new_vertice[data[b + 0]] == 0xFFFFFFFF)
-          {
+          if (new_vertice[data[b + 0]] == 0xFFFFFFFF) {
             this.faces[f + 0] = nb_v;
             new_vertice[data[b + 0]] = nb_v++;
-          }
-          else
+          } else {
             this.faces[f + 0] = new_vertice[data[b + 0]];
+          }
 
-          if (new_vertice[data[b + 1]] == 0xFFFFFFFF)
-          {
+          if (new_vertice[data[b + 1]] == 0xFFFFFFFF) {
             this.faces[f + 1] = nb_v;
             new_vertice[data[b + 1]] = nb_v++;
-          }
-          else
+          } else {
             this.faces[f + 1] = new_vertice[data[b + 1]];
+          }
 
-          if (new_vertice[data[b + 2]] == 0xFFFFFFFF)
-          {
+          if (new_vertice[data[b + 2]] == 0xFFFFFFFF) {
             this.faces[f + 2] = nb_v;
             new_vertice[data[b + 2]] = nb_v++;
-          }
-          else
+          } else {
             this.faces[f + 2] = new_vertice[data[b + 2]];
+          }
 
           f += 3;
         }
+    }
+    return nb_v;
+  },
+
+  get_layer_from_vertice(vertice) {
+    let i = this.info.length - 1;
+    while (vertice < this.info[i].v.offset)
+      i--;
+    return (i);
+  },
+
+  remap_vertices(new_vertice) {
+    for (let i = 0; i < new_vertice.length; i++)
+    {
+      let current_vertice = new_vertice[i];
+      if (current_vertice != 0xFFFFFFFF)
+      {
+        let pos = current_vertice * 3;
+
+        layer = this.get_layer_from_vertice(i);
+        relI = i - this.info[layer].v.offset;
+
+        let x = this.vue_vertices_x[layer][relI];
+        let y = this.vue_vertices_y[layer][relI];
+        let z = this.vue_vertices_z[layer][relI];
+
+        this.send_vertices[pos + 0] = x;
+        this.send_vertices[pos + 1] = y;
+        this.send_vertices[pos + 2] = z;
+
+        this.send_colors[pos + 0] = this.vue_colors[layer][relI * 3];
+        this.send_colors[pos + 1] = this.vue_colors[layer][relI * 3 + 1];
+        this.send_colors[pos + 2] = this.vue_colors[layer][relI * 3 + 2];
+
+        this.send_normals[pos + 0] = 0;
+        this.send_normals[pos + 1] = 1;
+        this.send_normals[pos + 2] = 0;
+
+        this.uvs[current_vertice * 2 + 0] = x;
+        this.uvs[current_vertice * 2 + 1] = z;
       }
     }
+  },
 
+  realoc(level) {
+    let nb_f = this.count_visible_faces(level);
+
+    new_vertice = new Uint32Array(
+      this.info[level].v.offset + this.info[level].v.nb
+    );
+
+    this.faces = new Uint32Array(nb_f * 3 );
+
+    let nb_v = this.remap_faces(level, new_vertice);
 
     this.send_vertices = new Float32Array(nb_v * 3);
     this.send_normals = new Float32Array(nb_v * 3);
     this.send_colors = new Uint8Array(nb_v * 3);
     this.uvs = new Float32Array(nb_v * 2);
 
-    for (let i = 0; i < new_vertice.length; i++)
-    {
-      if (new_vertice[i] != 0xFFFFFFFF)
-      {
-        let pos = new_vertice[i] * 3;
-
-        l = this.get_layer_from_vertice(i);
-        relI = i - this.info[l].v.offset;
-
-
-        let x = this.vue_vertices_x[l][relI];
-        let y = this.vue_vertices_y[l][relI];
-        let z = this.vue_vertices_z[l][relI];
-
-
-        this.send_vertices[pos + 0] = x;
-        this.send_vertices[pos + 1] = y;
-        this.send_vertices[pos + 2] = z;
-
-        this.send_colors[pos + 0] = this.vue_colors[l][relI * 3];
-        this.send_colors[pos + 1] = this.vue_colors[l][relI * 3 + 1];
-        this.send_colors[pos + 2] = this.vue_colors[l][relI * 3 + 2];
-
-        this.send_normals[pos + 0] = 0;
-        this.send_normals[pos + 1] = 1;
-        this.send_normals[pos + 2] = 0;
-
-        this.send_normals[pos + 0] = 0;
-        this.send_normals[pos + 1] = 1;
-        this.send_normals[pos + 2] = 0;
-
-        this.uvs[new_vertice[i] * 2 + 0] = x;
-        this.uvs[new_vertice[i] * 2 + 1] = z;
-      }
-    }
+    this.remap_vertices(new_vertice);
   },
 
-  send: function()
-  {
+  send() {
     postMessage({
       type : "chunk_refresh",
       chunk : { x : this.x, z : this.z },

@@ -13,17 +13,23 @@ a black and white earth height map png for example.
 * LOD (https://fr.wikipedia.org/wiki/Level_of_detail)
 * Moving around with WASD will refreash all necessary chunks with new appropriate LOD
 * Realy fast reload, buffers store only whats needed where and when it is, isn't it. (reload 2km diametre zone in less than one seconde with a tesselation ground's precision of 25cm)
+* Texture splatting with bumpmap
 
 # To do :
 * Finish tesselation cracks and parents / neigbour detection algo
 * Jumbo chunks (chunks with size doubled for less number of mesh's objects)
 * Vertices morphing for eye smooth replacement chunks
 * Normal's map generation
-* Texture splatting with bumpmap
 
 # Screenshot
+![Alt text](/screenshot/0.png?raw=true "Optional Title")
 ![Alt text](/screenshot/1.png?raw=true "Optional Title")
 ![Alt text](/screenshot/2.png?raw=true "Optional Title")
 ![Alt text](/screenshot/3.png?raw=true "Optional Title")
 ![Alt text](/screenshot/4.png?raw=true "Optional Title")
 ![Alt text](/screenshot/5.png?raw=true "Optional Title")
+![Alt text](/screenshot/6.png?raw=true "Optional Title")
+![Alt text](/screenshot/7.png?raw=true "Optional Title")
+
+
+

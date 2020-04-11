@@ -19,7 +19,7 @@ let procedural = function(absoluteX, absoluteZ)
 
 	finalNoise = ( land  + ( landNoise * land * land * land * land ) + plumb2 / 30) / 2  ;
 	finalNoise -= river * river;
-
+/*
 	if (finalNoise < -1)
 		finalNoise = -1;
 
@@ -31,7 +31,7 @@ let procedural = function(absoluteX, absoluteZ)
 
 	if (finalNoise < -0.2)
 		finalNoise /= 1.05;
-
+    */
 	color = colorise(
 		gradient, (finalNoise + 1 ) / 2,
 		gradient2, landNoise / 3  ,
