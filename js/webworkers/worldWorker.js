@@ -5,11 +5,11 @@ importScripts(
   'landGeometry.js',
 );
 
-ChunksOverseer = function(levelMax){
+ChunksOverseer = function(){
   this.chunks = [];
   this.position = { x : 0, z : 0 };
-  this.levelMax = levelMax;
-  this.bone = new Bone(levelMax);
+  this.levelMax = 0;
+  this.bone = new Bone();
 }
 
 ChunksOverseer.prototype = {
@@ -39,7 +39,9 @@ ChunksOverseer.prototype = {
 
   get : function(list)
   {
+
     this.bone.set_layer_deepness(this.levelMax);
+
     var tstart = performance.now();
     for (let i = 0; i < list.length; i++)
     {
@@ -49,12 +51,12 @@ ChunksOverseer.prototype = {
 
       this.initChunk(x, z);
 
-
-
       let level = Math.floor(this.levelMax - hypo / 2);
       if (level < 1)
         level = 1;
+
       this.chunks[x][z].set_layer_deepness(level);
+
     }
 
     for (let i = 0; i < list.length; i++)
@@ -73,30 +75,44 @@ ChunksOverseer.prototype = {
       let level = Math.floor(this.levelMax - hypo / 2);
       if (level < 1)
         level = 1;
+
 /*
+    var t0 = performance.now();
       this.chunks[x][z].break_all(hypo, level);
+    var t1 = performance.now();
       this.chunks[x][z].clean(level);
+    var t2 = performance.now();
       this.chunks[x][z].realoc(level);
+    var t3 = performance.now();
       this.chunks[x][z].send();
+    var t4 = performance.now();
+
+    console.log (
+      "X", x, "Z", z,
+      "BREAK", (t1 - t0),
+      "CLEAN", (t2 - t1),
+      "REALOC", (t3 - t2),
+      "SEND", (t4 - t3)
+      );
       */
-
       this.chunks[x][z].resolved = new Promise((resolve, reject) => {
-        this.chunks[x][z].break_all(hypo, level);
-        resolve();
-      })
-
-      pro = overseer.does_neighbour_resolved(x, z);
-      this.chunks[x][z].resolved.then(() => {
+        this.chunks[x][z].break_all(hypo, level -1); // LEVEL - 1 !
+        pro = overseer.does_neighbour_resolved(x, z);
         Promise.all(pro)
           .then(() => {
-              this.chunks[x][z].clean(level);
-              this.chunks[x][z].realoc(level);
-              this.chunks[x][z].send();
+            this.chunks[x][z].clean(level );
+            this.chunks[x][z].realoc(level );
+            this.chunks[x][z].send();
           })
           .catch((error) => {
             console.log(`Error in promises ${error}`)
           })
+        resolve();
       })
+
+
+
+
     }
 
     var tend = performance.now();
@@ -138,14 +154,13 @@ ChunksOverseer.prototype = {
 
 }
 
+overseer = new ChunksOverseer();
+
 onmessage = function(e) {
   order = e.data;
 
   switch(order.type)
   {
-    case "init":
-      overseer = new ChunksOverseer(order.levelMax);
-      break;
     case "request_chunks_list":
       overseer.position.x = order.position.x;
       overseer.position.z = order.position.z;

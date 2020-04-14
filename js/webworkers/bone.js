@@ -1,7 +1,6 @@
 let Bone = function()
 {
 
-
 }
 
 Bone.prototype = {
@@ -11,27 +10,26 @@ Bone.prototype = {
     this.info = this.get_info(level);
 
 
-  last = this.info[this.info.length - 1];
-  nb_v = last.v.offset + last.v.nb;
-  nb_f = last.f.offset + last.f.nb;
+    last = this.info[this.info.length - 1];
+    nb_v = last.v.offset + last.v.nb;
+    nb_f = last.f.offset + last.f.nb;
 
-  let vertices_x = new ArrayBuffer(nb_v * 4);
-  let vertices_z = new ArrayBuffer(nb_v * 4);
-  let faces = new ArrayBuffer(nb_f * 3 * 4);
+    let vertices_x = new ArrayBuffer(nb_v * 4);
+    let vertices_z = new ArrayBuffer(nb_v * 4);
+    let faces = new ArrayBuffer(nb_f * 3 * 4);
 
-  this.vue_vertices_x = new Float32Array(vertices_x);
-  this.vue_vertices_z = new Float32Array(vertices_z);
-  this.vue_faces = new Uint32Array(faces);
+    this.vue_vertices_x = new Float32Array(vertices_x);
+    this.vue_vertices_z = new Float32Array(vertices_z);
+    this.vue_faces = new Uint32Array(faces);
 
-  for (let l = 0; l < this.info.length; l++)
-  {
-    i = this.info[l];
+    for (let l = 0; l < this.info.length; l++)
+    {
+      i = this.info[l];
 
-    i.v.data_x = new Float32Array(vertices_x, i.v.offset * 4, i.v.nb);
-    i.v.data_z = new Float32Array(vertices_z, i.v.offset * 4, i.v.nb);
-    i.f.data = new Uint32Array(faces, i.f.offset * 3 * 4, i.f.nb * 3);
-  }
-
+      i.v.data_x = new Float32Array(vertices_x, i.v.offset * 4, i.v.nb);
+      i.v.data_z = new Float32Array(vertices_z, i.v.offset * 4, i.v.nb);
+      i.f.data = new Uint32Array(faces, i.f.offset * 3 * 4, i.f.nb * 3);
+    }
     size = 1;
     this.vue_vertices_x.set([ 0, size, 0, size]);
     this.vue_vertices_z.set([ 0, 0, size, size]);

@@ -1,105 +1,131 @@
+class ColorGUIHelper {
+  constructor(object, prop) {
+    this.object = object;
+    this.prop = prop;
+  }
+  get value() {
+    return `#${this.object[this.prop].getHexString()}`;
+  }
+  set value(hexString) {
+    this.object[this.prop].set(hexString);
+  }
+}
+
 
 initGUI = function(){
-	var gui = new dat.GUI( { width: 300 } );
-	//-------------------SKY
 
-	var sunGui = gui.addFolder('Sky');
+  let gui = new dat.GUI( { width: 300 } );
 
-	var effectController  = {
-		turbidity: 10,
-		rayleigh: 2,
-		mieCoefficient: 0.005,
-		mieDirectionalG: 0.8,
-		luminance: 1,
-		inclination: 0.49, // elevation / inclination
-		azimuth: 0.25, // Facing front,
-		sun: ! true,
-		fog : [ 0, 128, 255 ]
-	};
+  // - TEXTURE -----------------------------------------------------
+  let textureGui = gui.addFolder('Texture');
 
-	var distance = 400000;
+  texture = {
+    repeat: 1
+  }
 
-	function skyGuiChanged() {
+  textureGui.add(texture, 'repeat', 1, 100).step(1).onChange( (value) => {
+    map.repeat.set(value, value);
+    }
+  );
+  // - MATERIAL ------------------------------------------------------
 
-		var uniforms = sky.sky.uniforms;
-		uniforms.turbidity.value = effectController.turbidity;
-		uniforms.rayleigh.value = effectController.rayleigh;
-		uniforms.luminance.value = effectController.luminance;
-		uniforms.mieCoefficient.value = effectController.mieCoefficient;
-		uniforms.mieDirectionalG.value = effectController.mieDirectionalG;
+  let materialGui = gui.addFolder('Material');
+  materialGui.open();
+  materialGui.add(terrain_material, 'transparent');
+  materialGui.add(terrain_material, 'opacity', 0, 1).step(0.01);
+  materialGui.add(terrain_material, 'shininess', 0, 100).step(1);
 
-		var theta = Math.PI * ( effectController.inclination - 0.5 );
-		var phi = 2 * Math.PI * ( effectController.azimuth - 0.5 );
+  materialGui.addColor(new ColorGUIHelper(terrain_material, 'specular'), 'value').name('Specular');
 
-		sunSphere.position.x = distance * Math.cos( phi );
-		sunSphere.position.y = distance * Math.sin( phi ) * Math.sin( theta );
-		sunSphere.position.z = distance * Math.sin( phi ) * Math.cos( theta );
-
-		sky.changePos(sunSphere.position);
-		sunSphere.visible = effectController.sun;
-		sky.sky.uniforms.sunPosition.value.copy( sunSphere.position );
-
-		R = effectController.fog[0].toFixed(0);
-		G = effectController.fog[1].toFixed(0);
-		B = effectController.fog[2].toFixed(0);
-
-		var color = new THREE.Color("rgb("+R+", "+G+", "+B+")");
-		scene.fog.color = color;
-	}
-
-	sunGui.add( effectController, "turbidity", 1.0, 20.0, 0.1 ).onChange( skyGuiChanged );
-	sunGui.add( effectController, "rayleigh", 0.0, 4, 0.001 ).onChange( skyGuiChanged );
-	sunGui.add( effectController, "mieCoefficient", 0.0, 0.1, 0.001 ).onChange( skyGuiChanged );
-	sunGui.add( effectController, "mieDirectionalG", 0.0, 1, 0.001 ).onChange( skyGuiChanged );
-	sunGui.add( effectController, "luminance", 0.0, 2 ).onChange( skyGuiChanged );
-	sunGui.add( effectController, "inclination", 0, 1, 0.0001 ).onChange( skyGuiChanged );
-	sunGui.add( effectController, "azimuth", 0, 1, 0.0001 ).onChange( skyGuiChanged );
-	sunGui.add( effectController, "sun" ).onChange( skyGuiChanged );
-	sunGui.addColor( effectController, "fog" ).onChange( skyGuiChanged );
-
-
-
-	//-------------------WORLD
-	
-	var worldGui = gui.addFolder('World');
-
-	var worldData  = {
-		chunksDistance: 2,
-		levelMax: 14,
-		chunkSize: 500,
-		maxHeight: 200,
-		wireframe: false,
-		reload: function(){
-			scene.remove(world.group);
-			world = new World({
-				chunkSize: worldData.chunkSize,
-				maxHeight: worldData.maxHeight,
-				chunksDistance: worldData.chunksDistance,
-				levelMax: worldData.levelMax
-			});
-			scene.add(world.group);
-			world.requestChunks();
-
-		}
-	};
-
-	worldGui.add(world, 'chunksDistance', 1, 20).step(1).onChange( () => {
-    world.requestChunks()
+  materialGui.add(terrain_material, 'wireframe').onChange( (value) => {
+    if (value)
+    {
+      
+    }
   });
 
-	worldGui.add(world, 'levelMax', 1, 25).step(1).onChange( () => {
-    world.requestChunks()
+  // - Light --------------------------------------------------
+
+  console.log(world.sunLight.color)
+
+  let lightGui = gui.addFolder('Light');
+  lightGui.open();
+
+
+  lightGui.addColor(new ColorGUIHelper(world.sunLight, 'color'), 'value')
+    .name('Sun Light');
+  lightGui.add(world.sunLight, 'intensity', 0, 10).step(0.1);
+
+  lightGui.addColor(new ColorGUIHelper(world.ambiantLight, 'color'), 'value')
+    .name('Ambiant');
+  lightGui.add(world.ambiantLight, 'intensity', 0, 1).step(0.01);
+  // - FOG --------------------------------------------------
+
+  let fogGui = gui.addFolder('Fog');
+  fogGui.open();
+
+  class FogGUIHelper {
+    constructor(fog, backgroundColor) {
+      this.fog = fog;
+      this.backgroundColor = backgroundColor;
+    }
+    get near() {
+      return this.fog.near;
+    }
+    set near(v) {
+      this.fog.near = v;
+      this.fog.far = Math.max(this.fog.far, v);
+    }
+    get far() {
+      return this.fog.far;
+    }
+    set far(v) {
+      this.fog.far = v;
+      this.fog.near = Math.min(this.fog.near, v);
+    }
+    get color() {
+      return `#${this.fog.color.getHexString()}`;
+    }
+    set color(hexString) {
+      this.fog.color.set(hexString);
+      this.backgroundColor.set(hexString);
+    }
+  }
+
+  const near = -10000;
+  const far = 10000;
+
+  const fogGUIHelper = new FogGUIHelper(scene.fog, scene.background);
+
+  fogGui.add(fogGUIHelper, 'near', near, far).listen();
+  fogGui.add(fogGUIHelper, 'far', near, far).listen();
+  fogGui.addColor(fogGUIHelper, 'color');
+
+
+
+
+  // - PROCEDULAND ---------------------------------------------------
+
+
+  let procedulandGUI = gui.addFolder('Proceduland');
+  procedulandGUI.open();
+
+  let proData = world.proceduland;
+
+  procedulandGUI.add(proData, 'levelMax', 1, 25).step(1).onChange( () => {
+    proData.requestChunks()
   });
 
-  worldGui.add(world, 'chunkSize', 10, 1000).onChange(() => {
-    world.group.scale.set(world.chunkSize, world.maxHeight, world.chunkSize)
+  procedulandGUI.add(proData, 'chunksDistance', 1, 20).step(1).onChange( () => {
+    proData.requestChunks()
   });
 
-	worldGui.add(world, 'maxHeight', 10, 1000).onChange(() => {
-    world.group.scale.set(world.chunkSize, world.maxHeight, world.chunkSize)
+  procedulandGUI.add(proData, 'chunkSize', 0, 1000).onChange(() => {
+    proData.group.scale.set( proData.chunkSize, proData.maxHeight, proData.chunkSize)
   });
 
-
-	worldGui.add(worldData, 'reload');
-
+  procedulandGUI.add(proData, 'maxHeight', 1, 1000).onChange(() => {
+    proData.group.scale.set( proData.chunkSize, proData.maxHeight, proData.chunkSize)
+  });
 }
+

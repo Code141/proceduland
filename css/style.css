@@ -7,6 +7,14 @@ canvas {
 	height: 100%;
 }
 
+canvas#minimap {
+	width: 500px;
+	height: 500px;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+}
+
 
 
 

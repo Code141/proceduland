@@ -19,6 +19,7 @@ let Chunk = function(x, z, bone)
   this.neighbourSouth = null;
   this.neighbourWest = null;
   this.neighbourEst = null;
+
 }
 
 Chunk.prototype = {
@@ -36,6 +37,7 @@ Chunk.prototype = {
     for (let l = 0; l <= this.level; l++)
       for(let i = 0, ll = this.breaked_bitmap[l].length; i < ll; i++)
         this.breaked_bitmap[l][i] = 0;
+
     // ELSE DESTRUCT LAYERS OR STORE IT ON HDD
     // FREE MEMORY
 
@@ -75,14 +77,12 @@ Chunk.prototype = {
   },
 
   does_break(parents_faces, hypo, real, v) {
-    if (this.x < 0)
-      return (true);
     v1 = this.get_vertice_from_layer(parents_faces[v + 1]);
     v2 = this.get_vertice_from_layer(parents_faces[v + 2]);
     vr = this.get_vertice_from_layer(real);
 
     delta = Math.abs((( v1 + v2 ) / 2) - vr);
-    if ( (delta * 400) / (hypo + 1)> 1)
+    if ( (delta * 800) / (hypo)> 1)
       return (true);
 
     return (false);
@@ -148,7 +148,6 @@ Chunk.prototype = {
 
     if (l > 1)
     {
-      // NEED PATH HERE
       // SEEMS TO BREAK TOO MUCH
       x = Math.floor(x/2);
       z = Math.floor(z/2);
@@ -157,6 +156,32 @@ Chunk.prototype = {
       this.break_E(l - 1, x, z);
       this.break_W(l - 1, x, z);
       this.break_S(l - 1, x, z);
+
+      /* 
+      SHOULD IMPLEMENT SOMETING LIKE THIS
+      x2 = Math.floor(x/2);
+      z2 = Math.floor(z/2);
+
+      if (x2 % 2)
+      {
+        this.break_W(l - 1, x2, z2);
+        if (z2 % 2)
+          this.break_S(l - 1, x2, z2);
+        else
+          this.break_N(l - 1, x2, z2);
+      }
+      else
+      {
+        this.break_E(l - 1, x2, z2);
+        if (z2 % 2)
+          this.break_S(l - 1, x2, z2);
+        else
+          this.break_N(l - 1, x2, z2);
+      }
+      return;
+      */
+      
+
     }
   },
 
@@ -341,7 +366,6 @@ Chunk.prototype = {
           } else {
             this.faces[f + 0] = new_vertice[data[b + 0]];
           }
-
           if (new_vertice[data[b + 1]] == 0xFFFFFFFF) {
             this.faces[f + 1] = nb_v;
             new_vertice[data[b + 1]] = nb_v++;

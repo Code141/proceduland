@@ -32,28 +32,16 @@ let procedural = function(absoluteX, absoluteZ)
 	if (finalNoise < -0.2)
 		finalNoise /= 1.05;
     */
+  if (absoluteX > -0.5 && absoluteX < 0.5 
+  && absoluteZ > -0.5 && absoluteZ < 0.5 )
+    finalNoise = 0;
+
 	color = colorise(
 		gradient, (finalNoise + 1 ) / 2,
 		gradient2, landNoise / 3  ,
 		((finalNoise + 1) / 2) * land * land
 	);
 
-
-
-  /*
-finalNoise = 0;
-
-  if (absoluteX < 0.6 && absoluteX > 0.4 &&
-  absoluteZ < 0.6 && absoluteZ > 0.4
-  )
-    finalNoise = 0.5;
-
-	color = colorise(
-		gradient, (finalNoise + 1 ) / 2,
-		gradient2, finalNoise / 3  ,
-		((finalNoise + 1) / 2)
-	);
-  */
 	return ({
 		height: finalNoise,
 		color: color

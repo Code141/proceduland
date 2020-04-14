@@ -1,102 +1,58 @@
 function World(options)
 {
-
-  this.chunkSize = options.chunkSize;
-  this.maxHeight = options.maxHeight;
-  this.chunksDistance = options.chunksDistance;
-  this.levelMax = options.levelMax;
-
-  this.chunks = [];
   this.position = { x: 0, z: 0 };
   this.group = new THREE.Group();
 
-  this.group.scale.set(this.chunkSize, this.maxHeight, this.chunkSize);
+  this.proceduland = new Proceduland({
+    chunkSize: 500,
+    maxHeight: 200,
+    chunksDistance: 5,
+    levelMax: 10
+  });
+  this.group.add(this.proceduland.group);
+  this.proceduland.requestChunks();
 
-  this.worker_init();
+  // Sun
+
+  this.sunLight = new THREE.DirectionalLight( 0xffffff, 1 );
+  this.sunLight.position.set( 150, 70, 0 );
+
+this.sunLight.castShadow = true;
+this.sunLight.shadow.mapSize.width = 512;  // default
+this.sunLight.shadow.mapSize.height = 512; // default
+this.sunLight.shadow.camera.near = 0.5;    // default
+this.sunLight.shadow.camera.far = 5000;     // default
+
+  this.group.add( this.sunLight );
+
+  var helper = new THREE.DirectionalLightHelper( this.sunLight, 50 );
+  this.group.add( helper );
+
+  this.ambiantLight= new THREE.AmbientLight( 0xffffff, 0.1 ); // soft white light
+  this.group.add( this.ambiantLight);
+
+
 }
 
 World.prototype = {
 
-  worker_init : function()
-  {
-    this.nb_vertices = 0;
-
-    if (this.ChunksWorker)
-      this.ChunksWorker.terminate();
-
-    this.ChunksWorker = new Worker("js/webworkers/worldWorker.js");
-
-    this.ChunksWorker.postMessage({
-      type : "init",
-      chunkSize : this.chunkSize,
-      chunksDistance : this.chunksDistance,
-      levelMax : this.levelMax
-    });
-
-    this.ChunksWorker.onmessage = (e) => {
-      r = e.data;
-      switch(r.type) {
-        case "chunk_refresh" :
-          this.chunks[r.chunk.x][r.chunk.z].update(r.data);
-          break;
-        default:
-          console.log("WORLD WORKER RESPONSE ERROR");
-      }
-    };
-
-    this.ChunksWorker.onerror = function(error) {
-      console.error(error);
-    };
-
-  },
-
-  move : function( x, z )
+  move( x, z )
   {
     this.position.x += x;
     this.position.z += z;
-
-    this.requestChunks();
+    this.proceduland.move(x, z);
+    this.proceduland.requestChunks();
   },
 
-  requestChunks : function()
-  {
-    let list = andresList(this.chunksDistance, this.position.x, this.position.z);
-//    list = [{ hypo: 1, x: 0, z:0 }];
-
-    for (var i = 0; i < list.length; i++)
-      this.newChunk(list[i].x, list[i].z);
-    this.ChunksWorker.postMessage( {
-      type : "request_chunks_list",
-      list : list,
-      levelMax: this.levelMax,
-      position :
-      {
-        x : this.position.x,
-        z : this.position.z
-      }
-    });
+  changePos(newPos){
+    this.sunLight.position.x = newPos.x;
+    this.sunLight.position.y = newPos.y;
+    this.sunLight.position.z = newPos.z;
+    this.sunLight.lookAt({ x: 0, y: 0, z:0 })
   },
 
-  newChunk : function (x, z)
+  update()
   {
-    if (!this.chunks[x])
-      this.chunks[x] = [];
-
-    if (!this.chunks[x][z])
-    {
-      this.chunks[x][z] = new chunk(x, z);
-
-      group = this.chunks[x][z].group;
-      group.position.x = x;
-      group.position.z = z;
-
-      this.group.add(group);
-    }
-    else
-      this.chunks[x][z].state_cube("loading");
-  },
-
-  update : function()
-  {
+    this.proceduland.update();
   }
 }
