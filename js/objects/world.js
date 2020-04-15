@@ -17,11 +17,11 @@ function World(options)
   this.sunLight = new THREE.DirectionalLight( 0xffffff, 1 );
   this.sunLight.position.set( 150, 70, 0 );
 
-this.sunLight.castShadow = true;
-this.sunLight.shadow.mapSize.width = 512;  // default
-this.sunLight.shadow.mapSize.height = 512; // default
-this.sunLight.shadow.camera.near = 0.5;    // default
-this.sunLight.shadow.camera.far = 5000;     // default
+  this.sunLight.castShadow = true;
+  this.sunLight.shadow.mapSize.width = 512;  // default
+  this.sunLight.shadow.mapSize.height = 512; // default
+  this.sunLight.shadow.camera.near = 0.5;    // default
+  this.sunLight.shadow.camera.far = 5000;     // default
 
   this.group.add( this.sunLight );
 
@@ -30,7 +30,6 @@ this.sunLight.shadow.camera.far = 5000;     // default
 
   this.ambiantLight= new THREE.AmbientLight( 0xffffff, 0.1 ); // soft white light
   this.group.add( this.ambiantLight);
-
 
 }
 

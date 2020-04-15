@@ -14,7 +14,7 @@ function init(){
 	initThreeJs( container);
 	initGUI();
 
-  minimap();
+  let minimap = new Minimap();
 
 	loop();
 }

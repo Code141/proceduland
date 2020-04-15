@@ -31,8 +31,6 @@ initGUI = function(){
 
   let materialGui = gui.addFolder('Material');
   materialGui.open();
-  materialGui.add(terrain_material, 'transparent');
-  materialGui.add(terrain_material, 'opacity', 0, 1).step(0.01);
   materialGui.add(terrain_material, 'shininess', 0, 100).step(1);
 
   materialGui.addColor(new ColorGUIHelper(terrain_material, 'specular'), 'value').name('Specular');
