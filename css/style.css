@@ -7,12 +7,25 @@ canvas {
 	height: 100%;
 }
 
-canvas#minimap {
-	width: 500px;
-	height: 500px;
+section.minimap{
   position: absolute;
   bottom: 0px;
   right: 0px;
+  margin: 10px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+section.minimap div{
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 10px;
+
+}
+
+canvas#minimap {
+	width: 400px;
+	height: 400px;
   background-color: rgba(0, 0, 0, 1);
 
 }

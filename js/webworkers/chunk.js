@@ -82,7 +82,7 @@ Chunk.prototype = {
     vr = this.get_vertice_from_layer(real);
 
     delta = Math.abs((( v1 + v2 ) / 2) - vr);
-    if ( (delta * 800) / (hypo)> 1)
+    if ( (delta * 300) / (hypo)> 1)
       return (true);
 
     return (false);

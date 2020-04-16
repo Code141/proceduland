@@ -1,5 +1,8 @@
 let procedural = function(absoluteX, absoluteZ)
 {
+function sigmoid(t) {
+    return 1/(1+Math.pow(Math.E, -t));
+}
 	landNoise = 0.1;
 	plumb = 5;
 	plumb2 = 0.04;
@@ -35,6 +38,8 @@ let procedural = function(absoluteX, absoluteZ)
   if (absoluteX > -0.5 && absoluteX < 0.5 
   && absoluteZ > -0.5 && absoluteZ < 0.5 )
     finalNoise = 0;
+
+finalNoise = (sigmoid(finalNoise) *2 - 1) * 2;
 
 	color = colorise(
 		gradient, (finalNoise + 1 ) / 2,

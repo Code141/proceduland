@@ -6,7 +6,7 @@ function chunk(x, y)
 	this.group = new THREE.Group();
   this.group.userData = this;
 
-//	this.add_water();
+	this.add_water();
 	this.state_cube("init");
 
 	this.geometry = new THREE.BufferGeometry();
@@ -106,7 +106,7 @@ chunk.prototype = {
 
 		water.position.x += 0.5;
 		water.position.z += 0.5;
-		water.rotation.x = deg(-90);
+		water.rotation.x = DEG(-90);
 
 		this.group.add( water );
 	},

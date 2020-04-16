@@ -1,3 +1,4 @@
+let DEG = function(deg){ return ((deg/180)*Math.PI); }
 let renderer, scene, camera;
 let stats;
 let keyboard, mouse;
@@ -11,12 +12,16 @@ function init(){
 		alert('WEBWORKER NOT SUPPORTED');
 
 	container = document.getElementById( 'threeContainer' );
-	initThreeJs( container);
-	initGUI();
+
 
   let minimap = new Minimap();
 
+
+/*
+	initThreeJs( container);
+	initGUI();
 	loop();
+  */
 }
 
 function keyboardState(){
