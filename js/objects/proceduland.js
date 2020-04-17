@@ -61,6 +61,10 @@ Proceduland.prototype = {
     for (var i = 0; i < list.length; i++)
       this.newChunk(list[i].x, list[i].z);
 
+    minimap.chunk_list = list;
+    minimap.refresh_chunks();
+    minimap.draw();
+
     this.ChunksWorker.postMessage( {
       type : "request_chunks_list",
       list : list,

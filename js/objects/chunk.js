@@ -6,7 +6,7 @@ function chunk(x, y)
 	this.group = new THREE.Group();
   this.group.userData = this;
 
-	this.add_water();
+//	this.add_water();
 	this.state_cube("init");
 
 	this.geometry = new THREE.BufferGeometry();

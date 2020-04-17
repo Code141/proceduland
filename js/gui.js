@@ -17,8 +17,9 @@ initGUI = function(){
   let gui = new dat.GUI( { width: 300 } );
 
   // - TEXTURE -----------------------------------------------------
+  
   let textureGui = gui.addFolder('Texture');
-
+  textureGui.open();
   texture = {
     repeat: 1
   }

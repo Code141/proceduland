@@ -16,7 +16,7 @@ function Minimap()
   this.color_map = new Uint8Array(this.width * this.height * 4);
   this.height_map= new Uint8Array(this.width * this.height * 4);
   this.chunk= new Uint8Array(this.width * this.height * 4);
-
+this.chunk_list = [];
   this.draw();
   this.display = "color";
 
@@ -72,13 +72,12 @@ Minimap.prototype = {
   draw() {
     this.draw_map();
 
-    this.chunk= new Uint8Array(this.width * this.height * 4);
-    this.draw_chunk(0, 0);
-    this.draw_chunk(-1, 2);
-    this.draw_chunk(1, -2);
+
 
     this.grid = new Uint8Array(this.width * this.height * 4);
     this.draw_grid();
+    this.refresh_chunks();
+
 
 
 
@@ -93,6 +92,18 @@ Minimap.prototype = {
     this.context.putImageData(this.imagedata, 0, 0);
   },
 
+  refresh_chunks()
+  {
+    this.chunk= new Uint8Array(this.width * this.height * 4);
+
+    for (var i = 0; i < this.chunk_list.length; i++)
+    {
+      let chunk = this.chunk_list[i];
+      this.draw_chunk(chunk.x, chunk.z);
+    }
+
+
+  },
   draw_chunk(cx, cz)
   {
     cx = cx * this.zoom - this.offsetX;

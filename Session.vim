@@ -93,7 +93,7 @@ lcd ~/cursus/proceduland
 wincmd w
 argglobal
 if bufexists("~/cursus/proceduland/js/init.js") | buffer ~/cursus/proceduland/js/init.js | else | edit ~/cursus/proceduland/js/init.js | endif
-let s:l = 116 - ((21 * winheight(0) + 11) / 22)
+let s:l = 116 - ((18 * winheight(0) + 11) / 22)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -103,7 +103,7 @@ lcd ~/cursus/proceduland
 wincmd w
 argglobal
 if bufexists("~/cursus/proceduland/index.js") | buffer ~/cursus/proceduland/index.js | else | edit ~/cursus/proceduland/index.js | endif
-let s:l = 9 - ((0 * winheight(0) + 11) / 22)
+let s:l = 9 - ((8 * winheight(0) + 11) / 22)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -133,12 +133,12 @@ lcd ~/cursus/proceduland
 wincmd w
 argglobal
 if bufexists("~/cursus/proceduland/js/objects/chunk.js") | buffer ~/cursus/proceduland/js/objects/chunk.js | else | edit ~/cursus/proceduland/js/objects/chunk.js | endif
-let s:l = 109 - ((85 * winheight(0) + 45) / 91)
+let s:l = 50 - ((32 * winheight(0) + 45) / 91)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-109
-normal! 028|
+50
+normal! 0
 lcd ~/cursus/proceduland
 wincmd w
 argglobal
@@ -223,22 +223,22 @@ lcd ~/cursus/proceduland
 wincmd w
 argglobal
 if bufexists("~/cursus/proceduland/js/webworkers/bone.js") | buffer ~/cursus/proceduland/js/webworkers/bone.js | else | edit ~/cursus/proceduland/js/webworkers/bone.js | endif
-let s:l = 84 - ((83 * winheight(0) + 45) / 91)
+let s:l = 37 - ((36 * winheight(0) + 45) / 91)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-84
-normal! 028|
+37
+normal! 0
 lcd ~/cursus/proceduland
 wincmd w
 argglobal
 if bufexists("~/cursus/proceduland/js/webworkers/chunk.js") | buffer ~/cursus/proceduland/js/webworkers/chunk.js | else | edit ~/cursus/proceduland/js/webworkers/chunk.js | endif
-let s:l = 387 - ((120 * winheight(0) + 45) / 91)
+let s:l = 341 - ((74 * winheight(0) + 45) / 91)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-387
-normal! 0
+341
+normal! 026|
 lcd ~/cursus/proceduland
 wincmd w
 argglobal
@@ -251,6 +251,7 @@ normal! zt
 normal! 045|
 lcd ~/cursus/proceduland
 wincmd w
+3wincmd w
 exe 'vert 1resize ' . ((&columns * 84 + 182) / 365)
 exe 'vert 2resize ' . ((&columns * 86 + 182) / 365)
 exe 'vert 3resize ' . ((&columns * 88 + 182) / 365)
@@ -319,15 +320,14 @@ exe '2resize ' . ((&lines * 33 + 47) / 95)
 exe 'vert 2resize ' . ((&columns * 121 + 182) / 365)
 exe 'vert 3resize ' . ((&columns * 121 + 182) / 365)
 exe 'vert 4resize ' . ((&columns * 121 + 182) / 365)
-tabnext 1
+tabnext 2
 badd +1 ~/cursus/proceduland/css/style.css
 badd +1 ~/cursus/proceduland/js
 badd +1 ~/cursus/proceduland/js/webworkers/worldWorker.js
 badd +34 ~/cursus/proceduland/index.html
 badd +1 ~/cursus/proceduland/js/init.js
-badd +30 ~/cursus/proceduland/js/objects/Minimap.js
 badd +1 ~/cursus/proceduland/index.js
-badd +0 ~/cursus/proceduland/js/objects/proceduland.js
+badd +1 ~/cursus/proceduland/js/objects/proceduland.js
 badd +57 ~/cursus/proceduland/js/objects/world.js
 badd +55 ~/cursus/proceduland/js/objects/chunk.js
 badd +1 ~/cursus/proceduland/js/materials.js
@@ -336,6 +336,7 @@ badd +1 ~/cursus/proceduland/js/gui.js
 badd +1 ~/cursus/proceduland/js/webworkers/bone.js
 badd +1 ~/cursus/proceduland/js/webworkers/chunk.js
 badd +1 ~/cursus/proceduland/js/webworkers/landGeometry.js
+badd +30 ~/cursus/proceduland/js/objects/Minimap.js
 badd +1 ~/cursus/proceduland/js/eventsControl.js
 badd +1 ~/cursus/proceduland/js/objects/sky.js
 badd +1 ~/cursus/proceduland/js/objects/test.js
@@ -377,6 +378,7 @@ if file_readable(s:sx)
   exe "source " . fnameescape(s:sx)
 endif
 let &so = s:so_save | let &siso = s:siso_save
+nohlsearch
 doautoall SessionLoadPost
 unlet SessionLoad
 " vim: set ft=vim :
